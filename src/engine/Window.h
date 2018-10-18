@@ -1,7 +1,7 @@
 #ifndef WINDOW_H_
 #define WINDOW_H_
 
-#include <GLFW/glfw3.h>
+#include "Global.h"
 #include <string>
 
 class Window {
@@ -25,7 +25,7 @@ public:
     std::string getTitle() const;
 
     static void errorCallback(int, const char* desc);
-    
+
 private:
 
     GLFWwindow* window;

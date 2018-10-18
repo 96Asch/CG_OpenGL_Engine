@@ -5,11 +5,12 @@ FILES = $(wildcard $(SRC)/*/)
 OBJDIRS = $(sort $(dir $(addprefix $(OBJDIR)/, $(FILES:$(SRC)/%=%))))
 SOURCES = $(wildcard $(SRC)/*.cpp) $(wildcard $(SRC)/*/*.cpp)
 OBJS =	$(addprefix $(OBJDIR)/, $(patsubst $(SRC)/%.cpp, %.o, $(SOURCES)))
-INC = include
 SRC = src
-LDFLAGS = -lGL -lglfw -lSDL -lpng -lz
+INC = -Iinclude/ -I$(SRC)/global/
+DEP = $(wildcard dep/*.c)
+DEPOBJS = $(addprefix $(OBJDIR)/, $(DEP:.c=.o))
+LDFLAGS = -lGL -lglfw -lGLU -lpng -ldl
 TARGET =	main
-DEPS = $(wildcard $(INC)/*.h)
 
 
 .PHONY: all clean
@@ -17,17 +18,24 @@ DEPS = $(wildcard $(INC)/*.h)
 all: $(OBJDIR) $(TARGET)
 	@echo Done Building...
 
+test:
+	@echo $(DEPOBJS)
+
 $(OBJDIR):
 	@echo Making bin directory
 	@mkdir $(OBJDIRS)
+	@mkdir $(OBJDIR)/dep
+
+$(DEPOBJS): $(DEP)
+	@echo Building Dependency $@
+	@$(CXX) -c $(INC) $< -o $@ $(LDFLAGS)
 
 $(OBJDIR)/%.o:	$(SRC)/%.cpp
 	@echo Building $@
-	@$(CXX) $(CFLAGS) -c -I$(INC) $< -o $@ $(LDFLAGS)
-	@echo Done Building $@
+	@$(CXX) $(CFLAGS) -c $(INC) $< -o $@ $(LDFLAGS)
 
 
-$(TARGET):	$(OBJS) $(DEPS)
+$(TARGET):	$(DEPOBJS) $(OBJS)
 	@echo Building executable $@
 	@$(CXX) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 

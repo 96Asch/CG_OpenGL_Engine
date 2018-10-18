@@ -26,7 +26,7 @@ void Engine::update(const float &delta) {
 }
 
 void Engine::cleanup() {
-
+    window.cleanup();
 }
 
 void Engine::add(System *system) {

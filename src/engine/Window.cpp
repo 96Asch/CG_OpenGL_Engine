@@ -3,7 +3,9 @@
 
 Window::Window(){}
 
-Window::~Window(){}
+Window::~Window(){
+    glfwTerminate();
+}
 
 
 bool Window::init(const int &width,
@@ -12,31 +14,35 @@ bool Window::init(const int &width,
                   const bool &vsync) {
     glfwSetErrorCallback(errorCallback);
 
-    if (!glfwInit()) {
-        glfwTerminate();
+    if (!glfwInit())
         return false;
-    }
 
     glfwDefaultWindowHints();
     glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
-	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
     window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 
-    if (!window) {
-        glfwTerminate();
+    if (!window)
         return false;
-    }
 
     const GLFWvidmode* vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
     glfwSetWindowPos(window, (vidmode->width - width) / 2, (vidmode->height - height) / 2);
 
-    setVsync(vsync);
     glfwMakeContextCurrent(window);
+    if (gl3wInit()) {
+        fprintf(stderr, "failed to initialize OpenGL\n");
+        return false;
+    }
+    if (!gl3wIsSupported(4, 3)) {
+        fprintf(stderr, "OpenGL 4.3 not supported\n");
+        return false;
+    }
+    printf("OpenGL %s, GLSL %s\n", glGetString(GL_VERSION),
+                glGetString(GL_SHADING_LANGUAGE_VERSION));
+    setVsync(vsync);
     glfwShowWindow(window);
     return true;
 }
@@ -48,7 +54,6 @@ void Window::update() {
 
 void Window::cleanup() {
     glfwDestroyWindow(window);
-    glfwTerminate();
 }
 
 bool Window::shouldClose() const {
@@ -67,6 +72,6 @@ std::string Window::getTitle() const {
     return title;
 }
 
-void Window::errorCallback(int, const char* desc) {
-    fprintf(stderr, "Error: %s\n", desc);
+void Window::errorCallback(int i, const char* desc) {
+    fprintf(stderr, "Error %i: %s\n", i, desc);
 }
