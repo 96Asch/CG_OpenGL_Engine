@@ -1,8 +1,12 @@
 #include "Engine.h"
+#include "../system/System.h"
 
 Engine::Engine(){}
 
-Engine::~Engine(){}
+Engine::~Engine(){
+    for(auto system : systems)
+        delete system;
+}
 
 bool Engine::init(const int &width,
                   const int &height,
@@ -10,6 +14,9 @@ bool Engine::init(const int &width,
                   const bool &vsync) {
     if(!window.init(width, height, title, vsync))
         return false;
+
+    for(auto system : systems)
+        system->init();
 
     return true;
 }
@@ -20,15 +27,17 @@ void Engine::run() {
 }
 
 void Engine::update(const float &delta) {
-
-
+    for(auto system : systems)
+        system->update(delta);
     window.update();
 }
 
 void Engine::cleanup() {
+    for(auto system : systems)
+        system->cleanup();
     window.cleanup();
 }
 
 void Engine::add(System *system) {
-
+    systems.push_back(system);
 }

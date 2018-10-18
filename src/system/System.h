@@ -1,20 +1,18 @@
 #ifndef SYSTEM_H_
 #define SYSTEM_H_
 
-class Message;
-
 class System {
 
 public:
-    System();
+    System() = default;
 
-    virtual ~System();
+    virtual ~System() = default;
 
     virtual void update(const float &delta) = 0;
 
     virtual void init() = 0;
 
-    virtual void sendMessage(Message* message) = 0;
+    virtual void cleanup() = 0;
 
 private:
 

@@ -1,9 +1,9 @@
 CXX = g++
 CFLAGS =	-std=c++14 -Wall -g -Wextra -pedantic
 OBJDIR = build
-FILES = $(wildcard $(SRC)/*/)
+FILES = $(wildcard $(SRC)/*/) $(wildcard $(SRC)/*/*/) dep/
 OBJDIRS = $(sort $(dir $(addprefix $(OBJDIR)/, $(FILES:$(SRC)/%=%))))
-SOURCES = $(wildcard $(SRC)/*.cpp) $(wildcard $(SRC)/*/*.cpp)
+SOURCES = $(wildcard $(SRC)/*.cpp) $(wildcard $(SRC)/*/*.cpp) $(wildcard $(SRC)/*/*/*.cpp)
 OBJS =	$(addprefix $(OBJDIR)/, $(patsubst $(SRC)/%.cpp, %.o, $(SOURCES)))
 SRC = src
 INC = -Iinclude/ -I$(SRC)/global/
@@ -19,12 +19,11 @@ all: $(OBJDIR) $(TARGET)
 	@echo Done Building...
 
 test:
-	@echo $(DEPOBJS)
+	@echo $(OBJDIRS)
 
 $(OBJDIR):
 	@echo Making bin directory
 	@mkdir $(OBJDIRS)
-	@mkdir $(OBJDIR)/dep
 
 $(DEPOBJS): $(DEP)
 	@echo Building Dependency $@
