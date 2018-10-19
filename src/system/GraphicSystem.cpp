@@ -19,14 +19,16 @@ void GraphicSystem::init() {
 }
 
 void GraphicSystem::update(const float &delta) {
+    render();
 }
 
 void GraphicSystem::render() {
     glClearColor(0.0, 0.0, 0.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void GraphicSystem::cleanup() {
     mesh->vao->remove();
+    delete mesh->vao;
     delete mesh;
 }

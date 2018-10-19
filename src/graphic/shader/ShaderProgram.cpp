@@ -6,12 +6,24 @@ ShaderProgram::ShaderProgram(const std::string &vsFile,
                              const std::string &attribs...) {
     GLuint vsId = loadShader(vsFile, vs, GL_VERTEX_SHADER),
            fsId = loadShader(fsFile, fs, GL_FRAGMENT_SHADER);
+    int isLinked, maxLength;
+    char* infolog;
 
     id = glCreateProgram();
     glAttachShader(id, vsId);
     glAttachShader(id, fsId);
     bindAttributes(0, attribs);
     glLinkProgram(id);
+
+    glGetProgramiv(id, GL_LINK_STATUS, (int *)&isLinked);
+    if(isLinked == GL_FALSE) {
+        glGetProgramiv(id, GL_INFO_LOG_LENGTH, &maxLength);
+        infolog = new char[maxLength];
+        glGetProgramInfoLog(id, maxLength, &maxLength, infolog);
+        fprintf(stderr, "Error: %s\n", infolog);
+        exit(0);
+    }
+
     glDetachShader(id, vsId);
     glDetachShader(id, fsId);
     glDeleteShader(vsId);
