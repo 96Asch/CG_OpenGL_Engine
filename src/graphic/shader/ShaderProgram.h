@@ -1,6 +1,7 @@
 #ifndef SHADERPROGRAM_H_
 #define SHADERPROGRAM_H_
 #include <string>
+#include "Uniform.h"
 #include "Global.h"
 
 class Uniform;
@@ -9,13 +10,15 @@ class ShaderProgram {
 
 public:
 
-    ShaderProgram(const std::string &vs,
-                  const std::string &fs,
+    ShaderProgram(const std::string &vsFile,
+                  const std::string &fsFile,
                   const std::string &var...);
 
-    ShaderProgram (const std::string &vs,
-                   const std::string &fs,
+    ShaderProgram(const std::string &vsFile,
+                   const std::string &fsFile,
                    const ShaderAttribute &attribs...);
+
+    ~ShaderProgram();
 
     void start();
 
@@ -25,16 +28,35 @@ public:
 
 private:
 
-    void bindAttributes(const std::string &attribs...);
+    GLuint id;
+    GLchar *vs, *fs;
 
-    void bindAttributes(const ShaderAttribute &attribs...);
+    void bindAttributes(int location, const std::string &attrib) {
+        glBindAttribLocation(id, location, attrib.c_str());
+    }
 
-    GLuint loadShader(const std::string &file, GLenum type);
+    template <typename... Args>
+    void bindAttributes(int location, const std::string &first, Args... args) {
+        glBindAttribLocation(id, location, first.c_str());
+        ++location;
+        bindAttributes(location, args...);
+    }
+
+    GLuint loadShader(const std::string &file, GLchar* &shader, const GLenum &type);
 
 
 protected:
 
-    void storeUniformLocations(Uniform uniforms...);
+
+    void storeUniformLocations(Uniform uniform) {
+        uniform.storeUniformLocation(id);
+    }
+
+    template <typename... Args>
+    void storeUniformLocations(Uniform uniform, Args... args) {
+        uniform.storeUniformLocation(id);
+        storeUniformLocations(args...);
+    }
 
 };
 

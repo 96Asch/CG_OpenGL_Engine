@@ -6,6 +6,6 @@
 struct ShaderAttribute {
     Gluint location;
     std::string name;
-}
+};
 
 #endif

@@ -1,7 +1,9 @@
 #include <iostream>
-#include <string>
+#include "Global.h"
 #include "engine/Engine.h"
 #include "system/GraphicSystem.h"
+
+std::string Global::resources = "../resources/";
 
 int main(void) {
     Engine engine;
