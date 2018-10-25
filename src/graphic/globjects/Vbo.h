@@ -15,15 +15,12 @@ public:
     static Vbo* createEmpty(const int &numFloats);
 
     void bind();
-
     void unbind();
 
-    template <typename T>
-    void storeData(T* data, const GLsizei &size) {
-        glBufferData(target, size, data, GL_STATIC_DRAW);
-    }
+    void storeData(GLfloat* data, const GLsizeiptr &size);
+    void storeData(GLint* data, const GLsizeiptr &size);
 
-    void storeData(const GLsizei &size);
+    void storeEmpty(const GLsizei &size);
 
     void update(float* data, const GLsizei &size);
 

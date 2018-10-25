@@ -1,24 +1,25 @@
 #include "Engine.h"
 #include "../system/System.h"
 
-Engine::Engine(){}
+Engine::Engine(const int &width,
+               const int &height,
+               const std::string &title,
+               const bool &vsync) {
+    if(!window.init(width, height, title, vsync)) {
+        fprintf(stderr, "%s\n", "Windows failed to initialize!");
+        exit(-1);
+    }
+
+}
 
 Engine::~Engine(){
     for(auto system : systems)
         delete system;
 }
 
-bool Engine::init(const int &width,
-                  const int &height,
-                  const std::string &title,
-                  const bool &vsync) {
-    if(!window.init(width, height, title, vsync))
-        return false;
-
+void Engine::init() {
     for(auto system : systems)
         system->init();
-
-    return true;
 }
 
 void Engine::run() {

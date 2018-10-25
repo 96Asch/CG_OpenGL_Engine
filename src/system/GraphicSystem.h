@@ -1,9 +1,11 @@
 #ifndef GRAPHICSYSTEM_H_
 #define GRAPHICSYSTEM_H_
 
+#include <unordered_map>
 #include "System.h"
 #include "../graphic/mesh/FlatMesh.h"
 
+class Renderer;
 class GraphicSystem : public System {
 
 public:
@@ -18,7 +20,10 @@ public:
     virtual void cleanup() override;
 private:
 
+    std::unordered_map<std::string, Renderer*> shaders;
+
     void render();
+
     FlatMesh* mesh;
 
 };

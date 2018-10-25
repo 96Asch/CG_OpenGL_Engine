@@ -10,20 +10,26 @@ INC = -Iinclude/ -I$(SRC)/global/
 DEP = $(wildcard dep/*.c)
 DEPOBJS = $(addprefix $(OBJDIR)/, $(DEP:.c=.o))
 LDFLAGS = -lGL -lglfw -lGLU -lpng -ldl
+PRECOMPILE = $(SRC)/global/Global.h
+PRECOMPILED = $(PRECOMPILE:.h=.h.gch)
 TARGET =	main
 
 
 .PHONY: all clean
 
-all: $(OBJDIR) $(TARGET)
+all: $(OBJDIR) $(PRECOMPILED) $(TARGET)
 	@echo Done Building...
 
 test:
-	@echo $(OBJDIRS)
+	@echo $(PRECOMPILED)
 
 $(OBJDIR):
 	@echo Making bin directory
 	@mkdir $(OBJDIRS)
+
+$(PRECOMPILED):
+	@echo Precompiling $(PRECOMPILE)
+	$(CXX) $(CFLAGS) $(PRECOMPILE) $(INC)
 
 $(DEPOBJS): $(DEP)
 	@echo Building Dependency $@
@@ -42,7 +48,8 @@ run:
 	@./$(TARGET)
 
 clean:
-	@echo Cleaning $(OBJDIR) $(TARGET) $(wildcard *.o)...
+	@echo Cleaning $(OBJDIR) $(PRECOMPILED) $(TARGET) $(wildcard *.o)...
 	@rm -f $(TARGET) $(wildcard *.o)
+	@rm -f $(PRECOMPILED)
 	@rm -rf $(OBJDIR)
 	@echo Done Cleaning...

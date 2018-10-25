@@ -1,18 +1,25 @@
 #include "ShaderProgram.h"
-#include "Uniform.h"
 
-ShaderProgram::ShaderProgram(const std::string &vsFile,
-                             const std::string &fsFile,
-                             const std::string &attribs...) {
-    GLuint vsId = loadShader(vsFile, vs, GL_VERTEX_SHADER),
-           fsId = loadShader(fsFile, fs, GL_FRAGMENT_SHADER);
+ShaderProgram::ShaderProgram() = default;
+
+ShaderProgram::~ShaderProgram() {
+    if(vs)
+        delete[] vs;
+    if(fs)
+        delete[] fs;
+}
+
+void ShaderProgram::init(const std::string &shader,
+                         const std::string &attribs...) {
+    GLuint vsId = loadShader(shader + ".vs", vs, GL_VERTEX_SHADER),
+           fsId = loadShader(shader + ".fs", fs, GL_FRAGMENT_SHADER);
     int isLinked, maxLength;
     char* infolog;
 
     id = glCreateProgram();
     glAttachShader(id, vsId);
     glAttachShader(id, fsId);
-    bindAttributes(0, attribs);
+    bindAttributes<std::string>(0, attribs);
     glLinkProgram(id);
 
     glGetProgramiv(id, GL_LINK_STATUS, (int *)&isLinked);
@@ -30,12 +37,6 @@ ShaderProgram::ShaderProgram(const std::string &vsFile,
     glDeleteShader(fsId);
 }
 
-ShaderProgram::~ShaderProgram() {
-    if(vs)
-        delete[] vs;
-    if(fs)
-        delete[] fs;
-}
 
 void ShaderProgram::start() {
     glUseProgram(id);

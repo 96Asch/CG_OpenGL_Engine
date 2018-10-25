@@ -6,16 +6,12 @@
 std::string Global::resources = "../resources/";
 
 int main(void) {
-    Engine engine;
+    Engine engine(800, 600, "First screen!", true);
 
     engine.add(new GraphicSystem());
-    if(!engine.init(800, 600, "First screen!", true)) {
-        fprintf(stderr, "%s\n", "Failed to initialize the engine");
-        return -1;
-    }
 
+    engine.init();
     engine.run();
     engine.cleanup();
-
     return 0;
 }

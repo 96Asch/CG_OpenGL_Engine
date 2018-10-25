@@ -8,18 +8,18 @@ class System;
 class Engine {
 
 public:
-    Engine();
+    Engine(const int &width,
+           const int &height,
+           const std::string &title,
+           const bool &vsync);
     ~Engine();
 
-    bool init(const int &width,
-              const int &height,
-              const std::string &title,
-              const bool &vsync);
+    void init();
 
     void run();
     void update(const float &delta);
     void cleanup();
-    void add(System* system); 
+    void add(System* system);
 
 private:
     std::vector<System*> systems;

@@ -14,28 +14,20 @@ public:
 
     int getIndexCount();
 
-    void bind(int attribs...);
+    template <typename... Args>
+    void bind(Args... args);
 
-    void unbind(int attribs...);
+    template <typename... Args>
+    void unbind(Args ...args);
 
     void createIndexBuffer(int* indices, const GLsizei &size);
 
-    template <typename T>
-    void createAttribute(const int &attribute, const GLsizei &attribSize,
-                              T* data, const GLsizei &size) {
-        Vbo* vbo = Vbo::create(GL_ARRAY_BUFFER);
-    	vbo->bind();
-    	vbo->storeData<T>(data, size);
-    	glVertexAttribPointer(attribute, attribSize, GL_FLOAT,
-                              false, attribSize * BYTES_PER_FLOAT, 0);
-    	vbo->unbind();
-    	vbos.push_back(vbo);
-    }
 
-    void createAttribute(const int &attribute,
-                         const GLsizei &attribSize,
-                         int* data,
-                         const GLsizei &size);
+    void createAttribute(const int &attribute, const GLsizei &dimension,
+                         GLfloat* data, const GLsizeiptr &dataSize);
+
+    void createAttribute(const int &attribute, const GLsizei &dimension,
+                         GLint* data, const GLsizeiptr &dataSize);
 
     void addInstancedAttribute(Vbo* vbo,
                                const int &attribute,
@@ -55,8 +47,24 @@ private:
 	int indexCount;
 
     Vao(const GLuint &id);
-
-
 };
+
+template <typename... Args>
+void Vao::bind(Args... args) {
+    bind();
+    Util::pack_foreach([this](const GLint &attribute){
+        glEnableVertexAttribArray(attribute);
+    }, args...);
+}
+
+template <typename... Args>
+void Vao::unbind(Args... args) {
+    Util::pack_foreach([this](const GLint &attribute){
+        glDisableVertexAttribArray(attribute);
+    }, args...);
+    unbind();
+}
+
+
 
 #endif

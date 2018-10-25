@@ -14,6 +14,7 @@ Vao::~Vao() {
 
 Vao* Vao::create() {
     GLuint id;
+    printf("%s\n", "Create VertexArrayObject");
     glGenVertexArrays(1, &id);
     return new Vao(id);
 }
@@ -22,27 +23,35 @@ int Vao::getIndexCount() {
     return indexCount;
 }
 
-void Vao::bind(int attribs...) {
-    bind();
-    va_list args;
-    va_start(args, attribs);
-        glEnableVertexAttribArray(va_arg(args, int));
-    va_end(args);
-}
-
-void Vao::unbind(int attribs...) {
-    va_list args;
-    va_start(args, attribs);
-        glDisableVertexAttribArray(va_arg(args, int));
-    va_end(args);
-    unbind();
-}
-
 void Vao::createIndexBuffer(int* indices, const GLsizei &size) {
     indexVbo = Vbo::create(GL_ARRAY_BUFFER);
     indexVbo->bind();
-    indexVbo->storeData<int>(indices, size);
+    indexVbo->storeData(indices, size);
     indexCount = size;
+}
+
+void Vao::createAttribute(const int &attribute,
+                          const GLsizei &dimension,
+                          GLfloat* data, const GLsizeiptr & dataSize) {
+    Vbo* vbo = Vbo::create(GL_ARRAY_BUFFER);
+    vbo->bind();
+    vbo->storeData(data, dataSize);
+    glVertexAttribPointer(attribute, dimension, GL_FLOAT,
+                          GL_FALSE, sizeof(GLfloat) * dimension, (void*) 0);
+    vbo->unbind();
+    vbos.push_back(vbo);
+}
+
+void Vao::createAttribute(const int &attribute,
+                          const GLsizei &dimension,
+                          GLint* data, const GLsizeiptr & dataSize) {
+    Vbo* vbo = Vbo::create(GL_ARRAY_BUFFER);
+    vbo->bind();
+    vbo->storeData(data, dataSize);
+    glVertexAttribPointer(attribute, dimension, GL_INT,
+                          GL_FALSE, sizeof(GLint) * dimension, (void*) 0);
+    vbo->unbind();
+    vbos.push_back(vbo);
 }
 
 void Vao::addInstancedAttribute(Vbo* vbo, const int &attribute, const GLsizei &dataSize,

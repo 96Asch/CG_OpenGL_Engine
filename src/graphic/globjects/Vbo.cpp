@@ -14,7 +14,7 @@ Vbo* Vbo::create(const GLenum &target) {
 Vbo* Vbo::createEmpty(const int &numFloats) {
     Vbo* vbo = create(GL_ARRAY_BUFFER);
     vbo->bind();
-    vbo->storeData(numFloats);
+    vbo->storeEmpty(numFloats);
     vbo->unbind();
     return vbo;
 }
@@ -27,13 +27,21 @@ void Vbo::unbind() {
     glBindBuffer(target, 0);
 }
 
-void Vbo::storeData(const GLsizei &size) {
+void Vbo::storeData(GLfloat* data, const GLsizeiptr &size) {
+    glBufferData(target, sizeof(GLfloat) * size, data, GL_STATIC_DRAW);
+}
+
+void Vbo::storeData(GLint* data, const GLsizeiptr &size) {
+    glBufferData(target, sizeof(GLint) * size, data, GL_STATIC_DRAW);
+}
+
+void Vbo::storeEmpty(const GLsizei &size) {
     glBufferData(target, size * BYTES_PER_FLOAT, 0, GL_STREAM_DRAW);
 }
 
 void Vbo::update(float* data, const GLsizei &size) {
     bind();
-    storeData(size);
+    storeEmpty(size);
     glBufferSubData(target, 0, size, data);
     unbind();
 }
