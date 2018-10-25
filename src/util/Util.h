@@ -6,6 +6,7 @@
 namespace Util{
 
     char* resourceToChar(const std::string &resource);
+    std::string resourceToString(const std::string &resource);
 
     /**
     * Code courteously granted from Robin Voetter

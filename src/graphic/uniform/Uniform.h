@@ -6,12 +6,8 @@
 
 class Uniform {
 
-private:
+public:
 
-    std::string name;
-    GLint location;
-
-protected:
     Uniform(const std::string &name);
 
     virtual ~Uniform();
@@ -20,7 +16,11 @@ protected:
 
     GLint getLocation() const;
 
-friend class ShaderProgram;
+private:
+
+    std::string name;
+
+    GLint location;
 };
 
 #endif

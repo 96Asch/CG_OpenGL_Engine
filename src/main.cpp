@@ -3,9 +3,9 @@
 #include "engine/Engine.h"
 #include "system/GraphicSystem.h"
 
-std::string Global::resources = "../resources/";
+std::string Global::resources = "resources/";
 
-int main(void) {
+int main(int argc, char *argv[]) {
     Engine engine(800, 600, "First screen!", true);
 
     engine.add(new GraphicSystem());

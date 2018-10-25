@@ -10,7 +10,7 @@ INC = -Iinclude/ -I$(SRC)/global/
 DEP = $(wildcard dep/*.c)
 DEPOBJS = $(addprefix $(OBJDIR)/, $(DEP:.c=.o))
 LDFLAGS = -lGL -lglfw -lGLU -lpng -ldl
-PRECOMPILE = $(SRC)/global/Global.h
+PRECOMPILE = $(SRC)/global/Global.h $(SRC)/graphic/uniform/Uniforms.h 
 PRECOMPILED = $(PRECOMPILE:.h=.h.gch)
 TARGET =	main
 

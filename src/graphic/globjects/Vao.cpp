@@ -14,7 +14,6 @@ Vao::~Vao() {
 
 Vao* Vao::create() {
     GLuint id;
-    printf("%s\n", "Create VertexArrayObject");
     glGenVertexArrays(1, &id);
     return new Vao(id);
 }

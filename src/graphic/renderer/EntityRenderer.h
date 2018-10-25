@@ -2,21 +2,31 @@
 #define ENTITYRENDERER_H_
 
 #include "Renderer.h"
+#include "../mesh/FlatMesh.h"
 
 class EntityRenderer : public Renderer {
 
 public:
 
-    virtual void render();
+    EntityRenderer();
+    ~EntityRenderer();
+
+    virtual void render() override;
 
 private:
 
+        FlatMesh* mesh;
 
+    virtual void preRender() override;
 
-    virtual void init();
+    virtual void postRender() override;
 
-    virtual void cleanup();
+protected:
 
-}
+    virtual void init() override;
+
+    virtual void cleanup() override;
+
+};
 
 #endif
