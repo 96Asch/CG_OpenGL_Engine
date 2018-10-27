@@ -7,7 +7,6 @@ Window::~Window(){
     glfwTerminate();
 }
 
-
 bool Window::init(const int &width,
                   const int &height,
                   const std::string &title,
@@ -44,6 +43,8 @@ bool Window::init(const int &width,
                 glGetString(GL_SHADING_LANGUAGE_VERSION));
     setVsync(vsync);
     glfwShowWindow(window);
+    glEnable( GL_DEBUG_OUTPUT );
+    glDebugMessageCallback( MessageCallback, 0 );
     return true;
 }
 
@@ -74,4 +75,17 @@ std::string Window::getTitle() const {
 
 void Window::errorCallback(int i, const char* desc) {
     fprintf(stderr, "Error %i: %s\n", i, desc);
+}
+
+void Window::MessageCallback( GLenum source,
+                 GLenum type,
+                 GLuint id,
+                 GLenum severity,
+                 GLsizei length,
+                 const GLchar* message,
+                 const void* userParam )
+{
+  fprintf( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+           ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
+            type, severity, message );
 }

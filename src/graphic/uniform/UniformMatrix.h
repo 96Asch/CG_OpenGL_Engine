@@ -1,16 +1,16 @@
 #ifndef UNIFORMMATRIX_H_
 #define UNIFORMMATRIX_H_
+
 #include "Global.h"
 #include "Uniform.h"
 
-class UniformMatrix : public Uniform {
+struct UniformMatrix : public Uniform {
 
-public:
-    UniformMatrix(const std::string &name);
+    UniformMatrix(const std::string &name) : Uniform(name) {};
 
-    ~UniformMatrix();
-
-    void load(const glm::mat4 &matrix);
+    void load(const glm::mat4 &matrix) {
+        glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+    }
 
 };
 

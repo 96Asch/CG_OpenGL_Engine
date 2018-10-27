@@ -1,37 +1,30 @@
 #include "EntityRenderer.h"
 #include "../uniform/Uniforms.h"
 
-const std::string shaderFile("shader/entity");
-
 EntityRenderer::EntityRenderer() {}
 
 EntityRenderer::~EntityRenderer() {}
 
 void EntityRenderer::init() {
-    shader.init(shaderFile, "position");
-    shader.addUniform("viewMatrix", new UniformMatrix("view"));
-
+    Mesh m;
+    vao = v.createVao(m.position, 12, m.indices, 6, m.texture, 8);
+    tex = t.createTexture("grassy3.png");
+    shader.init("shader/entity", "position", "texture");
     shader.storeUniformLocations();
-
-    mesh = new FlatMesh;
-    mesh->vao = Vao::create();
-    mesh->vao->bind();
-    mesh->vao->createAttribute(0, 3, mesh->g_vertex_buffer_data, 9);
-    mesh->vao->unbind();
 }
 
 void EntityRenderer::preRender() {
     shader.start();
-    glm::mat4 matrix;
-    shader.getUniform<UniformMatrix>("viewMatrix")->load(matrix);
 }
 
 void EntityRenderer::render() {
     preRender();
 
-    mesh->vao->bind(0);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-    mesh->vao->unbind(0);
+    vao->bind(0,1);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, tex);
+    glDrawElements(GL_TRIANGLES, vao->getIndexCount(), GL_UNSIGNED_INT, 0);
+    vao->unbind(0,1);
 
     postRender();
 }
@@ -42,7 +35,4 @@ void EntityRenderer::postRender() {
 
 void EntityRenderer::cleanup() {
     shader.cleanup();
-    mesh->vao->remove();
-    delete mesh->vao;
-    delete mesh;
 }

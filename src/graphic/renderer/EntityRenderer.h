@@ -2,7 +2,9 @@
 #define ENTITYRENDERER_H_
 
 #include "Renderer.h"
-#include "../mesh/FlatMesh.h"
+#include "../mesh/Mesh.h"
+#include "../../factory/TextureFactory.h"
+#include "../../factory/VaoFactory.h"
 
 class EntityRenderer : public Renderer {
 
@@ -15,7 +17,10 @@ public:
 
 private:
 
-        FlatMesh* mesh;
+        TextureFactory t;
+        VaoFactory v;
+        Vao* vao;
+        GLuint tex;
 
     virtual void preRender() override;
 

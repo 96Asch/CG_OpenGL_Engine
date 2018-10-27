@@ -85,7 +85,6 @@ void Shader::bindAttributes(Args... args) {
     GLuint location = 0;
     Util::pack_foreach([this, &location](const std::string &attrib){
         glBindAttribLocation(id, location, attrib.c_str());
-        printf("SHADER BIND AT: %i\n",location);
         ++location;
     }, args...);
 }

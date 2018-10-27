@@ -31,7 +31,7 @@ void Vbo::storeData(GLfloat* data, const GLsizeiptr &size) {
     glBufferData(target, sizeof(GLfloat) * size, data, GL_STATIC_DRAW);
 }
 
-void Vbo::storeData(GLint* data, const GLsizeiptr &size) {
+void Vbo::storeData(GLuint* data, const GLsizeiptr &size) {
     glBufferData(target, sizeof(GLint) * size, data, GL_STATIC_DRAW);
 }
 

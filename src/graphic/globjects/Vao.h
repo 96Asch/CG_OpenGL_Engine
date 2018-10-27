@@ -20,14 +20,14 @@ public:
     template <typename... Args>
     void unbind(Args ...args);
 
-    void createIndexBuffer(int* indices, const GLsizei &size);
+    void createIndexBuffer(GLuint* indices, const GLsizei &size);
 
 
     void createAttribute(const int &attribute, const GLsizei &dimension,
                          GLfloat* data, const GLsizeiptr &dataSize);
 
     void createAttribute(const int &attribute, const GLsizei &dimension,
-                         GLint* data, const GLsizeiptr &dataSize);
+                         GLuint* data, const GLsizeiptr &dataSize);
 
     void addInstancedAttribute(Vbo* vbo,
                                const int &attribute,
@@ -64,7 +64,4 @@ void Vao::unbind(Args... args) {
     }, args...);
     unbind();
 }
-
-
-
 #endif

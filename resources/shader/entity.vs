@@ -1,14 +1,11 @@
 #version 430 core
 
 layout (location=0) in vec3 position;
+layout (location=1) in vec2 texture;
 
-out vec3 out_position;
-out vec3 color;
-
-uniform mat4 view;
+out vec2 tex_coords;
 
 void main() {
-
   gl_Position = vec4(position, 1.0);
-  color = vec3(position.x + 0.5, 1.0, position.y + 0.5);
+  tex_coords = texture;
 }

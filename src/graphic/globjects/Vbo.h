@@ -18,7 +18,7 @@ public:
     void unbind();
 
     void storeData(GLfloat* data, const GLsizeiptr &size);
-    void storeData(GLint* data, const GLsizeiptr &size);
+    void storeData(GLuint* data, const GLsizeiptr &size);
 
     void storeEmpty(const GLsizei &size);
 
