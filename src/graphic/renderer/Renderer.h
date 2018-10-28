@@ -18,6 +18,7 @@ public:
     virtual void cleanup() = 0;
 
 protected:
+    
     Shader shader;
 
     virtual void preRender() = 0;
@@ -26,4 +27,4 @@ protected:
 
 };
 
-#endif RENDERER_H_
+#endif

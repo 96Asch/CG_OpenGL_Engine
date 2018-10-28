@@ -2,7 +2,7 @@
 #define ENTITYRENDERER_H_
 
 #include "Renderer.h"
-#include "../mesh/Mesh.h"
+#include "Components.h"
 #include "../../factory/TextureFactory.h"
 #include "../../factory/VaoFactory.h"
 
@@ -17,10 +17,16 @@ public:
 
 private:
 
-        TextureFactory t;
-        VaoFactory v;
-        Vao* vao;
-        GLuint tex;
+    TextureFactory t;
+    VaoFactory v;
+
+    ModelComponent* mod;
+    MaterialComponent* mat;
+    TransformComponent* tran;
+
+    glm::mat4 model;
+
+    void buildModelMatrix(const TransformComponent* transform);
 
     virtual void preRender() override;
 

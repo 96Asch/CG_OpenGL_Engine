@@ -5,7 +5,7 @@
 
 std::string Global::resources = "resources/";
 
-int main(int argc, char *argv[]) {
+int main(void) {
     Engine engine(800, 600, "First screen!", true);
 
     engine.add(new GraphicSystem());

@@ -1,22 +1,20 @@
 #ifndef UNIFORMFLOAT_H_
 #define UNIFORMFLOAT_H_
 
-#include "Global.h"
 #include "Uniform.h"
 
 struct UniformFloat : public Uniform {
 
-    GLfloat current;
-    bool isCurrent;
+    float current;
+    bool first;
 
     UniformFloat(const std::string &name) : Uniform(name),
-                                            current(0.0f),
-                                            isCurrent(true)  {};
+                                            first(true)  {};
 
-    void load(const GLfloat &value) {
-        if(!isCurrent || current != value) {
+    void load(const float &value) {
+        if(first || current != value) {
             glUniform1f(location, value);
-            isCurrent ^= 1;
+            first = false;
             current = value;
         }
     };

@@ -3,7 +3,6 @@
 
 #include <vector>
 #include "System.h"
-#include "../graphic/mesh/FlatMesh.h"
 
 class Renderer;
 class GraphicSystem : public System {

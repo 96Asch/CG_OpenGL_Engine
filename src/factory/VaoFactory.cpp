@@ -29,12 +29,12 @@ Vao* VaoFactory::createVao(GLfloat* position, GLuint posSize,
                            GLfloat* texture, GLuint texSize) {
     Vao* vao = Vao::create();
     vao->bind();
-    vao->createIndexBuffer(indices, posSize);
+    vao->createIndexBuffer(indices, indiceSize);
     vao->createAttribute(0, SIZE_3D, position, posSize);
     vao->createAttribute(1, SIZE_2D, texture, texSize);
     vao->unbind();
     vaos.push_back(vao);
-    return vao;                           
+    return vao;
 }
 
 Vao* VaoFactory::createVao(GLfloat* position, GLuint posSize,

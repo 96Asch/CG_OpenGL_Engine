@@ -5,9 +5,13 @@
 
 struct MaterialComponent : public Component {
 
+    MaterialComponent(const std::string &source)
+                     : Component("material"),
+                       source(source) {};
+
     std::string source;
 
-    GLuint textureId;
+    GLuint id;
 
 };
 

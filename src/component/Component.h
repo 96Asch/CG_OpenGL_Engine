@@ -5,6 +5,8 @@
 
 struct Component {
 
+    Component(const std::string &type) : type(type), isActive(true) {};
+
     std::string type;
     bool isActive;
 

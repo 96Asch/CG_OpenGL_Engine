@@ -7,7 +7,6 @@ GraphicSystem::GraphicSystem() : System() {}
 GraphicSystem::~GraphicSystem(){}
 
 void GraphicSystem::init() {
-    printf("%s\n", "init");
     renderers.push_back(new EntityRenderer());
 
     for(auto renderer : renderers)

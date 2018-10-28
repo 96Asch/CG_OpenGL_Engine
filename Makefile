@@ -1,5 +1,5 @@
 CXX = g++
-CFLAGS =	-std=c++14 -Wall -g -Wextra -pedantic
+CFLAGS =	-std=c++14 -Wall -g -Wextra
 OBJDIR = build
 FILES = $(wildcard $(SRC)/*/) $(wildcard $(SRC)/*/*/) dep/
 OBJDIRS = $(sort $(dir $(addprefix $(OBJDIR)/, $(FILES:$(SRC)/%=%))))
@@ -10,7 +10,7 @@ INC = -Iinclude/ -I$(SRC)/global/
 DEP = $(wildcard dep/*.c)
 DEPOBJS = $(addprefix $(OBJDIR)/, $(DEP:.c=.o))
 LDFLAGS = -lGL -lglfw -lGLU -lpng -ldl
-PRECOMPILE = $(SRC)/global/Global.h $(SRC)/graphic/uniform/Uniforms.h 
+PRECOMPILE = include/Global.h include/Uniforms.h include/Components.h
 PRECOMPILED = $(PRECOMPILE:.h=.h.gch)
 TARGET =	main
 
@@ -29,7 +29,7 @@ $(OBJDIR):
 
 $(PRECOMPILED):
 	@echo Precompiling $(PRECOMPILE)
-	$(CXX) $(CFLAGS) $(PRECOMPILE) $(INC)
+	@$(CXX) $(CFLAGS) $(PRECOMPILE) $(INC)
 
 $(DEPOBJS): $(DEP)
 	@echo Building Dependency $@
