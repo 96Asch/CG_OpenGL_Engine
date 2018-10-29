@@ -3,6 +3,7 @@
 
 #include "System.h"
 
+class Scene;
 class InputSystem : public System {
 
 public:
@@ -13,7 +14,7 @@ public:
 
     virtual void init() override;
 
-    virtual void update(const float &delta) override;
+    virtual void update(const float &delta, Scene* scene) override;
 
     virtual void cleanup() override;
 

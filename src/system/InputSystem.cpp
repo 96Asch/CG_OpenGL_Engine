@@ -1,4 +1,5 @@
 #include "InputSystem.h"
+#include "../engine/Scene.h"
 
 InputSystem::InputSystem() : System() {}
 
@@ -9,7 +10,7 @@ void InputSystem::init() {
 
 }
 
-void InputSystem::update(const float &delta) {
+void InputSystem::update(const float &delta, Scene* scene) {
 
 }
 

@@ -17,6 +17,7 @@ Engine::~Engine(){
 }
 
 void Engine::init() {
+    scene = new Scene();
     for(auto system : systems)
         system->init();
 }
@@ -28,7 +29,7 @@ void Engine::run() {
 
 void Engine::update(const float &delta) {
     for(auto system : systems)
-        system->update(delta);
+        system->update(delta, scene);
     window.update();
 }
 
@@ -36,6 +37,7 @@ void Engine::cleanup() {
     for(auto system : systems)
         system->cleanup();
     window.cleanup();
+    delete scene;
 }
 
 void Engine::add(System *system) {

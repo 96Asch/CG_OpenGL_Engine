@@ -3,6 +3,7 @@
 
 #include "../shader/Shader.h"
 
+class Scene;
 class Renderer {
 
 public:
@@ -13,17 +14,17 @@ public:
 
     virtual void init() = 0;
 
-    virtual void render() = 0;
+    virtual void render(Scene *scene) = 0;
 
     virtual void cleanup() = 0;
 
 protected:
-    
+
     Shader shader;
 
-    virtual void preRender() = 0;
+    virtual void preRender(Scene *scene) = 0;
 
-    virtual void postRender() = 0;
+    virtual void postRender(Scene *scene) = 0;
 
 };
 

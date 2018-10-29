@@ -4,6 +4,7 @@
 #include <vector>
 #include "System.h"
 
+class Scene;
 class Renderer;
 class GraphicSystem : public System {
 
@@ -14,14 +15,14 @@ public:
 
     virtual void init() override;
 
-    virtual void update(const float &delta) override;
+    virtual void update(const float &delta, Scene* scene) override;
 
     virtual void cleanup() override;
 private:
 
     std::vector<Renderer*> renderers;
 
-    void render();
+    void render(Scene *scene);
 };
 
 #endif

@@ -2,11 +2,11 @@
 #define ENTITYRENDERER_H_
 
 #include "Renderer.h"
-#include "Components.h"
-#include "../../factory/TextureFactory.h"
-#include "../../factory/VaoFactory.h"
 
+struct TransformComponent;
 struct Camera;
+
+class Scene;
 class EntityRenderer : public Renderer {
 
 public:
@@ -14,22 +14,15 @@ public:
     EntityRenderer();
     ~EntityRenderer();
 
-    virtual void render() override;
+    virtual void render(Scene *scene) override;
 
 private:
 
-    TextureFactory t;
-    VaoFactory v;
-
-    ModelComponent* mod;
-    MaterialComponent* mat;
-    TransformComponent* tran;
-
     glm::mat4 model, view, projection;
 
-    virtual void preRender() override;
+    virtual void preRender(Scene *scene) override;
 
-    virtual void postRender() override;
+    virtual void postRender(Scene *scene) override;
 
     void buildModelMatrix(const TransformComponent* transform);
 

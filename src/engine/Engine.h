@@ -3,8 +3,7 @@
 
 #include <vector>
 #include "Window.h"
-#include "../factory/TextureFactory.h"
-#include "../factory/VaoFactory.h"
+#include "Scene.h"
 
 class System;
 
@@ -26,14 +25,9 @@ public:
 
 private:
     std::vector<System*> systems;
-
+    Scene* scene;
     bool isRunning;
     Window window;
-    // TextureFactory textureFactory;
-    // VaoFactory vaoFactory;
-
-
-
 };
 
 #endif
