@@ -6,7 +6,7 @@
 
 struct ModelComponent : public Component {
 
-    ModelComponent(const std::string &source) : Component("model"),
+    ModelComponent(const std::string &source) : Component(CompType::MODEL),
                                                 source(source) {};
 
     std::string source;

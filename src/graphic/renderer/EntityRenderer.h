@@ -6,6 +6,7 @@
 #include "../../factory/TextureFactory.h"
 #include "../../factory/VaoFactory.h"
 
+struct Camera;
 class EntityRenderer : public Renderer {
 
 public:
@@ -24,13 +25,17 @@ private:
     MaterialComponent* mat;
     TransformComponent* tran;
 
-    glm::mat4 model;
-
-    void buildModelMatrix(const TransformComponent* transform);
+    glm::mat4 model, view, projection;
 
     virtual void preRender() override;
 
     virtual void postRender() override;
+
+    void buildModelMatrix(const TransformComponent* transform);
+
+    void buildViewMatrix(const Camera &camera);
+
+    void buildProjectionMatrix();
 
 protected:
 

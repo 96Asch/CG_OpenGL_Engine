@@ -14,6 +14,10 @@
 namespace Global {
     extern std::string resources;
 
+    extern float fov;
+    extern float aspectRatio;
+    extern float nearPlane;
+    extern float farPlane;
 }
 
 

@@ -6,7 +6,7 @@
 struct MaterialComponent : public Component {
 
     MaterialComponent(const std::string &source)
-                     : Component("material"),
+                     : Component(CompType::MATERIAL),
                        source(source) {};
 
     std::string source;

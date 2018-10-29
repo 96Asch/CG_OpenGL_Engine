@@ -7,10 +7,12 @@ SOURCES = $(wildcard $(SRC)/*.cpp) $(wildcard $(SRC)/*/*.cpp) $(wildcard $(SRC)/
 OBJS =	$(addprefix $(OBJDIR)/, $(patsubst $(SRC)/%.cpp, %.o, $(SOURCES)))
 SRC = src
 INC = -Iinclude/ -I$(SRC)/global/
+
 DEP = $(wildcard dep/*.c)
 DEPOBJS = $(addprefix $(OBJDIR)/, $(DEP:.c=.o))
 LDFLAGS = -lGL -lglfw -lGLU -lpng -ldl
-PRECOMPILE = include/Global.h include/Uniforms.h include/Components.h
+PRECOMPILE = include/Global.h include/Uniforms.h include/Components.h \
+  					 include/Systems.h
 PRECOMPILED = $(PRECOMPILE:.h=.h.gch)
 TARGET =	main
 

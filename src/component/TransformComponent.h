@@ -9,7 +9,7 @@ struct TransformComponent : public Component {
     TransformComponent(const glm::vec3 &position,
                        const glm::vec3 &rotation,
                        const glm::vec3 &scale)
-                       : Component("transform"),
+                       : Component(CompType::TRANSFORM),
                          position(position),
                          rotation(rotation),
                          scale(scale) {};

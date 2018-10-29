@@ -2,12 +2,17 @@
 #define COMPONENT_H_
 #include <string>
 
+enum CompType {
+    MATERIAL,
+    MODEL,
+    TRANSFORM
+};
 
 struct Component {
 
-    Component(const std::string &type) : type(type), isActive(true) {};
+    Component(const CompType &type) : type(type), isActive(true) {};
 
-    std::string type;
+    CompType type;
     bool isActive;
 
 };

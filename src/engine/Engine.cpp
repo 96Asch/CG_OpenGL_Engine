@@ -9,7 +9,6 @@ Engine::Engine(const int &width,
         fprintf(stderr, "%s\n", "Windows failed to initialize!");
         exit(-1);
     }
-
 }
 
 Engine::~Engine(){

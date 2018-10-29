@@ -8,9 +8,9 @@ public:
 
     virtual ~System() = default;
 
-    virtual void update(const float &delta) = 0;
-
     virtual void init() = 0;
+
+    virtual void update(const float &delta) = 0;
 
     virtual void cleanup() = 0;
 

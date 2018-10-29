@@ -12,9 +12,9 @@ public:
 
     virtual ~GraphicSystem() override;
 
-    virtual void update(const float &delta) override;
-
     virtual void init() override;
+
+    virtual void update(const float &delta) override;
 
     virtual void cleanup() override;
 private:

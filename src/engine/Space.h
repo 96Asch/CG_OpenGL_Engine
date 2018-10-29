@@ -3,6 +3,10 @@
 
 class Space {
 
+public:
+
+
+private:
 
 
 };
