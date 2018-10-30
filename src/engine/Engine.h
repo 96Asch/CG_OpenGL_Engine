@@ -26,8 +26,8 @@ public:
 private:
     std::vector<System*> systems;
     Scene* scene;
-    bool isRunning;
     Window window;
+    InputHandler input;
 };
 
 #endif

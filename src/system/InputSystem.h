@@ -2,6 +2,7 @@
 #define INPUTSYSTEM_H_
 
 #include "System.h"
+#include "../input/InputHandler.h"
 
 class Scene;
 class InputSystem : public System {
@@ -19,6 +20,8 @@ public:
     virtual void cleanup() override;
 
 private:
+
+    InputHandler* input;
 
 };
 

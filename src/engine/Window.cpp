@@ -1,36 +1,38 @@
 #include "Window.h"
 #include <iostream>
 
-Window::Window(){}
+Window::Window(InputHandler* input) :input(input), running(true) {}
 
 Window::~Window(){
-    glfwTerminate();
+    input = nullptr;
+    SDL_Quit();
 }
 
 bool Window::init(const int &width,
                   const int &height,
                   const std::string &title,
                   const bool &vsync) {
-    glfwSetErrorCallback(errorCallback);
+    if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
+  		std::cerr << "Unable to initialize SDL: " << SDL_GetError() << std::endl;
+  		return false;
+  	}
 
-    if (!glfwInit())
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+  	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+  	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+  	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+  	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+  	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+  	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
+
+    SDL_WM_SetCaption(title.c_str(), 0);
+    window = SDL_SetVideoMode(width, height, 32,
+                              SDL_OPENGL | SDL_DOUBLEBUF);
+    if(!window) {
+        fprintf(stderr, "SDL failed to initialize");
         return false;
+    }
 
-    glfwDefaultWindowHints();
-    glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
-
-    if (!window)
-        return false;
-
-    const GLFWvidmode* vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-    glfwSetWindowPos(window, (vidmode->width - width) / 2, (vidmode->height - height) / 2);
-
-    glfwMakeContextCurrent(window);
     if (gl3wInit()) {
         fprintf(stderr, "failed to initialize OpenGL\n");
         return false;
@@ -41,36 +43,57 @@ bool Window::init(const int &width,
     }
     printf("OpenGL %s, GLSL %s\n", glGetString(GL_VERSION),
                 glGetString(GL_SHADING_LANGUAGE_VERSION));
-    setVsync(vsync);
-    glfwShowWindow(window);
     glEnable( GL_DEBUG_OUTPUT );
     glDebugMessageCallback( MessageCallback, 0 );
     return true;
 }
 
 void Window::update() {
-    glfwSwapBuffers(window);
-    glfwPollEvents();
+    SDL_GL_SwapBuffers();
+    pollEvents();
 }
 
 void Window::cleanup() {
-    glfwDestroyWindow(window);
+    SDL_FreeSurface(window);
 }
 
-bool Window::shouldClose() const {
-    return glfwWindowShouldClose(window);
+bool Window::isRunning() const {
+    return running;
 }
 
 void Window::setVsync(const bool &vsync) {
-    glfwSwapInterval(vsync);
+    // SDL_GL_SetSwapInterval(vsync);
 }
 
-GLFWwindow* Window::getWindow() {
+void Window::pollEvents() {
+    SDL_Event event;
+	while (SDL_PollEvent(&event)) {
+		switch (event.type) {
+        case SDL_QUIT:
+            running = false;
+            break;
+        case SDL_KEYDOWN:
+            input->pressKey(event.key.keysym.sym);
+            break;
+        case SDL_KEYUP:
+            input->releaseKey(event.key.keysym.sym);
+            break;
+        default:
+            break;
+        }
+	}
+}
+
+SDL_Surface* Window::getWindow() {
     return window;
 }
 
 std::string Window::getTitle() const {
     return title;
+}
+
+void Window::setTitle(const std::string &newTitle) {
+    SDL_WM_SetCaption(newTitle.c_str(), 0);
 }
 
 void Window::errorCallback(int i, const char* desc) {

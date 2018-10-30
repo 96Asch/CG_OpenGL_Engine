@@ -4,7 +4,7 @@
 Engine::Engine(const int &width,
                const int &height,
                const std::string &title,
-               const bool &vsync) {
+               const bool &vsync) : window(Window(&input)) {
     if(!window.init(width, height, title, vsync)) {
         fprintf(stderr, "%s\n", "Windows failed to initialize!");
         exit(-1);
@@ -23,7 +23,7 @@ void Engine::init() {
 }
 
 void Engine::run() {
-    while(!window.shouldClose())
+    while(window.isRunning())
         update(1.0);
 }
 
