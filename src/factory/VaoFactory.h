@@ -12,17 +12,18 @@ public:
     VaoFactory();
     ~VaoFactory();
 
-    Vao* createVao(GLfloat* position, GLuint posSize,
-                   GLuint* indices, GLuint indiceSize);
+    Vao* createVao(const std::vector<GLfloat> &position,
+                   const std::vector<GLuint> &indices);
 
-    Vao* createVao(GLfloat* position, GLuint posSize,
-                   GLuint* indices, GLuint indiceSize,
-                   GLfloat* texture, GLuint texSize);
+    Vao* createVao(const std::vector<GLfloat> &position,
+                   const std::vector<GLuint> &indices,
+                   const std::vector<GLfloat> &texture);
 
-    Vao* createVao(GLfloat* position, GLuint posSize,
-                   GLfloat* texture, GLuint texSize,
-                   GLfloat* normals, GLuint normalSize,
-                   GLuint* indices, GLuint indiceSize);
+    Vao* createVao(const std::vector<GLfloat> &position,
+                   const std::vector<GLuint> &indices,
+                   const std::vector<GLfloat> &texture,
+                   const std::vector<GLfloat> &normals);
+
     void removeVao();
 
 private:

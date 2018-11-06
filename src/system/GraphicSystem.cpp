@@ -15,6 +15,7 @@ void GraphicSystem::init() {
 }
 
 void GraphicSystem::update(const float &delta, Scene *scene) {
+
     render(scene);
 }
 

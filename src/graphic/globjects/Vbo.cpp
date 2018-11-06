@@ -27,11 +27,11 @@ void Vbo::unbind() {
     glBindBuffer(target, 0);
 }
 
-void Vbo::storeData(GLfloat* data, const GLsizeiptr &size) {
+void Vbo::storeData(const GLfloat* data, const GLsizeiptr &size) {
     glBufferData(target, sizeof(GLfloat) * size, data, GL_STATIC_DRAW);
 }
 
-void Vbo::storeData(GLuint* data, const GLsizeiptr &size) {
+void Vbo::storeData(const GLuint* data, const GLsizeiptr &size) {
     glBufferData(target, sizeof(GLint) * size, data, GL_STATIC_DRAW);
 }
 

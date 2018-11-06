@@ -3,14 +3,31 @@
 #include "engine/Engine.h"
 #include "Systems.h"
 
-std::string Global::resources = "resources/";
-float Global::fov = 70.0f;
-float Global::aspectRatio = 800.0f/600.0f;
-float Global::nearPlane = 0.1f;
-float Global::farPlane = 100.0f;
+std::string Global::resources;
+
+int Global::height;
+int Global::width;
+
+int Global::targetFPS;
+int Global::targetUPS;
+
+float Global::fov;
+float Global::aspectRatio;
+float Global::nearPlane;
+float Global::farPlane;
 
 int main(void) {
-    Engine engine(800, 600, "First screen!", true);
+    Global::resources = "resources/";
+    Global::height = 600;
+    Global::width = 800;
+    Global::targetFPS = 60;
+    Global::targetUPS = 60;
+    Global::fov = 70.0f;
+    Global::aspectRatio = Global::width / Global::height;
+    Global::nearPlane = 0.1f;
+    Global::farPlane = 100.0f;
+
+    Engine engine(Global::width, Global::height, "First screen!", true);
     engine.add(new InputSystem());
     engine.add(new GraphicSystem());
     engine.init();

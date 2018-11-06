@@ -11,6 +11,8 @@ public:
 
     ~InputHandler();
 
+    bool hasInput() const;
+
     void pressKey(const int &key);
 
     void releaseKey(const int &key);
@@ -19,12 +21,16 @@ public:
 
     bool isKeyRepeated(const int &key);
 
+    void resetPressed();
+    
+    void resetKeys();
+
 private:
 
+    bool inputDetected;
     bool keyPress[SDLK_LAST];
     bool keyRepeat[SDLK_LAST];
 
-    void resetKeys();
 
 
 

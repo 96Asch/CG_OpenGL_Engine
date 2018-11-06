@@ -15,10 +15,12 @@ public:
     static Vbo* createEmpty(const int &numFloats);
 
     void bind();
+
     void unbind();
 
-    void storeData(GLfloat* data, const GLsizeiptr &size);
-    void storeData(GLuint* data, const GLsizeiptr &size);
+    void storeData(const GLfloat* data, const GLsizeiptr &size);
+
+    void storeData(const GLuint* data, const GLsizeiptr &size);
 
     void storeEmpty(const GLsizei &size);
 
@@ -31,7 +33,6 @@ private:
     GLuint id;
 
     Vbo(const GLenum &target, const GLuint &id);
-
 };
 
 #endif

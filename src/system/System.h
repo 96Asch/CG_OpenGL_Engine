@@ -1,6 +1,8 @@
 #ifndef SYSTEM_H_
 #define SYSTEM_H_
 
+#include "../engine/Engine.h"
+
 class Scene;
 class System {
 
@@ -15,10 +17,11 @@ public:
 
     virtual void cleanup() = 0;
 
-private:
+    void setEngine(Engine* engine) {owner = engine;};
 
+protected:
 
-
+    Engine* owner = nullptr;
 };
 
 #endif

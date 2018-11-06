@@ -20,14 +20,14 @@ public:
     template <typename... Args>
     void unbind(Args ...args);
 
-    void createIndexBuffer(GLuint* indices, const GLsizei &size);
+    void createIndexBuffer(const GLuint* indices, const GLsizei &size);
 
 
     void createAttribute(const int &attribute, const GLsizei &dimension,
-                         GLfloat* data, const GLsizeiptr &dataSize);
+                         const GLfloat* data, const GLsizeiptr &dataSize);
 
     void createAttribute(const int &attribute, const GLsizei &dimension,
-                         GLuint* data, const GLsizeiptr &dataSize);
+                         const GLuint* data, const GLsizeiptr &dataSize);
 
     void addInstancedAttribute(Vbo* vbo,
                                const int &attribute,
@@ -38,6 +38,7 @@ public:
     void remove();
 
     void bind();
+
     void unbind();
 
 private:

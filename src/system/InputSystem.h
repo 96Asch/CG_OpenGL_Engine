@@ -23,6 +23,8 @@ private:
 
     InputHandler* input;
 
+    void handleKeys(Scene* scene);
+
 };
 
 #endif

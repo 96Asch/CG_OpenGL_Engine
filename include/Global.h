@@ -8,11 +8,11 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "../src/util/Util.h"
 
-#define BYTES_PER_FLOAT 4
-#define BYTES_PER_INT 4
-
 namespace Global {
     extern std::string resources;
+
+    extern int height, width;
+    extern int targetFPS, targetUPS;
 
     extern float fov;
     extern float aspectRatio;

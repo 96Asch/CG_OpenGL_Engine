@@ -14,6 +14,8 @@ public:
 
     ~Scene();
 
+    Camera& getCamera();
+
     ModelComponent* mod;
     MaterialComponent* mat;
     TransformComponent* tran;

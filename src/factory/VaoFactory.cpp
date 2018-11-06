@@ -13,40 +13,40 @@ VaoFactory::~VaoFactory() {
     }
 }
 
-Vao* VaoFactory::createVao(GLfloat* position, GLuint posSize,
-                           GLuint* indices, GLuint indiceSize) {
+Vao* VaoFactory::createVao(const std::vector<GLfloat> &position,
+                           const std::vector<GLuint> &indices) {
     Vao* vao = Vao::create();
     vao->bind();
-    vao->createIndexBuffer(indices, indiceSize);
-    vao->createAttribute(0, SIZE_3D, position, posSize);
+    vao->createIndexBuffer(&indices[0], indices.size());
+    vao->createAttribute(0, SIZE_3D, &position[0], position.size());
     vao->unbind();
     vaos.push_back(vao);
     return vao;
 }
 
-Vao* VaoFactory::createVao(GLfloat* position, GLuint posSize,
-                           GLuint* indices, GLuint indiceSize,
-                           GLfloat* texture, GLuint texSize) {
+Vao* VaoFactory::createVao(const std::vector<GLfloat> &position,
+                           const std::vector<GLuint> &indices,
+                           const std::vector<GLfloat> &texture) {
     Vao* vao = Vao::create();
     vao->bind();
-    vao->createIndexBuffer(indices, indiceSize);
-    vao->createAttribute(0, SIZE_3D, position, posSize);
-    vao->createAttribute(1, SIZE_2D, texture, texSize);
+    vao->createIndexBuffer(&indices[0], indices.size());
+    vao->createAttribute(0, SIZE_3D, &position[0], position.size());
+    vao->createAttribute(1, SIZE_2D, &texture[0], texture.size());
     vao->unbind();
     vaos.push_back(vao);
     return vao;
 }
 
-Vao* VaoFactory::createVao(GLfloat* position, GLuint posSize,
-                           GLfloat* texture, GLuint texSize,
-                           GLfloat* normals, GLuint normalSize,
-                           GLuint* indices, GLuint indiceSize) {
+Vao* VaoFactory::createVao(const std::vector<GLfloat> &position,
+                           const std::vector<GLuint> &indices,
+                           const std::vector<GLfloat> &texture,
+                           const std::vector<GLfloat> &normals) {
     Vao* vao = Vao::create();
     vao->bind();
-    vao->createIndexBuffer(indices, indiceSize);
-    vao->createAttribute(0, SIZE_3D, position, posSize);
-    vao->createAttribute(1, SIZE_2D, texture, texSize);
-    vao->createAttribute(2, SIZE_3D, normals, normalSize);
+    vao->createIndexBuffer(&indices[0], indices.size());
+    vao->createAttribute(0, SIZE_3D, &position[0], position.size());
+    vao->createAttribute(1, SIZE_2D, &texture[0], texture.size());
+    vao->createAttribute(2, SIZE_3D, &normals[0], normals.size());
     vao->unbind();
     vaos.push_back(vao);
     return vao;

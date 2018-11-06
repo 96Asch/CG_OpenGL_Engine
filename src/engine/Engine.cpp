@@ -1,4 +1,5 @@
 #include "Engine.h"
+#include "Global.h"
 #include "../system/System.h"
 
 Engine::Engine(const int &width,
@@ -23,8 +24,17 @@ void Engine::init() {
 }
 
 void Engine::run() {
-    while(window.isRunning())
-        update(1.0);
+    unsigned int time = SDL_GetTicks(),
+                 newtime;
+    float delta;
+    while(window.isRunning()) {
+        newtime = SDL_GetTicks();
+		delta = (float) (newtime - time);
+		time = newtime;
+
+        update(delta);
+    }
+
 }
 
 void Engine::update(const float &delta) {
@@ -42,4 +52,9 @@ void Engine::cleanup() {
 
 void Engine::add(System *system) {
     systems.push_back(system);
+    system->setEngine(this);
+}
+
+InputHandler* Engine::getInputHandler() {
+    return &input;
 }

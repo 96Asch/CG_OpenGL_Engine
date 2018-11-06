@@ -22,7 +22,7 @@ int Vao::getIndexCount() {
     return indexCount;
 }
 
-void Vao::createIndexBuffer(GLuint* indices, const GLsizei &size) {
+void Vao::createIndexBuffer(const GLuint* indices, const GLsizei &size) {
     indexVbo = Vbo::create(GL_ELEMENT_ARRAY_BUFFER);
     indexVbo->bind();
     indexVbo->storeData(indices, size);
@@ -31,7 +31,7 @@ void Vao::createIndexBuffer(GLuint* indices, const GLsizei &size) {
 
 void Vao::createAttribute(const int &attribute,
                           const GLsizei &dimension,
-                          GLfloat* data, const GLsizeiptr & dataSize) {
+                          const GLfloat* data, const GLsizeiptr & dataSize) {
     Vbo* vbo = Vbo::create(GL_ARRAY_BUFFER);
     vbo->bind();
     vbo->storeData(data, dataSize);
@@ -43,7 +43,7 @@ void Vao::createAttribute(const int &attribute,
 
 void Vao::createAttribute(const int &attribute,
                           const GLsizei &dimension,
-                          GLuint* data, const GLsizeiptr & dataSize) {
+                          const GLuint* data, const GLsizeiptr & dataSize) {
     Vbo* vbo = Vbo::create(GL_ARRAY_BUFFER);
     vbo->bind();
     vbo->storeData(data, dataSize);

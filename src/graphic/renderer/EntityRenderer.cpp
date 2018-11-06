@@ -14,6 +14,7 @@ void EntityRenderer::init() {
 
     shader.init("shader/entity", "position", "texture");
     shader.addUniform("modelMatrix", new UniformMat4("model"));
+    shader.addUniform("viewMatrix", new UniformMat4("view"));
     shader.addUniform("projectionMatrix", new UniformMat4("projection"));
     shader.storeUniformLocations();
     shader.start();
@@ -23,8 +24,8 @@ void EntityRenderer::init() {
 
 void EntityRenderer::preRender(Scene* scene) {
     shader.start();
-    scene->tran->rotation.z += 0.02f;
-    scene->tran->position.z -= 0.001f;
+    buildViewMatrix(scene->getCamera());
+    shader.getUniform<UniformMat4>("viewMatrix")->load(view);
 }
 
 void EntityRenderer::render(Scene* scene) {

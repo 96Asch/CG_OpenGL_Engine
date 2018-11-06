@@ -66,6 +66,7 @@ void Window::setVsync(const bool &vsync) {
 }
 
 void Window::pollEvents() {
+    input->resetPressed();
     SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {

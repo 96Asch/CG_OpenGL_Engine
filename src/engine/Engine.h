@@ -2,6 +2,7 @@
 #define ENGINE_H_
 
 #include <vector>
+
 #include "Window.h"
 #include "Scene.h"
 
@@ -14,14 +15,20 @@ public:
            const int &height,
            const std::string &title,
            const bool &vsync);
+
     ~Engine();
 
     void init();
 
     void run();
+
     void update(const float &delta);
+
     void cleanup();
+
     void add(System* system);
+
+    InputHandler* getInputHandler();
 
 private:
     std::vector<System*> systems;
