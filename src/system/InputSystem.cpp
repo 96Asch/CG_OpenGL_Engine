@@ -25,22 +25,22 @@ void InputSystem::cleanup() {
 
 void InputSystem::handleKeys(Scene* scene) {
     glm::vec3 increase;
-    if(input->isKeyRepeated(SDL_SCANCODE_W)) {
+    if(input->isKeyRepeated(SDLK_w)) {
         increase = glm::vec3(0.0f,0.0f,1.0f);
     }
-    if(input->isKeyRepeated(SDL_SCANCODE_A)){
+    if(input->isKeyRepeated(SDLK_a)){
         increase = glm::vec3(-1.0f,0.0f,0.0f);
     }
-    if(input->isKeyRepeated(SDL_SCANCODE_S)){
+    if(input->isKeyRepeated(SDLK_s)){
         increase = glm::vec3(0.0f,0.0f,-1.0f);
     }
-    if(input->isKeyRepeated(SDL_SCANCODE_D)){
+    if(input->isKeyRepeated(SDLK_d)){
         increase = glm::vec3(1.0f,0.0f,0.0f);
     }
-    if(input->isKeyRepeated(SDL_SCANCODE_Q)){
+    if(input->isKeyRepeated(SDLK_q)){
         increase = glm::vec3(0.0f,-1.0f,0.0f);
     }
-    if(input->isKeyRepeated(SDL_SCANCODE_E)){
+    if(input->isKeyRepeated(SDLK_e)){
         increase = glm::vec3(0.0f,1.0f,0.0f);
     }
 

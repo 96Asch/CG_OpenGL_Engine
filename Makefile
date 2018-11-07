@@ -9,7 +9,7 @@ SRC = src
 INC = -Iinclude/ -I$(SRC)/global/
 DEP = $(wildcard dep/*.c)
 DEPOBJS = $(addprefix $(OBJDIR)/, $(DEP:.c=.o))
-LDFLAGS = -lGL -lSDL2 -ldl
+LDFLAGS = -lGL -lSDL -ldl
 PRECOMPILE = include/Global.h include/Uniforms.h include/Components.h \
   					 include/Systems.h
 PRECOMPILED = $(PRECOMPILE:.h=.h.gch)
