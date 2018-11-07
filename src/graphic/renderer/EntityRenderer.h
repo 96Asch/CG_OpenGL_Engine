@@ -14,19 +14,19 @@ public:
     EntityRenderer();
     ~EntityRenderer();
 
-    virtual void render(Scene *scene) override;
+    virtual void render(const float &interpolation, Scene *scene) override;
 
 private:
 
     glm::mat4 model, view, projection;
 
-    virtual void preRender(Scene *scene) override;
+    virtual void preRender(const float &interpolation, Scene *scene) override;
 
-    virtual void postRender(Scene *scene) override;
+    virtual void postRender(const float &interpolation, Scene *scene) override;
 
     void buildModelMatrix(const TransformComponent* transform);
 
-    void buildViewMatrix(const Camera &camera);
+    void buildViewMatrix(const float &interpolation, const Camera &camera);
 
     void buildProjectionMatrix();
 

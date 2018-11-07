@@ -10,7 +10,7 @@ Scene::Scene() {
                                     glm::vec3(0.0f, 0.0,45.0),
                                     glm::vec3(1));
     mod->vao = v.createVao(mesh.position, mesh.indices, mesh.texture);
-    mat->id = t.createTexture("texture/grassy3.png");
+    mat->id = t.createTexture(mat->source);
 }
 
 Scene::~Scene() {

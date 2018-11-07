@@ -2,7 +2,7 @@
 #define GLOBAL_H_
 
 #include <GL/gl3w.h>
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include <string>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>

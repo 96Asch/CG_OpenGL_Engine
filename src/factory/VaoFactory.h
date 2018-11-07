@@ -5,32 +5,36 @@
 
 #include "../graphic/globjects/Vao.h"
 
-class VaoFactory {
+namespace Factory {
 
-public:
+    class VaoFactory {
 
-    VaoFactory();
-    ~VaoFactory();
+    public:
 
-    Vao* createVao(const std::vector<GLfloat> &position,
-                   const std::vector<GLuint> &indices);
+        VaoFactory();
+        ~VaoFactory();
 
-    Vao* createVao(const std::vector<GLfloat> &position,
-                   const std::vector<GLuint> &indices,
-                   const std::vector<GLfloat> &texture);
+        Vao* createVao(const std::vector<GLfloat> &position,
+                       const std::vector<GLuint> &indices);
 
-    Vao* createVao(const std::vector<GLfloat> &position,
-                   const std::vector<GLuint> &indices,
-                   const std::vector<GLfloat> &texture,
-                   const std::vector<GLfloat> &normals);
+        Vao* createVao(const std::vector<GLfloat> &position,
+                       const std::vector<GLuint> &indices,
+                       const std::vector<GLfloat> &texture);
 
-    void removeVao();
+        Vao* createVao(const std::vector<GLfloat> &position,
+                       const std::vector<GLuint> &indices,
+                       const std::vector<GLfloat> &texture,
+                       const std::vector<GLfloat> &normals);
 
-private:
+        void removeVao();
 
-    std::vector<Vao*> vaos;
+    private:
+
+        std::vector<Vao*> vaos;
 
 
+    };
+    
 };
 
 #endif

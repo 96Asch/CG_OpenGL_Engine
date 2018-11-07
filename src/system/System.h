@@ -13,7 +13,9 @@ public:
 
     virtual void init() = 0;
 
-    virtual void update(const float &delta, Scene* scene) = 0;
+    virtual void update(Scene*) {};
+
+    virtual void render(const float &, Scene*) {};
 
     virtual void cleanup() = 0;
 

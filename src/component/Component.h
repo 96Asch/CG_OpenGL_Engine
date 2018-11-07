@@ -3,12 +3,17 @@
 #include <string>
 
 enum CompType {
+    NONE,
     MATERIAL,
     MODEL,
-    TRANSFORM
+    TRANSFORM,
+    VELOCITY,
+    VIEW
 };
 
 struct Component {
+
+    Component() : type(CompType::NONE), isActive(false) {};
 
     Component(const CompType &type) : type(type), isActive(true) {};
 

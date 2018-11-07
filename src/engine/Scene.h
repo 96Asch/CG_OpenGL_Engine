@@ -25,7 +25,7 @@ private:
     Camera camera;
 
     TextureFactory t;
-    VaoFactory v;
+    Factory::VaoFactory v;
 
 
 

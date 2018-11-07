@@ -57,9 +57,9 @@ void Vao::addInstancedAttribute(Vbo* vbo, const int &attribute, const GLsizei &d
                             const GLsizei &instancedLength, const GLsizei &offset) {
     vbo->bind();
     bind();
-    GLsizei byteoffset = offset * BYTES_PER_FLOAT;
+    GLsizei byteoffset = offset * sizeof(GLfloat);
     glVertexAttribPointer(attribute, dataSize, GL_FLOAT, false,
-                          instancedLength * BYTES_PER_FLOAT,
+                          instancedLength * sizeof(GLfloat),
                           &byteoffset);
     glVertexAttribDivisor(attribute, 1);
     unbind();

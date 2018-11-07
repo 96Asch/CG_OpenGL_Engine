@@ -28,15 +28,14 @@ public:
 
     void pollEvents();
 
-    SDL_Surface* getWindow();
+    SDL_Window* getWindow();
 
     std::string getTitle() const;
 
-    void setTitle(const std::string &title);
-
 private:
 
-    SDL_Surface* window;
+    SDL_Window* window;
+    SDL_GLContext context;
     InputHandler* input;
     bool running;
     std::string title;

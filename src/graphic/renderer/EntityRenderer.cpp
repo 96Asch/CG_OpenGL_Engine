@@ -22,14 +22,14 @@ void EntityRenderer::init() {
     shader.stop();
 }
 
-void EntityRenderer::preRender(Scene* scene) {
+void EntityRenderer::preRender(const float &interpolation, Scene* scene) {
     shader.start();
-    buildViewMatrix(scene->getCamera());
+    buildViewMatrix(interpolation, scene->getCamera());
     shader.getUniform<UniformMat4>("viewMatrix")->load(view);
 }
 
-void EntityRenderer::render(Scene* scene) {
-    preRender(scene);
+void EntityRenderer::render(const float &interpolation, Scene* scene) {
+    preRender(interpolation, scene);
 
     scene->mod->vao->bind(0,1);
     buildModelMatrix(scene->tran);
@@ -39,10 +39,10 @@ void EntityRenderer::render(Scene* scene) {
     glDrawElements(GL_TRIANGLES, scene->mod->vao->getIndexCount(), GL_UNSIGNED_INT, 0);
     scene->mod->vao->unbind(0,1);
 
-    postRender(scene);
+    postRender(interpolation, scene);
 };
 
-void EntityRenderer::postRender(Scene* scene) {
+void EntityRenderer::postRender(const float &, Scene*) {
     shader.stop();
 }
 
@@ -59,11 +59,12 @@ void EntityRenderer::buildModelMatrix(const TransformComponent* transform) {
     model = glm::scale(model, transform->scale);
 }
 
-void EntityRenderer::buildViewMatrix(const Camera &camera) {
+void EntityRenderer::buildViewMatrix(const float &interpolation,
+                                     const Camera &camera) {
     view = glm::lookAt(
-                        camera.position,
-                        camera.target,
-                        camera.up
+                        camera.view.position + (camera.velocity.velocity * interpolation),
+                        camera.view.target,
+                        camera.view.up
                       );
 }
 

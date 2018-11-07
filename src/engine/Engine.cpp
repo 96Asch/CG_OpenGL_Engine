@@ -1,6 +1,8 @@
 #include "Engine.h"
 #include "Global.h"
+#include "Scene.h"
 #include "../system/System.h"
+#include "../system/GraphicSystem.h"
 
 Engine::Engine(const int &width,
                const int &height,
@@ -24,23 +26,39 @@ void Engine::init() {
 }
 
 void Engine::run() {
-    unsigned int time = SDL_GetTicks(),
-                 newtime;
-    float delta;
-    while(window.isRunning()) {
-        newtime = SDL_GetTicks();
-		delta = (float) (newtime - time);
-		time = newtime;
+    const int TPS = 25;
+    const int SKIP_TICKS = 1000 / TPS;
+    const int MAX_FRAMESKIP = 5;
 
-        update(delta);
+    Uint32 nextTick = SDL_GetTicks();
+    int loops;
+    float interpolation;
+
+    while (window.isRunning()) {
+
+        loops = 0;
+
+        while (SDL_GetTicks() > nextTick && loops < MAX_FRAMESKIP) {
+            update();
+            nextTick += SKIP_TICKS;
+            ++loops;
+        }
+
+        interpolation = (float) (SDL_GetTicks() + SKIP_TICKS - nextTick)
+                        / (float) (SKIP_TICKS);
+        render(interpolation);
+        window.update();
     }
-
 }
 
-void Engine::update(const float &delta) {
+void Engine::update() {
     for(auto system : systems)
-        system->update(delta, scene);
-    window.update();
+        system->update(scene);
+}
+
+void Engine::render(const float &interpolation) {
+    for(auto system : systems)
+        system->render(interpolation, scene);
 }
 
 void Engine::cleanup() {

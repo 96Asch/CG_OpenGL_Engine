@@ -15,7 +15,7 @@ public:
 
     virtual void init() override;
 
-    virtual void update(const float &delta, Scene* scene) override;
+    virtual void update(Scene* scene) override;
 
     virtual void cleanup() override;
 

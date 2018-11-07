@@ -15,14 +15,14 @@ public:
 
     virtual void init() override;
 
-    virtual void update(const float &delta, Scene* scene) override;
+    void render(const float &interpolation, Scene *scene);
 
     virtual void cleanup() override;
+
 private:
 
     std::vector<Renderer*> renderers;
 
-    void render(Scene *scene);
 };
 
 #endif

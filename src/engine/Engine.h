@@ -4,9 +4,9 @@
 #include <vector>
 
 #include "Window.h"
-#include "Scene.h"
 
 class System;
+class Scene;
 
 class Engine {
 
@@ -22,7 +22,9 @@ public:
 
     void run();
 
-    void update(const float &delta);
+    void update();
+
+    void render(const float &interpolation);
 
     void cleanup();
 

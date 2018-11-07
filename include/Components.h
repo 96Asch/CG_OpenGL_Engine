@@ -4,6 +4,8 @@
 #include "../src/component/ModelComponent.h"
 #include "../src/component/TransformComponent.h"
 #include "../src/component/MaterialComponent.h"
+#include "../src/component/ViewComponent.h"
+#include "../src/component/VelocityComponent.h"
 
 
 #endif

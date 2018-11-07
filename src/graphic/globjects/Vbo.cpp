@@ -36,7 +36,7 @@ void Vbo::storeData(const GLuint* data, const GLsizeiptr &size) {
 }
 
 void Vbo::storeEmpty(const GLsizei &size) {
-    glBufferData(target, size * BYTES_PER_FLOAT, 0, GL_STREAM_DRAW);
+    glBufferData(target, size * sizeof(GLfloat), 0, GL_STREAM_DRAW);
 }
 
 void Vbo::update(float* data, const GLsizei &size) {

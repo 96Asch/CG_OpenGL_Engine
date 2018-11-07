@@ -17,21 +17,22 @@ bool Window::init(const int &width,
   		return false;
   	}
 
-    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-  	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-  	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-  	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-  	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-  	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-  	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
+    window = SDL_CreateWindow(title.c_str(),
+                              SDL_WINDOWPOS_UNDEFINED,
+                              SDL_WINDOWPOS_UNDEFINED,
+                              width, height,
+                              SDL_WINDOW_OPENGL);
 
-    SDL_WM_SetCaption(title.c_str(), 0);
-    window = SDL_SetVideoMode(width, height, 32,
-                              SDL_OPENGL | SDL_DOUBLEBUF);
     if(!window) {
         fprintf(stderr, "SDL failed to initialize");
         return false;
     }
+
+    context = SDL_GL_CreateContext(window);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
 
     if (gl3wInit()) {
         fprintf(stderr, "failed to initialize OpenGL\n");
@@ -41,6 +42,7 @@ bool Window::init(const int &width,
         fprintf(stderr, "OpenGL 4.3 not supported\n");
         return false;
     }
+    setVsync(vsync);
     printf("OpenGL %s, GLSL %s\n", glGetString(GL_VERSION),
                 glGetString(GL_SHADING_LANGUAGE_VERSION));
     glEnable( GL_DEBUG_OUTPUT );
@@ -49,12 +51,12 @@ bool Window::init(const int &width,
 }
 
 void Window::update() {
-    SDL_GL_SwapBuffers();
+    SDL_GL_SwapWindow(window);
     pollEvents();
 }
 
 void Window::cleanup() {
-    SDL_FreeSurface(window);
+    SDL_DestroyWindow(window);
 }
 
 bool Window::isRunning() const {
@@ -62,7 +64,9 @@ bool Window::isRunning() const {
 }
 
 void Window::setVsync(const bool &vsync) {
-    // SDL_GL_SetSwapInterval(vsync);
+    if(!SDL_GL_SetSwapInterval(vsync)) {
+        fprintf(stderr, "Vsync failed, not supported\n");
+    }
 }
 
 void Window::pollEvents() {
@@ -74,10 +78,10 @@ void Window::pollEvents() {
             running = false;
             break;
         case SDL_KEYDOWN:
-            input->pressKey(event.key.keysym.sym);
+            input->pressKey(event.key.keysym.scancode);
             break;
         case SDL_KEYUP:
-            input->releaseKey(event.key.keysym.sym);
+            input->releaseKey(event.key.keysym.scancode);
             break;
         default:
             break;
@@ -85,16 +89,12 @@ void Window::pollEvents() {
 	}
 }
 
-SDL_Surface* Window::getWindow() {
+SDL_Window* Window::getWindow() {
     return window;
 }
 
 std::string Window::getTitle() const {
     return title;
-}
-
-void Window::setTitle(const std::string &newTitle) {
-    SDL_WM_SetCaption(newTitle.c_str(), 0);
 }
 
 void Window::errorCallback(int i, const char* desc) {
