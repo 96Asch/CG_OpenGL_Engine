@@ -4,6 +4,8 @@
 #include <vector>
 
 #include "Window.h"
+#include "../factory/TextureFactory.h"
+#include "../factory/VaoFactory.h"
 
 class System;
 class Scene;
@@ -36,6 +38,10 @@ private:
     std::vector<System*> systems;
     Scene* scene;
     Window window;
+
+    Factory::TextureFactory t;
+    Factory::VaoFactory v;
+
     InputHandler input;
 };
 

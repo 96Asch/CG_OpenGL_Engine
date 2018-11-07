@@ -7,6 +7,9 @@
 
 namespace Factory {
 
+    class VaoFactory;
+    extern VaoFactory* VAO;
+
     class VaoFactory {
 
     public:
@@ -34,7 +37,7 @@ namespace Factory {
 
 
     };
-    
+
 };
 
 #endif

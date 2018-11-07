@@ -5,21 +5,18 @@
 #include <string>
 #include "Global.h"
 
-struct ModelData {
-    std::vector<GLfloat> vertices;
-    std::vector<GLuint> indices;
-    std::vector<GLfloat> textures;
-    std::vector<GLfloat> normals;
-    GLfloat furthest;
-};
+namespace Factory {
 
-namespace ModelLoader {
-
-    bool loadModel(const std::string &file, ModelData &data) {
-        
-    }
+    struct ModelData {
+        std::vector<GLfloat> vertices;
+        std::vector<GLuint> indices;
+        std::vector<GLfloat> textures;
+        std::vector<GLfloat> normals;
+        GLfloat furthest;
+    };
 
 
+    bool loadModel(const std::string &file, ModelData &data);
 
 }
 

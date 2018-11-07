@@ -3,8 +3,7 @@
 
 #include "Components.h"
 #include "Camera.h"
-#include "../factory/TextureFactory.h"
-#include "../factory/VaoFactory.h"
+
 
 class Scene {
 
@@ -23,12 +22,6 @@ public:
 private:
 
     Camera camera;
-
-    TextureFactory t;
-    Factory::VaoFactory v;
-
-
-
 };
 
 #endif

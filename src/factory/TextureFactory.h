@@ -7,21 +7,27 @@
 #include "Global.h"
 
 struct Texture;
-class TextureFactory {
 
-public:
+namespace Factory {
 
-    TextureFactory();
-    ~TextureFactory();
+    class TextureFactory;
+    extern TextureFactory* TEXTURE;
 
-    GLuint createTexture(const std::string &file);
-    void removeTexture(const std::string &file);
+    class TextureFactory {
+
+    public:
+
+        TextureFactory();
+        ~TextureFactory();
+
+        GLuint createTexture(const std::string &file);
+        void removeTexture(const std::string &file);
 
 
-private:
-    std::unordered_map<std::string, GLuint> textures;
+    private:
+        std::unordered_map<std::string, GLuint> textures;
 
-
-};
+    };
+}
 
 #endif

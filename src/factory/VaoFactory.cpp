@@ -6,7 +6,9 @@
 
 namespace Factory {
 
-    VaoFactory::VaoFactory() = default;
+    VaoFactory* VAO = nullptr;
+
+    VaoFactory::VaoFactory() { VAO = this; }
 
     VaoFactory::~VaoFactory() {
         for(auto vao : vaos) {
@@ -53,5 +55,5 @@ namespace Factory {
         vaos.push_back(vao);
         return vao;
     }
-    
+
 }
