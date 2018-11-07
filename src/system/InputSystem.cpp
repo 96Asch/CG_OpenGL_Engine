@@ -26,10 +26,10 @@ void InputSystem::cleanup() {
 void InputSystem::handleKeys(Scene* scene) {
     glm::vec3 increase;
     if(input->isKeyRepeated(SDLK_w)) {
-        increase = glm::vec3(0.0f,0.0f,1.0f);
+        increase = glm::vec3(0.0f,0.0f,-1.0f);
     }
     if(input->isKeyRepeated(SDLK_a)){
-        increase = glm::vec3(-1.0f,0.0f,0.0f);
+        increase = glm::vec3(1.0f,0.0f,0.0f);
     }
     if(input->isKeyRepeated(SDLK_s)){
         increase = glm::vec3(0.0f,0.0f,-1.0f);
@@ -46,5 +46,5 @@ void InputSystem::handleKeys(Scene* scene) {
 
     scene->getCamera().velocity.velocity = increase;
     scene->getCamera().view.position += increase;
-    // scene->getCamera().target += increase;
+    // scene->getCamera().view.target += increase;
 }

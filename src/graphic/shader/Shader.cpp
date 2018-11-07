@@ -5,6 +5,7 @@ Shader::Shader() = default;
 Shader::~Shader() {
     for(auto pair : uniforms)
         delete pair.second;
+    uniforms.clear();
 }
 
 

@@ -16,7 +16,7 @@ namespace Factory {
     };
 
 
-    bool loadModel(const std::string &file, ModelData &data);
+    bool loadOBJ(const std::string &file, ModelData &data);
 
 }
 

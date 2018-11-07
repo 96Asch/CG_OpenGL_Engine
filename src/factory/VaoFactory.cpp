@@ -14,7 +14,9 @@ namespace Factory {
         for(auto vao : vaos) {
             vao->remove();
             delete vao;
+            vao = nullptr;
         }
+        vaos.clear();
     }
 
     Vao* VaoFactory::createVao(const std::vector<GLfloat> &position,

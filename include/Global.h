@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "../src/util/Util.h"
+#include "../src/util/GLUtil.h"
 
 namespace Global {
     extern std::string resources;

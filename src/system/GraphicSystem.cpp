@@ -1,6 +1,7 @@
 #include <iostream>
 #include "GraphicSystem.h"
 #include "Renderers.h"
+#include "Global.h"
 #include "../engine/Scene.h"
 
 GraphicSystem::GraphicSystem() : System() {}
@@ -12,6 +13,8 @@ void GraphicSystem::init() {
 
     for(auto renderer : renderers)
         renderer->init();
+
+    GLUtil::enableDepthTesting(true);
 }
 
 void GraphicSystem::render(const float &interpolation, Scene *scene) {

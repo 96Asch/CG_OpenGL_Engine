@@ -40,3 +40,21 @@ std::string Util::resourceToString(const std::string &resource) {
     }
     return shader;
 }
+
+size_t Util::split(const std::string &string,
+                   const char &delimiter,
+                   std::vector<std::string> &list) {
+    size_t current = 0;
+    size_t next = string.find(delimiter);
+    list.clear();
+
+    while(next != std::string::npos) {
+        list.push_back(string.substr(current, next - current));
+        current = next + 1;
+        next = string.find(delimiter, current);
+    }
+
+    list.push_back(string.substr(current,
+                                 std::min(next, string.size()) - current + 1));
+    return list.size();
+}

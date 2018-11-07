@@ -6,10 +6,14 @@ Vao::Vao(const GLuint &id) : id(id), indexVbo(nullptr), indexCount(0)
 {}
 
 Vao::~Vao() {
-    for(auto vbo : vbos)
+    for(auto vbo : vbos) {
         delete vbo;
+        vbo = nullptr;
+    }
     if(indexVbo)
         delete indexVbo;
+    vbos.clear();
+    indexVbo = nullptr;
 }
 
 Vao* Vao::create() {
