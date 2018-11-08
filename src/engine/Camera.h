@@ -9,6 +9,7 @@ struct Camera {
 
     Camera(const ViewComponent &view) : view(view) {};
 
+    InputComponent input;
     ViewComponent view;
     VelocityComponent velocity;
 };

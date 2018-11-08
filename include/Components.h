@@ -6,6 +6,7 @@
 #include "../src/component/MaterialComponent.h"
 #include "../src/component/ViewComponent.h"
 #include "../src/component/VelocityComponent.h"
+#include "../src/component/InputComponent.h"
 
 
 #endif

@@ -1,7 +1,13 @@
 #include "InputSystem.h"
-#include "../engine/Scene.h"
-#include "Global.h"
+
 #include <iostream>
+
+#include "Components.h"
+#include "Global.h"
+#include "../engine/Scene.h"
+#include "../engine/Camera.h"
+#include "../input/InputHandler.h"
+
 
 InputSystem::InputSystem() : System() {}
 
@@ -9,42 +15,37 @@ InputSystem::~InputSystem() {}
 
 
 void InputSystem::init() {
-    input = owner->getInputHandler();
+    inputHandler = owner->getInputHandler();
 }
 
 void InputSystem::update(Scene* scene) {
-    scene->getCamera().velocity.velocity = glm::vec3(0.0f);
-    if(input->hasInput()) {
-        handleKeys( scene);
-    }
+    scene->getCamera().input.action = 0;
+    handleKeys(&scene->getCamera().input);
 }
 
 void InputSystem::cleanup() {
-    input = nullptr;
+    inputHandler = nullptr;
 }
 
-void InputSystem::handleKeys(Scene* scene) {
-    glm::vec3 increase;
-    if(input->isKeyRepeated(SDLK_w)) {
-        increase = glm::vec3(0.0f,0.0f,-1.0f);
+void InputSystem::handleKeys(InputComponent* input) {
+    if(inputHandler->isKeyRepeated(SDLK_w)) {
+        input->addAction(Action::MOVE_FORWARD);
     }
-    if(input->isKeyRepeated(SDLK_a)){
-        increase = glm::vec3(1.0f,0.0f,0.0f);
+    if(inputHandler->isKeyRepeated(SDLK_a)){
+        input->addAction(Action::MOVE_LEFT);
     }
-    if(input->isKeyRepeated(SDLK_s)){
-        increase = glm::vec3(0.0f,0.0f,-1.0f);
+    if(inputHandler->isKeyRepeated(SDLK_s)){
+        input->addAction(Action::MOVE_BACKWARD);
     }
-    if(input->isKeyRepeated(SDLK_d)){
-        increase = glm::vec3(1.0f,0.0f,0.0f);
+    if(inputHandler->isKeyRepeated(SDLK_d)){
+        input->addAction(Action::MOVE_RIGHT);
     }
-    if(input->isKeyRepeated(SDLK_q)){
-        increase = glm::vec3(0.0f,-1.0f,0.0f);
+    if(inputHandler->isKeyRepeated(SDLK_q)){
+        input->addAction(Action::MOVE_UP);
     }
-    if(input->isKeyRepeated(SDLK_e)){
-        increase = glm::vec3(0.0f,1.0f,0.0f);
+    if(inputHandler->isKeyRepeated(SDLK_e)){
+        input->addAction(Action::MOVE_DOWN);
     }
 
-    scene->getCamera().velocity.velocity = increase;
-    scene->getCamera().view.position += increase;
-    // scene->getCamera().view.target += increase;
+    std::cout << input->action << std::endl;
 }

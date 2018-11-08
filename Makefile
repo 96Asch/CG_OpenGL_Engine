@@ -48,6 +48,10 @@ $(TARGET):	$(DEPOBJS) $(OBJS)
 run:
 	@./$(TARGET)
 
+clp:
+	@echo Cleaning precompiled headers: $(PRECOMPILED)
+	@rm -f $(PRECOMPILED)
+
 clean:
 	@echo Cleaning $(OBJDIR) $(PRECOMPILED) $(TARGET) $(wildcard *.o)...
 	@rm -f $(TARGET) $(wildcard *.o)

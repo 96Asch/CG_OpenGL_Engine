@@ -61,9 +61,11 @@ void EntityRenderer::buildModelMatrix(const TransformComponent* transform) {
 
 void EntityRenderer::buildViewMatrix(const float &interpolation,
                                      const Camera &camera) {
+    glm::vec3 positionInterpol = camera.view.position +
+                                (camera.velocity.velocity * interpolation);
     view = glm::lookAt(
-                        camera.view.position + (camera.velocity.velocity * interpolation),
-                        camera.view.target,
+                        positionInterpol,
+                        positionInterpol + camera.view.target,
                         camera.view.up
                       );
 }

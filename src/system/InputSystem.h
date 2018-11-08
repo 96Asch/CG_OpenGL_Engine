@@ -2,9 +2,10 @@
 #define INPUTSYSTEM_H_
 
 #include "System.h"
-#include "../input/InputHandler.h"
 
 class Scene;
+class InputHandler;
+struct InputComponent;
 class InputSystem : public System {
 
 public:
@@ -21,9 +22,9 @@ public:
 
 private:
 
-    InputHandler* input;
+    InputHandler* inputHandler;
 
-    void handleKeys(Scene* scene);
+    void handleKeys(InputComponent* input);
 
 };
 

@@ -3,5 +3,6 @@
 
 #include "../src/system/GraphicSystem.h"
 #include "../src/system/InputSystem.h"
+#include "../src/system/PhysicsSystem.h"
 
 #endif

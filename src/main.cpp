@@ -29,6 +29,7 @@ int main(void) {
 
     Engine engine(Global::width, Global::height, "First screen!", true);
     engine.add(new InputSystem());
+    engine.add(new PhysicsSystem());
     engine.add(new GraphicSystem());
     engine.init();
     engine.run();

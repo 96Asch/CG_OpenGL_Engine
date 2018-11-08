@@ -19,7 +19,7 @@ Scene::Scene() {
     }
     mod->vao = Factory::VAO->createVao(data.vertices, data.indices, data.textures);
     mat->id = Factory::TEXTURE->createTexture(mat->source);
-
+    camera.velocity.speed = 0.1f;
 }
 
 Scene::~Scene() {
