@@ -26,6 +26,14 @@ protected:
 
     virtual void postRender(const float &interpolation, Scene *scene) = 0;
 
+    template <typename T>
+    T lerp(const T &start, const T &end, const float &alpha);
+
 };
+
+template <typename T>
+T Renderer::lerp(const T &start, const T &end, const float &alpha) {
+    return (start * (1 - alpha) + end * alpha); 
+}
 
 #endif

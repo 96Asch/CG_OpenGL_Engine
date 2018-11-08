@@ -24,7 +24,7 @@ public:
     virtual void cleanup() override;
 
 private:
-
+    
     void applyMovement(InputComponent* input, ViewComponent* view, VelocityComponent* velocity);
 
 };

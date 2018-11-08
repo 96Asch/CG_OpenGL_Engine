@@ -19,7 +19,6 @@ void InputSystem::init() {
 }
 
 void InputSystem::update(Scene* scene) {
-    scene->getCamera().input.action = 0;
     handleKeys(&scene->getCamera().input);
 }
 
@@ -28,6 +27,7 @@ void InputSystem::cleanup() {
 }
 
 void InputSystem::handleKeys(InputComponent* input) {
+    input->action = 0;
     if(inputHandler->isKeyRepeated(SDLK_w)) {
         input->addAction(Action::MOVE_FORWARD);
     }
@@ -46,6 +46,4 @@ void InputSystem::handleKeys(InputComponent* input) {
     if(inputHandler->isKeyRepeated(SDLK_e)){
         input->addAction(Action::MOVE_DOWN);
     }
-
-    std::cout << input->action << std::endl;
 }

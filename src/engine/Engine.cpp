@@ -26,25 +26,26 @@ void Engine::init() {
 }
 
 void Engine::run() {
-    const int TPS = 25;
+    const int TPS = 30;
     const int SKIP_TICKS = 1000 / TPS;
     const int MAX_FRAMESKIP = 5;
 
-    Uint32 nextTick = SDL_GetTicks();
+    Uint32 currentTick = SDL_GetTicks(), nextTick;
     int loops;
     float interpolation;
 
     while (window.isRunning()) {
-
+        nextTick = SDL_GetTicks();
         loops = 0;
 
-        while (SDL_GetTicks() > nextTick && loops < MAX_FRAMESKIP) {
+        while (nextTick > currentTick && loops < MAX_FRAMESKIP) {
             update();
-            nextTick += SKIP_TICKS;
+            currentTick += SKIP_TICKS;
             ++loops;
+
         }
 
-        interpolation = (float) (SDL_GetTicks() + SKIP_TICKS - nextTick)
+        interpolation = (float) (nextTick + SKIP_TICKS - currentTick)
                         / (float) (SKIP_TICKS);
         render(interpolation);
         window.update();
@@ -52,6 +53,7 @@ void Engine::run() {
 }
 
 void Engine::update() {
+    window.pollEvents();
     for(auto system : systems)
         system->update(scene);
 }

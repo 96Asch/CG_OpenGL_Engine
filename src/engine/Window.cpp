@@ -50,7 +50,6 @@ bool Window::init(const int &width,
 
 void Window::update() {
     SDL_GL_SwapBuffers();
-    pollEvents();
 }
 
 void Window::cleanup() {

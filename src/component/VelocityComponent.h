@@ -8,18 +8,24 @@ struct VelocityComponent : public Component {
     VelocityComponent()
             : Component(CompType::VELOCITY),
               velocity(glm::vec3(0.0f)),
-              speed(1.0f)
+              speed(0.0f),
+              maxSpeed(1.0f),
+              acceleration(0.5f)
               {};
 
-    VelocityComponent(const glm::vec3 &velocity, const float &speed)
+    VelocityComponent(const glm::vec3 &velocity,
+                      const float &maxSpeed,
+                      const float &acceleration)
             : Component(CompType::VELOCITY),
               velocity(velocity),
-              speed(speed)
+              speed(0.0f),
+              maxSpeed(maxSpeed),
+              acceleration(acceleration)
               {};
 
     glm::vec3 velocity;
-    float speed;
-
+    float speed, maxSpeed;
+    float acceleration;
 };
 
 #endif

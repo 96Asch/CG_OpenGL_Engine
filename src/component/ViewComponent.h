@@ -10,6 +10,7 @@ struct ViewComponent : public Component {
                   const glm::vec3 &up)
                   : Component(CompType::VIEW),
                     position(position),
+                    lastPosition(glm::vec3(0.0f)),
                     target(target),
                     up(up)
                     {};
@@ -17,6 +18,7 @@ struct ViewComponent : public Component {
     ViewComponent(const ViewComponent &view)
                   : Component(CompType::VIEW),
                     position(view.position),
+                    lastPosition(glm::vec3(0.0f)),
                     target(view.target),
                     up(view.up)
                     {};
@@ -24,11 +26,12 @@ struct ViewComponent : public Component {
     ViewComponent()
                   : Component(CompType::VIEW),
                   position(glm::vec3(0.0f)),
+                  lastPosition(glm::vec3(0.0f)),
                   target(glm::vec3(0.0f, 0.0f, -1.0f)),
                   up(glm::vec3(0.0f, 1.0f, 0.0f))
                   {};
 
-    glm::vec3 position;
+    glm::vec3 position, lastPosition;
 
     glm::vec3 target;
 
