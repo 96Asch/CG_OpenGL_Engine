@@ -1,6 +1,6 @@
 #include "Util.h"
 #include <fstream>
-
+#include <cmath>
 
 char* Util::resourceToChar(const std::string &resource) {
     std::ifstream infile(resource.c_str());
@@ -57,4 +57,9 @@ size_t Util::split(const std::string &string,
     list.push_back(string.substr(current,
                                  std::min(next, string.size()) - current + 1));
     return list.size();
+}
+
+bool Util::isNearlyEqual(const float &a, const float &b) {
+    const float epsilon = 0.0000001f;
+    return std::abs(a - b) <= epsilon * std::abs(a);
 }

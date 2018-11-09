@@ -9,27 +9,29 @@ EntityRenderer::EntityRenderer() {}
 
 EntityRenderer::~EntityRenderer() {}
 
-void EntityRenderer::init() {
-    buildProjectionMatrix();
-
+void EntityRenderer::init(const glm::mat4 &projection) {
     shader.init("shader/entity", "position", "texture");
     shader.addUniform("modelMatrix", new UniformMat4("model"));
     shader.addUniform("viewMatrix", new UniformMat4("view"));
     shader.addUniform("projectionMatrix", new UniformMat4("projection"));
     shader.storeUniformLocations();
+
     shader.start();
     shader.getUniform<UniformMat4>("projectionMatrix")->load(projection);
     shader.stop();
 }
 
-void EntityRenderer::preRender(const float &interpolation, Scene* scene) {
+void EntityRenderer::preRender(const float &,
+                               const glm::mat4 &view,
+                               Scene*) {
     shader.start();
-    buildViewMatrix(interpolation, scene->getCamera());
     shader.getUniform<UniformMat4>("viewMatrix")->load(view);
 }
 
-void EntityRenderer::render(const float &interpolation, Scene* scene) {
-    preRender(interpolation, scene);
+void EntityRenderer::render(const float &interpolation,
+                            const glm::mat4 &view,
+                            Scene *scene) {
+    preRender(interpolation, view, scene);
 
     scene->mod->vao->bind(0,1);
     buildModelMatrix(scene->tran);
@@ -57,25 +59,4 @@ void EntityRenderer::buildModelMatrix(const TransformComponent* transform) {
     model = glm::rotate(model, glm::radians(transform->rotation.y), glm::vec3(0,1,0));
     model = glm::rotate(model, glm::radians(transform->rotation.z), glm::vec3(0,0,1));
     model = glm::scale(model, transform->scale);
-}
-
-void EntityRenderer::buildViewMatrix(const float &interpolation,
-                                     const Camera &camera) {
-    glm::vec3 positionInterpol = lerp(camera.view.lastPosition,
-                                      camera.view.position,
-                                      interpolation);
-    view = glm::lookAt(
-                        positionInterpol,
-                        positionInterpol + camera.view.target,
-                        camera.view.up
-                      );
-}
-
-void EntityRenderer::buildProjectionMatrix() {
-    projection = glm::perspective(
-                                    glm::radians(Global::fov),
-                                    Global::aspectRatio,
-                                    Global::nearPlane,
-                                    Global::farPlane
-                                 );
 }

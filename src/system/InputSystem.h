@@ -5,7 +5,10 @@
 
 class Scene;
 class InputHandler;
-struct InputComponent;
+
+struct ActionComponent;
+struct MouseComponent;
+
 class InputSystem : public System {
 
 public:
@@ -24,7 +27,9 @@ private:
 
     InputHandler* inputHandler;
 
-    void handleKeys(InputComponent* input);
+    void handleMouse(MouseComponent* mouse);
+
+    void handleKeys(ActionComponent* action);
 
 };
 

@@ -14,6 +14,8 @@ namespace Util{
                  const char &delim,
                  std::vector<std::string> &list);
 
+    bool isNearlyEqual(const float &a, const float &b);
+
     /**
     * Code courteously granted from Robin Voetter
     */

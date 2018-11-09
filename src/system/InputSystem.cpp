@@ -19,31 +19,40 @@ void InputSystem::init() {
 }
 
 void InputSystem::update(Scene* scene) {
-    handleKeys(&scene->getCamera().input);
+    handleMouse(&scene->getCamera().mouse);
+    handleKeys(&scene->getCamera().action);
 }
 
 void InputSystem::cleanup() {
     inputHandler = nullptr;
 }
 
-void InputSystem::handleKeys(InputComponent* input) {
-    input->action = 0;
+void InputSystem::handleMouse(MouseComponent* mouse) {
+    mouse->dx = mouse->dy = 0.0f;
+    if(inputHandler->isMouseHeld(SDL_BUTTON_LEFT)) {
+        inputHandler->getDelta(mouse->dx, mouse->dy);
+    }
+    inputHandler->getMousePosition(mouse->x, mouse->y);
+}
+
+void InputSystem::handleKeys(ActionComponent* action) {
+    action->action = 0;
     if(inputHandler->isKeyRepeated(SDLK_w)) {
-        input->addAction(Action::MOVE_FORWARD);
+        action->addAction(Action::MOVE_FORWARD);
     }
     if(inputHandler->isKeyRepeated(SDLK_a)){
-        input->addAction(Action::MOVE_LEFT);
+        action->addAction(Action::MOVE_LEFT);
     }
     if(inputHandler->isKeyRepeated(SDLK_s)){
-        input->addAction(Action::MOVE_BACKWARD);
+        action->addAction(Action::MOVE_BACKWARD);
     }
     if(inputHandler->isKeyRepeated(SDLK_d)){
-        input->addAction(Action::MOVE_RIGHT);
+        action->addAction(Action::MOVE_RIGHT);
     }
     if(inputHandler->isKeyRepeated(SDLK_q)){
-        input->addAction(Action::MOVE_UP);
+        action->addAction(Action::MOVE_UP);
     }
     if(inputHandler->isKeyRepeated(SDLK_e)){
-        input->addAction(Action::MOVE_DOWN);
+        action->addAction(Action::MOVE_DOWN);
     }
 }

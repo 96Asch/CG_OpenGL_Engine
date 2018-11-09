@@ -4,8 +4,9 @@
 #include "System.h"
 
 class Scene;
+class Camera;
 
-struct InputComponent;
+struct ActionComponent;
 struct ViewComponent;
 struct VelocityComponent;
 
@@ -24,8 +25,10 @@ public:
     virtual void cleanup() override;
 
 private:
-    
-    void applyMovement(InputComponent* input, ViewComponent* view, VelocityComponent* velocity);
+
+    void applyRotation(Camera &camera);
+
+    void applyMovement(Camera &camera);
 
 };
 

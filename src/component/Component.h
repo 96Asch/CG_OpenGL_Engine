@@ -8,8 +8,8 @@ enum CompType {
     MODEL,
     TRANSFORM,
     VELOCITY,
-    VIEW,
-    INPUT
+    ACTION,
+    MOUSE
 };
 
 struct Component {

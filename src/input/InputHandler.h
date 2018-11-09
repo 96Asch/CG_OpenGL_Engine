@@ -3,6 +3,8 @@
 
 #include "Global.h"
 
+#define MAX_MOUSE_BUTTON 5
+
 class InputHandler {
 
 public:
@@ -23,12 +25,38 @@ public:
 
     void resetPressed();
 
+    void clickMouse(const int &button);
+
+    void releaseMouse(const int &button);
+
+    bool isMouseClicked(const int &button);
+
+    bool isMouseHeld(const int &button);
+
+    void onMouseMoved(const int &x,
+                      const int &y,
+                      const int &dx,
+                      const int &dy);
+
+    void getMousePosition(float &x, float &y);
+
+    void getDelta(float &dx, float &dy);
+
+    void resetClicked();
+
 private:
 
     bool m_hasInput;
     bool m_keyPress[SDLK_LAST];
     bool m_keyRepeat[SDLK_LAST];
 
+    bool firstClick;
+    int mouseX, mouseY;
+    int deltaX, deltaY;
+    bool m_mouseClick[MAX_MOUSE_BUTTON];
+    bool m_mouseHold[MAX_MOUSE_BUTTON];
+
+    const float SENSITIVITY = 0.5f;
     void resetKeys();
 
 };

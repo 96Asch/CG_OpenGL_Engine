@@ -78,6 +78,18 @@ void Window::pollEvents() {
         case SDL_KEYUP:
             input->releaseKey(event.key.keysym.sym);
             break;
+        case SDL_MOUSEMOTION:
+            input->onMouseMoved(event.motion.x,
+                                event.motion.y,
+                                event.motion.xrel,
+                                event.motion.yrel);
+            break;
+        case SDL_MOUSEBUTTONDOWN:
+			input->clickMouse(event.button.button);
+            break;
+        case SDL_MOUSEBUTTONUP:
+            input->releaseMouse(event.button.button);
+            break;
         default:
             break;
         }

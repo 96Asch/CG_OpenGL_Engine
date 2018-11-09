@@ -2,6 +2,7 @@
 #define RENDERER_H_
 
 #include "../shader/Shader.h"
+#include <glm/mat4x4.hpp>
 
 class Scene;
 class Renderer {
@@ -12,9 +13,11 @@ public:
 
     virtual ~Renderer() = default;
 
-    virtual void init() = 0;
+    virtual void init(const glm::mat4 &projection) = 0;
 
-    virtual void render(const float &interpolation, Scene *scene) = 0;
+    virtual void render(const float &interpolation,
+                        const glm::mat4 &view,
+                        Scene *scene) = 0;
 
     virtual void cleanup() = 0;
 
@@ -22,18 +25,12 @@ protected:
 
     Shader shader;
 
-    virtual void preRender(const float &interpolation, Scene *scene) = 0;
+    virtual void preRender(const float &interpolation,
+                           const glm::mat4 &view,
+                           Scene *scene) = 0;
 
     virtual void postRender(const float &interpolation, Scene *scene) = 0;
 
-    template <typename T>
-    T lerp(const T &start, const T &end, const float &alpha);
-
 };
-
-template <typename T>
-T Renderer::lerp(const T &start, const T &end, const float &alpha) {
-    return (start * (1 - alpha) + end * alpha); 
-}
 
 #endif

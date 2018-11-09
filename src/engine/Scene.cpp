@@ -20,7 +20,7 @@ Scene::Scene() {
     mod->vao = Factory::VAO->createVao(data.vertices, data.indices, data.textures);
     mat->id = Factory::TEXTURE->createTexture(mat->source);
     camera.velocity.speed = 0.5f;
-    camera.view.position = glm::vec3(0.0,0.0,-2.0f);
+    camera.position = glm::vec3(0.0,0.0,-2.0f);
 }
 
 Scene::~Scene() {

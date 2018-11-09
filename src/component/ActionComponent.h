@@ -1,5 +1,5 @@
-#ifndef INPUTCOMPONENT_H_
-#define INPUTCOMPONENT_H_
+#ifndef ACTIONCOMPONENT_H_
+#define ACTIONCOMPONENT_H_
 
 enum Action {
     MOVE_FORWARD = 1,
@@ -7,19 +7,18 @@ enum Action {
     MOVE_LEFT = 1u << 2,
     MOVE_RIGHT = 1u << 3,
     MOVE_UP = 1u << 4,
-    MOVE_DOWN = 1u << 5
+    MOVE_DOWN = 1u << 5,
 };
 
-struct InputComponent : public Component {
+struct ActionComponent : public Component {
 
-    InputComponent() : Component(CompType::INPUT), action(0) {};
+    ActionComponent() : Component(CompType::ACTION), action(0) {};
 
     void addAction(const Action &action) {
         this->action |= action;
     };
 
     unsigned long action;
-
 };
 
 #endif
