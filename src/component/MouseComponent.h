@@ -5,8 +5,7 @@
 
 struct MouseComponent : public Component {
 
-    MouseComponent() : Component(CompType::MOUSE),
-                       x(0.0f), y(0.0f),
+    MouseComponent() : x(0.0f), y(0.0f),
                        dx(0.0f), dy(0.0f) {};
 
     float x, y;

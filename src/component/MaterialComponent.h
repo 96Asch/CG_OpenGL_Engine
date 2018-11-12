@@ -5,13 +5,8 @@
 
 struct MaterialComponent : public Component {
 
-    MaterialComponent()
-                      : Component(CompType::MATERIAL),
-                        source("") {};
-
     MaterialComponent(const std::string &source)
-                      : Component(CompType::MATERIAL),
-                        source(source) {};
+                      : source(source) {};
 
     std::string source;
 

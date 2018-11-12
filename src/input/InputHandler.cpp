@@ -89,7 +89,6 @@ void InputHandler::getMousePosition(float &x, float &y) {
 void InputHandler::getDelta(float &dx, float &dy) {
     dx = (float) deltaX * SENSITIVITY;
     dy = (float) deltaY * SENSITIVITY;
-    printf("(%i, %i)\n", deltaX, deltaY);
     deltaX = deltaY = 0;
 }
 

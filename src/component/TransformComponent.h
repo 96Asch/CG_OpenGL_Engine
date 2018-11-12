@@ -7,16 +7,14 @@
 struct TransformComponent : public Component {
 
     TransformComponent()
-                       : Component(CompType::TRANSFORM),
-                         position(glm::vec3(0.0f)),
+                       : position(glm::vec3(0.0f)),
                          rotation(glm::vec3(0.0f)),
                          scale(glm::vec3(1.0f)) {};
 
     TransformComponent(const glm::vec3 &position,
                        const glm::vec3 &rotation,
                        const glm::vec3 &scale)
-                       : Component(CompType::TRANSFORM),
-                         position(position),
+                       : position(position),
                          rotation(rotation),
                          scale(scale) {};
 

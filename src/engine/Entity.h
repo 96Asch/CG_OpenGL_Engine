@@ -4,26 +4,31 @@
 #include <unordered_set>
 #include "../component/Component.h"
 
+class EntityFactory;
+
 class Entity {
 
 public:
-    Entity();
+    Entity(const uint32_t &id, EntityFactory* factory);
     ~Entity();
 
     template <typename T>
-    T* getComponent(const CompType &type);
+    T* getComponent();
 
-    bool hasComponent(const CompType &type);
+    bool hasComponent();
 
 private:
-    
-    std::unordered_set<Component*> components;
+    friend class EntityFactory;
+
+    uint64_t id;
+    uint64_t componentMask;
+    EntityFactory* factory;
 
 };
 
 template <typename T>
-T* Entity::getComponent(const CompType &type) {
-    s
+T* Entity::getComponent() {
+
 }
 
 #endif

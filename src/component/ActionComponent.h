@@ -12,7 +12,7 @@ enum Action {
 
 struct ActionComponent : public Component {
 
-    ActionComponent() : Component(CompType::ACTION), action(0) {};
+    ActionComponent() : action(0) {};
 
     void addAction(const Action &action) {
         this->action |= action;
