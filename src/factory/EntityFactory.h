@@ -1,103 +1,38 @@
 #ifndef ENTITYFACTORY_H_
 #define ENTITYFACTORY_H_
 
-#include <deque>
+#include <stack>
 #include <vector>
-#include <type_traits>
-#include <typeindex>
-#include <typeinfo>
-
-#include "../component/Component.h"
-#include "../datastructure/PolyMap.h"
+#include <cstdint>
+#include <string>
 
 class Entity;
-
-class ComponentFactory {
-
-public:
-
-    ComponentFactory();
-
-    ~ComponentFactory();
-
-    template <class T, typename... Args,
-    typename std::enable_if_t<std::is_base_of<Component, T>::value>>
-    T& create(Entity &entity, Args... args);
-
-    template <class T,
-    typename std::enable_if_t<std::is_base_of<Component, T>::value>>
-    void remove(Entity &entity);
-
-    void clear(Entity &entity);
-
-    template <class T,
-    typename std::enable_if_t<std::is_base_of<Component, T>::value>>
-    T* getComponent(const Entity &entity);
-
-private:
-
-    PolyMap<Component> components;
-
-};
+class ComponentManager;
 
 class EntityFactory {
 
 public:
 
-    EntityFactory();
+    EntityFactory(ComponentManager* cm);
 
     ~EntityFactory();
 
-    Entity* createEntity();
+    Entity& createEntity(const std::string &test);
 
     void removeEntity(Entity &entity);
 
-    template <typename T>
-    inline T* getComponent(const Entity &entity);
+    Entity getEntity(const uint64_t &id);
+
 
 private:
     friend class Entity;
 
+    uint64_t generateId();
+
+    uint64_t freeId;
+    std::stack<uint64_t> removedIds;
     std::vector<Entity> entities;
-    ComponentFactory compFactory;
+    ComponentManager* cm;
 };
-
-#include "../engine/Entity.h"
-
-template <typename T>
-inline T* EntityFactory::getComponent(const Entity &entity) {
-    return compFactory.getComponent<T>(entity);
-}
-
-template <class T, typename... Args,
-typename std::enable_if_t<std::is_base_of<Component, T>::value>>
-T& ComponentFactory::create(Entity &entity, Args... args) {
-    T component(args...);
-    components.insert(component);
-    entity.componentMask |= component.mask;
-    return component;
-};
-
-template <class T,
-typename std::enable_if_t<std::is_base_of<Component, T>::value>>
-void ComponentFactory::remove(Entity &entity) {
-    uint64_t id = entity.id;
-    Component removed;
-    components.remove_if([id](const T &comp){
-        return comp.owner == id;
-    }, removed);
-    entity.componentMask &= ~(1UL << removed.mask);
-}
-
-
-template <class T,
-typename std::enable_if_t<std::is_base_of<Component, T>::value>>
-T* ComponentFactory::getComponent(const Entity &entity) {
-    uint64_t id = entity.id;
-    return components.get_if<T>([id](const T &comp){
-        return comp.owner == id;
-    });
-}
-
 
 #endif

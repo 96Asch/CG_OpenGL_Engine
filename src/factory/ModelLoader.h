@@ -5,6 +5,8 @@
 #include <string>
 #include "Global.h"
 
+class Vao;
+
 namespace Factory {
 
     struct ModelData {
@@ -16,7 +18,7 @@ namespace Factory {
     };
 
 
-    bool loadOBJ(const std::string &file, ModelData &data);
+    Vao* loadOBJ(const std::string &file);
 
 }
 

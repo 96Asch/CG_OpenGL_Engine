@@ -3,7 +3,12 @@
 
 #include "Components.h"
 #include "Camera.h"
+#include "../factory/ComponentManager.h"
+#include "../factory/EntityFactory.h"
 
+class ComponentManager;
+class EntityFactory;
+class Entity;
 
 class Scene {
 
@@ -13,15 +18,17 @@ public:
 
     ~Scene();
 
-    Camera& getCamera();
+    Entity getEntity(const uint64_t &id);
 
-    ModelComponent* mod;
-    MaterialComponent* mat;
-    TransformComponent* tran;
+    ComponentManager* getComponentManager();
+
+    Camera& getCamera();
 
 private:
 
     Camera camera;
+    EntityFactory ef;
+    ComponentManager cm;
 };
 
 #endif

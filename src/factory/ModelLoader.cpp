@@ -1,20 +1,18 @@
 #include "ModelLoader.h"
 #include "ObjLoader.h"
+#include "VaoFactory.h"
+#include "../graphic/globjects/Vao.h"
 
 namespace Factory {
     namespace {
         objl::Loader loader;
     }
 
-    bool loadOBJ(const std::string &file, ModelData &data) {
+    Vao* loadOBJ(const std::string &file) {
         bool success = false;
 
         success = loader.LoadFile((Global::resources + file).c_str());
-        data.vertices.clear();
-        data.textures.clear();
-        data.normals.clear();
-        data.indices.clear();
-
+        ModelData data;
         if(success) {
             std::cout << "Mesh num: " << loader.LoadedMeshes.size() << std::endl;
             objl::Mesh mesh = loader.LoadedMeshes.front();
@@ -35,7 +33,12 @@ namespace Factory {
 
             data.indices = mesh.Indices;
         }
+        else {
+            std::cerr << "Loading object has failed!" << std::endl;
+            return nullptr;
+        }
 
-        return success;
+        return VAO->createVao(data.vertices, data.indices, data.textures, data.normals);
+
     }
 }

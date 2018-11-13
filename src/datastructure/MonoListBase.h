@@ -6,16 +6,13 @@ class MonoListBase {
 
 public:
 
-    virtual ~MonoListBase();
+    virtual ~MonoListBase() {};
 
     void insert(const Base &base);
 
     void remove(const Base &base);
 
-    void remove(const unsigned &index, Base &base  );
-
-    template <typename F>
-    Base* get_if(F &&func);
+    void remove(const unsigned &index, Base &base);
 
     template <typename F>
     void remove_if(F &&func);
@@ -32,7 +29,7 @@ private:
 
     virtual void remove_(const Base &base) = 0;
 
-    virtual void remove_(const unsigned index, Base &base) = 0;
+    virtual void remove_(const unsigned &index, Base &base) = 0;
 
     virtual char* begin_() = 0;
 
@@ -56,19 +53,6 @@ void MonoListBase<Base>::remove(const Base &base) {
 template <class Base>
 void MonoListBase<Base>::remove(const unsigned &index, Base &base) {
     remove_(index, base);
-};
-
-template <class Base>
-template <typename F>
-Base* MonoListBase<Base>::get_if(F &&func) {
-    std::size_t s = elementSize_();
-    unsigned index = 0;
-    for(auto it= begin_(), end = it + size_() * s; it != end; it += s){
-        if (func(*reinterpret_cast<Base*>(it))) {
-            return reinterpret_cast<Base*>(it);
-        }
-    }
-    return nullptr;
 };
 
 template <class Base>

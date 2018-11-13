@@ -10,6 +10,58 @@ class MonoListDerived : public MonoListBase<Base> {
 
 public:
 
+    class Iterator {
+
+    public:
+
+        typedef Iterator self_type;
+        typedef Derived value_type;
+        typedef Derived& reference;
+        typedef Derived* pointer;
+        typedef std::forward_iterator_tag iterator_category;
+        typedef int difference_type;
+
+        Iterator(pointer ptr) : ptr(ptr) {};
+
+        self_type operator++() {
+            self_type i = *this;
+            ptr++;
+            return i;
+        };
+
+        self_type operator++(int junk) {
+            ptr++;
+            return *this;
+        };
+
+        reference operator*() {
+            return *ptr;
+        };
+
+        pointer operator->() {
+            return ptr;
+        };
+
+        bool operator==(const self_type& rhs) {
+            return ptr == rhs.ptr;
+        };
+
+        bool operator!=(const self_type& rhs) {
+            return ptr != rhs.ptr;
+        };
+
+    private:
+
+        pointer ptr;
+
+    };
+
+    Iterator begin();
+
+    Iterator end();
+
+
+
 private:
 
     std::vector<Derived> list;
@@ -28,6 +80,16 @@ private:
 
     virtual size_t elementSize_() const override;
 };
+
+template <class Derived, class Base>
+typename MonoListDerived<Derived, Base>::Iterator MonoListDerived<Derived, Base>::begin() {
+    return Iterator(&list[0]);
+}
+
+template <class Derived, class Base>
+typename MonoListDerived<Derived, Base>::Iterator MonoListDerived<Derived, Base>::end() {
+    return Iterator(&list[0] + list.size());
+}
 
 template <class Derived, class Base>
 void MonoListDerived<Derived, Base>::insert_(const Base &base) {
@@ -49,13 +111,13 @@ void MonoListDerived<Derived, Base>::remove_(const unsigned &index, Base &base) 
 
 template <class Derived, class Base>
 char* MonoListDerived<Derived, Base>::begin_() {
-    return reinterpret_cast<const char *>(
-        static_cast<Base>(const_cast<Derived *>(list.data())));
+    return reinterpret_cast<char*>(
+        static_cast<Base*>(const_cast<Derived*>(list.data())));
 };
 
 template <class Derived, class Base>
 const char* MonoListDerived<Derived, Base>::begin_() const {
-    return reinterpret_cast<const char *>(
+    return reinterpret_cast<const char*>(
         static_cast<const Base*>(list.data()));
 };
 

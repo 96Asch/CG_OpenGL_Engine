@@ -4,34 +4,30 @@
 #include "../component/Component.h"
 
 class EntityFactory;
-class ComponentFactory;
+class ComponentManager;
 
 class Entity {
 
 public:
-    Entity(const uint32_t &id, EntityFactory* factory);
-    ~Entity();
 
-    template <typename T>
-    inline T* getComponent();
+    Entity();
+
+    ~Entity();
 
     bool hasComponent(const ComponentMask &mask);
 
+    bool isEntity(const uint64_t &id);
+
 private:
     friend class EntityFactory;
-    friend class ComponentFactory;
+    friend class ComponentManager;
+
+    Entity(const uint32_t &id, EntityFactory* factory);
 
     uint64_t id;
     uint64_t componentMask;
     EntityFactory* factory;
 
 };
-
-#include "../factory/EntityFactory.h"
-
-template <class T>
-T* Entity::getComponent() {
-    return factory->getComponent<T>(this);
-}
 
 #endif

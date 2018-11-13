@@ -15,7 +15,7 @@ enum ComponentMask {
 
 struct Component {
 
-    Component() :mask(ComponentMask::NIL), isActive(true) {};
+    Component() :mask(ComponentMask::NIL) {};
 
     ComponentMask mask;
     uint64_t owner;

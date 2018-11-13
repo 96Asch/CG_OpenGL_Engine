@@ -3,6 +3,8 @@
 
 #include <memory>
 #include <type_traits>
+#include <typeindex>
+#include <typeinfo>
 #include <map>
 
 #include "MonoListBase.h"
@@ -25,11 +27,6 @@ public:
                     std::is_base_of<
                         Base, Derived>::value>::type* =  0);
 
-    template <typename F, class Derived>
-    Derived* get_if(F &&func, typename std::enable_if<
-                                std::is_base_of<
-                                    Base, Derived>::value>::type* =  0);
-
     template <typename F>
     void remove_if(F &&func, Base &base);
 
@@ -38,6 +35,15 @@ public:
 
     template <typename F>
     F for_each(F &&func) const;
+
+    template <class Derived>
+    typename MonoListDerived<Derived, Base>::Iterator begin();
+
+    template <class Derived>
+    typename MonoListDerived<Derived, Base>::Iterator end();
+
+    template <class Derived>
+    MonoListDerived<Derived, Base>& getList();
 
 private:
 
@@ -51,7 +57,7 @@ template <class Base>
 template <class Derived>
 void PolyMap<Base>::insert(const Derived& derived,
                             typename std::enable_if<
-                                std::is_base_of<
+                                    std::is_base_of<
                                     Base, Derived>::value>::type*)
 {
     auto &listPointer = polyMap[typeid(derived)];
@@ -72,16 +78,6 @@ void PolyMap<Base>::remove(const Derived& derived,
         listPointer->remove(derived);
 };
 
-template <class Base>
-template <typename F, class Derived>
-Derived* PolyMap<Base>::get_if(F &&func, typename std::enable_if<
-                    std::is_base_of<
-                        Base, Derived>::value>::type*)
-{
-    auto &listPointer = polyMap[std::type_index(typeid(Derived))];
-    if(listPointer)
-        return static_cast<Derived*>(listPointer->get_if(func));
-}
 
 template <class Base>
 template <typename F>
@@ -106,5 +102,25 @@ F PolyMap<Base>::for_each(F &&func) const {
     return std::move(func);
 };
 
+template <class Base>
+template <class Derived>
+typename MonoListDerived<Derived, Base>::Iterator PolyMap<Base>::begin() {
+    auto &listPointer = polyMap[std::type_index(typeid(Derived))];
+    return static_cast<MonoListDerived<Derived, Base>*>(listPointer.get())->begin();
+}
+
+template <class Base>
+template <class Derived>
+typename MonoListDerived<Derived, Base>::Iterator PolyMap<Base>::end() {
+    auto &listPointer = polyMap[std::type_index(typeid(Derived))];
+    return static_cast<MonoListDerived<Derived, Base>*>(listPointer.get())->end();
+}
+
+template <class Base>
+template <class Derived>
+MonoListDerived<Derived, Base>& PolyMap<Base>::getList() {
+    auto &listPointer = polyMap[std::type_index(typeid(Derived))];
+    return *(static_cast<MonoListDerived<Derived, Base>*>(listPointer.get()));
+}
 
 #endif
