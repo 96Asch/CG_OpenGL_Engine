@@ -25,11 +25,19 @@ public:
                     std::is_base_of<
                         Base, Derived>::value>::type* =  0);
 
-    template <typename F>
-    F for_each(F f);
+    template <typename F, class Derived>
+    Derived* get_if(F &&func, typename std::enable_if<
+                                std::is_base_of<
+                                    Base, Derived>::value>::type* =  0);
 
     template <typename F>
-    F for_each(F f) const;
+    void remove_if(F &&func, Base &base);
+
+    template <typename F>
+    F for_each(F &&func);
+
+    template <typename F>
+    F for_each(F &&func) const;
 
 private:
 
@@ -65,19 +73,37 @@ void PolyMap<Base>::remove(const Derived& derived,
 };
 
 template <class Base>
+template <typename F, class Derived>
+Derived* PolyMap<Base>::get_if(F &&func, typename std::enable_if<
+                    std::is_base_of<
+                        Base, Derived>::value>::type*)
+{
+    auto &listPointer = polyMap[std::type_index(typeid(Derived))];
+    if(listPointer)
+        return static_cast<Derived*>(listPointer->get_if(func));
+}
+
+template <class Base>
 template <typename F>
-F PolyMap<Base>::for_each(F f) {
+void PolyMap<Base>::remove_if(F &&func, Base &base) {
     for(const auto &pointer : polyMap)
-        pointer.second->for_each(f);
-    return std::move(f);
+        pointer.second->remove_if(func, base);
+}
+
+template <class Base>
+template <typename F>
+F PolyMap<Base>::for_each(F &&func) {
+    for(const auto &pointer : polyMap)
+        pointer.second->for_each(func);
+    return std::move(func);
 };
 
 template <class Base>
 template <typename F>
-F PolyMap<Base>::for_each(F f) const {
+F PolyMap<Base>::for_each(F &&func) const {
     for(const auto &pointer : polyMap)
-        const_cast<const List&>(pointer->second).for_each(f);
-    return std::move(f);
+        const_cast<const List&>(pointer->second).for_each(func);
+    return std::move(func);
 };
 
 

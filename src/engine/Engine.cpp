@@ -6,9 +6,8 @@
 
 Engine::Engine(const int &width,
                const int &height,
-               const std::string &title,
-               const bool &vsync) : window(Window(&input)) {
-    if(!window.init(width, height, title, vsync)) {
+               const std::string &title) : window(Window(&input)) {
+    if(!window.init(width, height, title)) {
         fprintf(stderr, "%s\n", "Windows failed to initialize!");
         exit(-1);
     }

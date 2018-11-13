@@ -1,10 +1,10 @@
 #ifndef ENTITY_H_
 #define ENTITY_H_
 
-#include <unordered_set>
 #include "../component/Component.h"
 
 class EntityFactory;
+class ComponentFactory;
 
 class Entity {
 
@@ -13,12 +13,13 @@ public:
     ~Entity();
 
     template <typename T>
-    T* getComponent();
+    inline T* getComponent();
 
-    bool hasComponent();
+    bool hasComponent(const ComponentMask &mask);
 
 private:
     friend class EntityFactory;
+    friend class ComponentFactory;
 
     uint64_t id;
     uint64_t componentMask;
@@ -26,9 +27,11 @@ private:
 
 };
 
-template <typename T>
-T* Entity::getComponent() {
+#include "../factory/EntityFactory.h"
 
+template <class T>
+T* Entity::getComponent() {
+    return factory->getComponent<T>(this);
 }
 
 #endif

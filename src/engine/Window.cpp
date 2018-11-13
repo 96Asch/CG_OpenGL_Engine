@@ -10,8 +10,7 @@ Window::~Window(){
 
 bool Window::init(const int &width,
                   const int &height,
-                  const std::string &title,
-                  const bool &vsync) {
+                  const std::string &title) {
     if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
   		std::cerr << "Unable to initialize SDL: " << SDL_GetError() << std::endl;
   		return false;
@@ -58,10 +57,6 @@ void Window::cleanup() {
 
 bool Window::isRunning() const {
     return running;
-}
-
-void Window::setVsync(const bool &vsync) {
-    // SDL_GL_SetSwapInterval(vsync);
 }
 
 void Window::pollEvents() {

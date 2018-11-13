@@ -4,17 +4,18 @@
 #include <string>
 
 enum ComponentMask {
-    ACTION      = 1,
-    MATERIAL    = 1u << 1,
-    MODEL       = 1u << 2,
-    MOUSE       = 1u << 3,
-    TRANSFORM   = 1u << 4,
-    VELOCITY    = 1u << 5
+    NIL         = 0,
+    ACTION      = 1UL,
+    MATERIAL    = 1UL << 1,
+    MODEL       = 1UL << 2,
+    MOUSE       = 1UL << 3,
+    TRANSFORM   = 1UL << 4,
+    VELOCITY    = 1UL << 5
 };
 
 struct Component {
 
-    Component() : isActive(true) {};
+    Component() :mask(ComponentMask::NIL), isActive(true) {};
 
     ComponentMask mask;
     uint64_t owner;

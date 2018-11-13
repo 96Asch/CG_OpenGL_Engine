@@ -15,8 +15,7 @@ class Engine {
 public:
     Engine(const int &width,
            const int &height,
-           const std::string &title,
-           const bool &vsync);
+           const std::string &title);
 
     ~Engine();
 

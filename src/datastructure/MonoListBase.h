@@ -12,16 +12,19 @@ public:
 
     void remove(const Base &base);
 
-    void remove(const unsigned &index);
+    void remove(const unsigned &index, Base &base  );
 
     template <typename F>
-    void remove_if(F &func);
+    Base* get_if(F &&func);
 
     template <typename F>
-    void for_each(F &func);
+    void remove_if(F &&func);
 
     template <typename F>
-    void for_each(F &func) const;
+    void for_each(F &&func);
+
+    template <typename F>
+    void for_each(F &&func) const;
 
 private:
 
@@ -29,7 +32,7 @@ private:
 
     virtual void remove_(const Base &base) = 0;
 
-    virtual void remove_(const unsigned index) = 0;
+    virtual void remove_(const unsigned index, Base &base) = 0;
 
     virtual char* begin_() = 0;
 
@@ -51,13 +54,26 @@ void MonoListBase<Base>::remove(const Base &base) {
 };
 
 template <class Base>
-void MonoListBase<Base>::remove(const unsigned &index) {
-    remove_(index);
+void MonoListBase<Base>::remove(const unsigned &index, Base &base) {
+    remove_(index, base);
 };
 
 template <class Base>
 template <typename F>
-void MonoListBase<Base>::remove_if(F &func) {
+Base* MonoListBase<Base>::get_if(F &&func) {
+    std::size_t s = elementSize_();
+    unsigned index = 0;
+    for(auto it= begin_(), end = it + size_() * s; it != end; it += s){
+        if (func(*reinterpret_cast<Base*>(it))) {
+            return reinterpret_cast<Base*>(it);
+        }
+    }
+    return nullptr;
+};
+
+template <class Base>
+template <typename F>
+void MonoListBase<Base>::remove_if(F &&func) {
     std::size_t s = elementSize_();
     unsigned index = 0;
     for(auto it= begin_(), end = it + size_() * s; it != end; it += s){
@@ -70,7 +86,7 @@ void MonoListBase<Base>::remove_if(F &func) {
 
 template <class Base>
 template <typename F>
-void MonoListBase<Base>::for_each(F &func){
+void MonoListBase<Base>::for_each(F &&func){
    std::size_t s = elementSize_();
    for(auto it= begin_(), end = it + size_() * s; it != end; it += s){
        func(*reinterpret_cast<Base*>(it));
@@ -79,7 +95,7 @@ void MonoListBase<Base>::for_each(F &func){
 
 template <class Base>
 template <typename F>
-void MonoListBase<Base>::for_each(F &func) const{
+void MonoListBase<Base>::for_each(F &&func) const{
    std::size_t s = elementSize_();
    for(auto it= begin_(), end = it + size_() * s; it != end; it += s){
        func(*reinterpret_cast<const Base*>(it));

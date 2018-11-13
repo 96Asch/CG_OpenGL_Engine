@@ -18,7 +18,7 @@ private:
 
     virtual void remove_(const Base &base) override;
 
-    virtual void remove_(const unsigned &index) override;
+    virtual void remove_(const unsigned &index, Base &base) override;
 
     virtual char* begin_() override;
 
@@ -40,9 +40,11 @@ void MonoListDerived<Derived, Base>::remove_(const Base &base) {
 };
 
 template <class Derived, class Base>
-void MonoListDerived<Derived, Base>::remove_(const unsigned &index) {
-    if(0 < index && index < list.size())
+void MonoListDerived<Derived, Base>::remove_(const unsigned &index, Base &base) {
+    if(0 < index && index < list.size()) {
+        base = list[index];
         list.erase(list.begin() + index);
+    }
 };
 
 template <class Derived, class Base>

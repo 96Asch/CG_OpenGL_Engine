@@ -27,7 +27,7 @@ int main(void) {
     Global::nearPlane = 0.1f;
     Global::farPlane = 100.0f;
 
-    Engine engine(Global::width, Global::height, "First screen!", true);
+    Engine engine(Global::width, Global::height, "First screen!");
     engine.add(new InputSystem());
     engine.add(new PhysicsSystem());
     engine.add(new GraphicSystem());

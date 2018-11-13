@@ -16,15 +16,13 @@ public:
 
     bool init(const int &width,
               const int &height,
-              const std::string &title,
-              const bool &vsync);
+              const std::string &title);
+
     void update();
 
     void cleanup();
 
     bool isRunning() const;
-
-    void setVsync(const bool &vsync);
 
     void pollEvents();
 
