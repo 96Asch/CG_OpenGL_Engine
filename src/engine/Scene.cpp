@@ -5,12 +5,11 @@
 #include "../factory/TextureFactory.h"
 #include "../factory/VaoFactory.h"
 #include "../factory/ModelLoader.h"
+#include "../factory/EntityFactory.h"
 
+Scene::Scene() {
 
-Scene::Scene() : ef(&cm) {
-
-    ef.createEntity("models/cube.obj");
-    ef.createEntity("models/barrel.obj");
+    std::cout << ef.createEntity("models/dragon.obj") << std::endl;
 
 }
 
@@ -22,8 +21,8 @@ Entity Scene::getEntity(const uint64_t &id) {
     return ef.getEntity(id);
 }
 
-ComponentManager* Scene::getComponentManager() {
-    return &cm;
+EntityFactory& Scene::getEntities() {
+    return ef;
 }
 
 Camera& Scene::getCamera() {

@@ -5,6 +5,7 @@
 #include <type_traits>
 #include <typeindex>
 #include <typeinfo>
+#include <iostream>
 #include <map>
 
 #include "MonoListBase.h"
@@ -36,11 +37,8 @@ public:
     template <typename F>
     F for_each(F &&func) const;
 
-    template <class Derived>
-    typename MonoListDerived<Derived, Base>::Iterator begin();
-
-    template <class Derived>
-    typename MonoListDerived<Derived, Base>::Iterator end();
+    template <class Derived, typename F>
+    typename MonoListDerived<Derived, Base>::Iterator find_if(F &&func);
 
     template <class Derived>
     MonoListDerived<Derived, Base>& getList();
@@ -101,20 +99,6 @@ F PolyMap<Base>::for_each(F &&func) const {
         const_cast<const List&>(pointer->second).for_each(func);
     return std::move(func);
 };
-
-template <class Base>
-template <class Derived>
-typename MonoListDerived<Derived, Base>::Iterator PolyMap<Base>::begin() {
-    auto &listPointer = polyMap[std::type_index(typeid(Derived))];
-    return static_cast<MonoListDerived<Derived, Base>*>(listPointer.get())->begin();
-}
-
-template <class Base>
-template <class Derived>
-typename MonoListDerived<Derived, Base>::Iterator PolyMap<Base>::end() {
-    auto &listPointer = polyMap[std::type_index(typeid(Derived))];
-    return static_cast<MonoListDerived<Derived, Base>*>(listPointer.get())->end();
-}
 
 template <class Base>
 template <class Derived>

@@ -5,7 +5,7 @@
 
 #include "../factory/TextureFactory.h"
 
-struct MaterialComponent : public Component {
+struct MaterialComponent : public InterComponent<MaterialComponent> {
 
     MaterialComponent(const std::string &source)
                       : source(source),

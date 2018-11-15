@@ -17,6 +17,7 @@ void PhysicsSystem::init() {
 void PhysicsSystem::update(Scene* scene) {
     applyRotation(scene->getCamera());
     applyMovement(scene->getCamera());
+
 }
 
 void PhysicsSystem::cleanup() {
@@ -48,20 +49,23 @@ void PhysicsSystem::applyMovement(Camera &camera) {
     glm::vec3 x(0.0f), y(0.0f), z(0.0f);
     camera.velocity.velocity = glm::vec3(0.0f);
     camera.lastPosition = camera.position;
-    if(camera.action.action != 0) {
-        if(camera.action.action & (Action::MOVE_FORWARD | Action::MOVE_BACKWARD)) {
+    if(camera.action.action.any()) {
+        if(camera.action.action.test(Action::MOVE_FORWARD)
+            ||camera.action.action.test(Action::MOVE_BACKWARD)) {
             z = camera.target * camera.velocity.speed;
-            if(camera.action.action & Action::MOVE_BACKWARD)
+            if(camera.action.action.test(Action::MOVE_BACKWARD))
                 z *= -1;
         }
-        if(camera.action.action & (Action::MOVE_LEFT | Action::MOVE_RIGHT)) {
+        if(camera.action.action.test(Action::MOVE_LEFT)
+            ||camera.action.action.test(Action::MOVE_RIGHT)) {
             x = camera.right * camera.velocity.speed;
-            if(camera.action.action & Action::MOVE_LEFT)
+            if(camera.action.action.test(Action::MOVE_LEFT))
                 x *= -1;
         }
-        if(camera.action.action & (Action::MOVE_UP | Action::MOVE_DOWN)) {
+        if(camera.action.action.test(Action::MOVE_UP)
+            ||camera.action.action.test(Action::MOVE_DOWN)) {
             z = camera.up * camera.velocity.speed;
-            if(camera.action.action & Action::MOVE_DOWN)
+            if(camera.action.action.test(Action::MOVE_DOWN))
                 z *= -1;
         }
         camera.velocity.velocity = x + y + z;

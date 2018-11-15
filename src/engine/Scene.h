@@ -3,7 +3,6 @@
 
 #include "Components.h"
 #include "Camera.h"
-#include "../factory/ComponentManager.h"
 #include "../factory/EntityFactory.h"
 
 class ComponentManager;
@@ -20,7 +19,7 @@ public:
 
     Entity getEntity(const uint64_t &id);
 
-    ComponentManager* getComponentManager();
+    EntityFactory& getEntities();
 
     Camera& getCamera();
 
@@ -28,7 +27,7 @@ private:
 
     Camera camera;
     EntityFactory ef;
-    ComponentManager cm;
+
 };
 
 #endif

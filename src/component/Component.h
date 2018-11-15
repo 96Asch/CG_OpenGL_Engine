@@ -2,29 +2,35 @@
 #define COMPONENT_H_
 
 #include <string>
-
-enum ComponentMask {
-    NIL         = 0,
-    ACTION      = 1UL,
-    MATERIAL    = 1UL << 1,
-    MODEL       = 1UL << 2,
-    MOUSE       = 1UL << 3,
-    TRANSFORM   = 1UL << 4,
-    VELOCITY    = 1UL << 5
-};
+#include <iostream>
+#include "Global.h"
 
 struct Component {
 
-    Component() :mask(ComponentMask::NIL) {};
-
-    ComponentMask mask;
     uint64_t owner;
     bool isActive;
 
     bool operator==(const Component &rhs) {
-        return (rhs.mask == this->mask && rhs.owner == this->owner);
+        return (rhs.owner == this->owner);
     };
 
+    static size_t bitCounter;
+
+};
+
+template <class Derived>
+struct InterComponent : public Component {
+    static size_t bit();
+};
+
+template <class Derived>
+size_t InterComponent<Derived>::bit() {
+    static size_t bit = bitCounter++;
+    if(bit > Global::NUM_BITS) {
+        std::cerr << "Number of components exceeded: " << Global::NUM_BITS << std::endl;
+        exit(-1);
+    }
+    return bit;
 };
 
 #endif

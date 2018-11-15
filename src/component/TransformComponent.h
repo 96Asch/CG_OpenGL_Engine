@@ -4,7 +4,7 @@
 #include "Component.h"
 #include <glm/vec3.hpp>
 
-struct TransformComponent : public Component {
+struct TransformComponent : public InterComponent<TransformComponent> {
 
     TransformComponent()
                        : position(glm::vec3(0.0f)),

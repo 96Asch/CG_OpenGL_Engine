@@ -5,7 +5,7 @@
 #include "../graphic/globjects/Vao.h"
 #include "../factory/ModelLoader.h"
 
-struct ModelComponent : public Component {
+struct ModelComponent : public InterComponent<ModelComponent> {
 
     ModelComponent(const std::string &source)
                    : source(source), vao(Factory::loadOBJ(source)) {};

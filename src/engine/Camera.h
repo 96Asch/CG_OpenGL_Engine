@@ -7,7 +7,8 @@
 
 struct Camera {
 
-    Camera() : position(glm::vec3(0.0f)),
+    Camera() : velocity(0.5f), 
+               position(glm::vec3(0.0f)),
                lastPosition(glm::vec3(0.0f)),
                target(glm::vec3(0.0f, 0.0f, -1.0f)),
                lastTarget(glm::vec3(0.0f)),

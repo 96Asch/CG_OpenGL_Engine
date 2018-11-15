@@ -19,6 +19,8 @@ namespace Global {
     extern float aspectRatio;
     extern float nearPlane;
     extern float farPlane;
+
+    const size_t NUM_BITS = 64;
 }
 
 

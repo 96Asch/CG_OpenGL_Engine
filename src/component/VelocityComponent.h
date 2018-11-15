@@ -1,29 +1,24 @@
 #ifndef VELOCITYCOMPONENT_H_
 #define VELOCITYCOMPONENT_H_
 
+#include "Component.h"
+
 #include <glm/vec3.hpp>
 
-struct VelocityComponent : public Component {
+struct VelocityComponent : public InterComponent<VelocityComponent> {
 
     VelocityComponent()
             : velocity(glm::vec3(0.0f)),
-              speed(0.0f),
-              maxSpeed(1.0f),
-              acceleration(0.5f)
+              speed(1.0f)
               {};
 
-    VelocityComponent(const glm::vec3 &velocity,
-                      const float &maxSpeed,
-                      const float &acceleration)
-            : velocity(velocity),
-              speed(0.0f),
-              maxSpeed(maxSpeed),
-              acceleration(acceleration)
+    VelocityComponent(float speed)
+            : velocity(glm::vec3(0.0f)),
+              speed(speed)
               {};
 
     glm::vec3 velocity;
-    float speed, maxSpeed;
-    float acceleration;
+    float speed;
 };
 
 #endif

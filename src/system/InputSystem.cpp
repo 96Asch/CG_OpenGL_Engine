@@ -36,7 +36,7 @@ void InputSystem::handleMouse(MouseComponent* mouse) {
 }
 
 void InputSystem::handleKeys(ActionComponent* action) {
-    action->action = 0;
+    action->action.reset();
     if(inputHandler->isKeyRepeated(SDLK_w)) {
         action->addAction(Action::MOVE_FORWARD);
     }

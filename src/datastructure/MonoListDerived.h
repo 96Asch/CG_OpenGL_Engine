@@ -29,7 +29,7 @@ public:
             return i;
         };
 
-        self_type operator++(int junk) {
+        self_type operator++(int) {
             ptr++;
             return *this;
         };

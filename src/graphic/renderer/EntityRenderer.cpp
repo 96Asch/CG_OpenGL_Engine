@@ -32,16 +32,17 @@ void EntityRenderer::render(const float &interpolation,
                             const glm::mat4 &view,
                             Scene *scene) {
     preRender(interpolation, view, scene);
-    Entity entity = scene->getEntity(1);
 
-    // scene->mod->vao->bind(0,1);
-    // buildModelMatrix(scene->tran);
-    // shader.getUniform<UniformMat4>("modelMatrix")->load(model);
-    // glActiveTexture(GL_TEXTURE0);
-    // glBindTexture(GL_TEXTURE_2D, scene->mat->id);
-    // glDrawElements(GL_TRIANGLES, scene->mod->vao->getIndexCount(), GL_UNSIGNED_INT, 0);
-    // scene->mod->vao->unbind(0,1);
+    for(auto& e : scene->getEntities().withComponents<ModelComponent, TransformComponent, MaterialComponent>()) {
 
+        e.getComponent<ModelComponent>()->vao->bind(0,1);
+        buildModelMatrix(e.getComponent<TransformComponent>());
+        shader.getUniform<UniformMat4>("modelMatrix")->load(model);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, e.getComponent<MaterialComponent>()->id);
+        glDrawElements(GL_TRIANGLES, e.getComponent<ModelComponent>()->vao->getIndexCount(), GL_UNSIGNED_INT, 0);
+        e.getComponent<ModelComponent>()->vao->unbind(0,1);
+    }
     postRender(interpolation, scene);
 };
 
