@@ -1,216 +1,275 @@
 #ifndef ENTITYFACTORY_H_
 #define ENTITYFACTORY_H_
 
-#include <stack>
-#include <vector>
-#include <cstdint>
-#include <string>
 #include <bitset>
-#include <map>
+#include <vector>
+#include <iterator>
+#include <list>
 
-#include "../datastructure/PolyMap.h"
 #include "../component/Component.h"
+#include "../allocator/TypeAllocator.h"
 #include "Global.h"
-
+#include "../engine/EntityId.h"
+#include "../util/Serializable.h"
 
 typedef std::bitset<Global::NUM_BITS> ComponentMask;
-
 class Entity;
 
-class EntityFactory {
+class BaseView;
+
+class EntityFactory : public Serializable{
 
 public:
+	EntityFactory();
+	~EntityFactory();
 
-    template <class Derived>
-    class BaseIterator {
-
-    public:
-
-        typedef Derived self_type;
+	template <typename T>
+	class ViewIterator {
+	public:
+        typedef ViewIterator self_type;
         typedef Entity value_type;
         typedef Entity& reference;
-        typedef Entity* pointer;
         typedef std::forward_iterator_tag iterator_category;
         typedef int difference_type;
 
-        self_type& operator++() {
-            next();
-            return *static_cast<Derived*>(this);
-        };
+		self_type& operator++();
 
-        reference operator*() {
-            return ef->getEntity(index);
-        };
+		bool operator==(const T &rhs) const;
 
-        bool operator==(const self_type& rhs) {
-            return index == rhs.index;
-        };
+        bool operator!=(const T &rhs) const;
 
-        bool operator!=(const self_type& rhs) {
-            return index != rhs.index;
-        };
+		value_type operator*();
 
-    protected:
+		const value_type operator*() const;
 
-        BaseIterator(EntityFactory* ef, const ComponentMask &mask, const size_t &index)
-        : ef(ef), mask(mask), index(index) {};
+	protected:
 
-        void next();
+		ViewIterator(EntityFactory* ef, const ComponentMask mask, uint32_t index);
 
-        bool condition();
+		void next();
 
+		inline bool condition();
 
+		inline bool valid();
+
+	private:
         EntityFactory* ef;
-        ComponentMask mask;
-        size_t index;
-    };
+		ComponentMask mask;
+		uint32_t index;
+		uint32_t capacity;
+		std::list<uint32_t>::iterator freeIterator;
+	};
 
-    class EntityGroup {
 
-    public:
+	class BaseView {
+	public:
+		class Iterator : public ViewIterator<Iterator> {
+		public:
+			Iterator(EntityFactory *ef, const ComponentMask &mask, const uint32_t &index)
+                : ViewIterator<Iterator>(ef, mask, index) {
+					ViewIterator<Iterator>::next();
+				}
+		};
 
-        class MaskIterator : public BaseIterator<MaskIterator> {
 
-        public:
-            MaskIterator(EntityFactory* ef,
-                         const ComponentMask &mask,
-                         const size_t &index)
-                : BaseIterator(ef, mask, index) {
-                BaseIterator<MaskIterator>::next();
-            }
+		Iterator begin() { return Iterator(ef, mask, 0); }
+		Iterator end() { return Iterator(ef, mask, uint32_t(ef->capacity())); }
+		const Iterator begin() const { return Iterator(ef, mask, 0); }
+		const Iterator end() const { return Iterator(ef, mask, ef->capacity()); }
 
-        private:
+	private:
+		friend class EntityFactory;
 
-        };
+		BaseView(EntityFactory *ef) : ef(ef) { mask.set(); }
+		BaseView(EntityFactory *ef, ComponentMask mask) : ef(ef), mask(mask) {}
 
-        MaskIterator begin() { return MaskIterator(ef, mask, 0); };
+		EntityFactory *ef;
+		ComponentMask mask;
+	};
 
-        MaskIterator end() { return MaskIterator(ef, mask, ef->numEntities()); };
+	//TODO Future implementation
+	virtual void serialize(std::ofstream &stream) override;
 
-        const MaskIterator begin() const { return MaskIterator(ef, mask, 0); };
+	virtual bool deserialize(std::ifstream &stream) override;
 
-        const MaskIterator end() const { return MaskIterator(ef, mask, ef->numEntities()); };
+	Entity createEntity();
+	
+	void destroyEntity(const EntityId &id);
 
-    private:
-        friend class EntityFactory;
 
-        EntityGroup(EntityFactory* ef, const ComponentMask &mask) : ef(ef), mask(mask) {};
+	template <typename T>
+	void addComponent(const EntityId &id, T &&component){
+		const size_t bit = T::bit();
+		TypeAllocator<T> *pool = AccomodateComponent<T>();
+		new(pool->get(id.index)) T(component);
+		masks[id.index].set(bit);
+	}
 
-        EntityFactory* ef;
-        ComponentMask mask;
 
-    };
+	template <typename T>
+	T * getComponent(const EntityId &id) {
+		BlockAllocator * pool = components[T::bit()];
+		return static_cast<T*>(pool->get(id.index));
+	}
 
-    EntityFactory();
+	template <typename T>
+	T * getComponent(const EntityId &id) const{
+		BlockAllocator * pool = components[T::bit()];
+		return static_cast<const T*>(pool->get(id.index));
+	}
 
-    ~EntityFactory();
+	template <typename... Ts>
+	BaseView withComponents() {
+		auto mask = componentMask<Ts...>();
+		return BaseView(this, mask);
+	}
 
-    Entity& createEntity(const std::string &test);
+	template<typename T>
+	bool hasComponent(const EntityId &id){
+		const size_t bit = T::bit();
+		if (bit >= components.size())
+			return false;
 
-    void removeEntity(Entity &entity);
+        BlockAllocator * pool = components[bit];
 
-    Entity& getEntity(const size_t &index);
+		if (!pool || !masks[id.index][bit])
+			return false;
+		return true;
+
+	}
+
+	template <typename T>
+	void removeComponent(const EntityId &id){
+		const size_t bit = T::bit();
+		BlockAllocator* pool = components[bit];
+		masks[id.index].reset(bit);
+		pool->destroy(id.index);
+	}
+
+
+	EntityId createId(uint32_t id){
+		return {id, entityVersion[id]};
+	}
+
+	bool valid(const EntityId &id);
+
+	size_t capacity();
 
     size_t numEntities();
 
-    template <class T>
-    void addComponent(Entity &entity, T &&component);
+    Entity get(const EntityId &id);
 
-    template <class T>
-    void removeComponent(Entity &entity);
-
-    template <class T>
-    MonoListDerived<T, Component>& getComponents();
-
-    template <class T, typename... Ts>
-    EntityGroup withComponents();
-
-    template <typename... T>
-    bool hasComponent(const Entity &entity);
-
-    template <class T>
-    T* getComponent(const Entity &entity);
+    ComponentMask getMask(const EntityId &id);
 
 private:
+	template <typename T>
+	TypeAllocator<T>* AccomodateComponent(){
+		const size_t bit = T::bit();
+		if (components.size() <= bit) {
+			components.resize(bit + 1, nullptr);
+		}
+		if (!components[bit]) {
+			TypeAllocator<T> *pool = new TypeAllocator<T>();
+			pool->expand(index);
+			components[bit] = pool;
+		}
+		return static_cast<TypeAllocator<T>*>(components[bit]);
+	}
 
-    uint64_t freeId;
-    std::stack<uint64_t> removedIds;
-    std::vector<Entity> entities;
-    PolyMap<Component> components;
+	void AccomodateEntity(uint32_t id){
+		if (masks.size() <= id){
+			masks.resize(id + 1);
+			entityVersion.resize(id + 1);
 
-    uint64_t generateId();
+			for (BlockAllocator * pool : components){
+				if (pool)
+					pool->expand(id + 1);
+			}
+		}
+	}
 
-    template <class T>
-    ComponentMask componentMask();
+	ComponentMask componentMask(const EntityId &id) {
+		return masks.at(id.index);
+	}
 
-    template <class T1, class T2, class... Ts>
-    ComponentMask componentMask();
+	template <typename T>
+	ComponentMask componentMask() {
+		ComponentMask mask;
+		mask.set(T::bit());
+		return mask;
+	}
+
+	template <typename T, typename T1, typename... Ts>
+	ComponentMask componentMask() {
+		return componentMask<T>() | componentMask<T1, Ts...>();
+	}
+
+	uint32_t index;
+	std::vector<ComponentMask> masks;
+	std::vector<BlockAllocator*> components;
+	std::vector<uint32_t> entityVersion;
+	std::list<uint32_t> freeList;
 };
 
 #include "../engine/Entity.h"
 
-template <class Derived>
-void EntityFactory::BaseIterator<Derived>::next() {
-    ++index;
-    while(index < ef->numEntities() && !condition())
-        ++index;
+template <typename T>
+typename EntityFactory::ViewIterator<T>::self_type&
+EntityFactory::ViewIterator<T>::operator++(){
+    index++;
+    next();
+    return *static_cast<T*>(this);
 }
 
-template <class Derived>
-bool EntityFactory::BaseIterator<Derived>::condition() {
-    return ef->getEntity(index).hasComponent(mask);
-}
-
-
-template <class T>
-void EntityFactory::addComponent(Entity &entity, T &&component) {
-    entity.componentMask |= componentMask<T>();
-    component.owner = entity.id;
-    components.insert(component);
+template <typename T>
+bool EntityFactory::ViewIterator<T>::operator==(const T & rhs) const {
+    return rhs.index == index;
 };
 
-template <class T>
-void EntityFactory::removeComponent(Entity &entity) {
-    uint64_t id = entity.id;
-    Component removed;
-    entity.componentMask &= ~(1UL << componentMask<T>());
+template <typename T>
+bool EntityFactory::ViewIterator<T>::operator!=(const T & rhs) const {
+    return rhs.index != index;
+};
+
+template <typename T>
+typename EntityFactory::ViewIterator<T>::value_type
+EntityFactory::ViewIterator<T>::operator*(){
+    return Entity(ef->createId(index), ef);
 }
 
-template <class T>
-MonoListDerived<T, Component>& EntityFactory::getComponents() {
-    return components.getList<T>();
+template <typename T>
+const typename EntityFactory::ViewIterator<T>::value_type
+EntityFactory::ViewIterator<T>::operator*() const {
+    return Entity(ef->createId(index), ef);
 }
 
-template <class T, typename... Ts>
-EntityFactory::EntityGroup EntityFactory::withComponents() {
-    auto mask = componentMask<T, Ts...>();
-    return EntityGroup(this, mask);
-}
+template <typename T>
+EntityFactory::ViewIterator<T>::ViewIterator(EntityFactory* ef,
+                                             const ComponentMask mask,
+                                             uint32_t index)
+    : ef(ef), mask(mask), index(index), capacity(ef->capacity()) {
+    ef->freeList.sort();
+    freeIterator = ef->freeList.begin();
+};
 
-template <typename... T>
-bool EntityFactory::hasComponent(const Entity &entity) {
-    auto mask = componentMask<T...>();
-    return (entity.componentMask & mask) == mask;
-}
+template <typename T>
+void EntityFactory::ViewIterator<T>::next() {
+    while (index < capacity && !condition())
+        ++index;
+};
 
-template <class T>
-T* EntityFactory::getComponent(const Entity &entity) {
-    for(auto &c : components.getList<T>())
-        if(c.owner == entity.id)
-            return &c;
-    return nullptr;
-}
+template <typename T>
+inline bool EntityFactory::ViewIterator<T>::condition() {
+    return (valid()) && (ef->masks[index] & mask) == mask;
+};
 
-template <class T>
-ComponentMask EntityFactory::componentMask() {
-    ComponentMask mask;
-    mask.set(T::bit());
-    return mask;
-}
-
-template <class T1, class T2, class... Ts>
-ComponentMask EntityFactory::componentMask() {
-    return componentMask<T1>() | componentMask<T2, Ts...>();
-}
+template <typename T>
+inline bool EntityFactory::ViewIterator<T>::valid() {
+    if (freeIterator != ef->freeList.end() && *freeIterator == index) {
+        ++freeIterator;
+        return false;
+    }
+    return true;
+};
 
 #endif

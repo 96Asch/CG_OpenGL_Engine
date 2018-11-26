@@ -19,7 +19,7 @@ public:
 
     virtual void init() override;
 
-    void render(const float &interpolation, Scene *scene);
+    void render(const float &interpolation, Scene* scene);
 
     virtual void cleanup() override;
 
@@ -29,7 +29,7 @@ private:
 
     glm::mat4 view, projection;
 
-    void buildViewMatrix(const float &interpolation, const Camera &camera);
+    void buildViewMatrix(const float &interpolation, Scene* scene);
 
     void buildProjectionMatrix();
 

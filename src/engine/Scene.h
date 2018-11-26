@@ -2,14 +2,12 @@
 #define SCENE_H_
 
 #include "Components.h"
-#include "Camera.h"
 #include "../factory/EntityFactory.h"
+#include "../util/Serializable.h"
 
-class ComponentManager;
-class EntityFactory;
 class Entity;
 
-class Scene {
+class Scene : public Serializable{
 
 public:
 
@@ -17,15 +15,14 @@ public:
 
     ~Scene();
 
-    Entity getEntity(const uint64_t &id);
-
     EntityFactory& getEntities();
 
-    Camera& getCamera();
+    virtual void serialize(std::ofstream &out) override;
+
+    virtual bool deserialize(std::ifstream &stream) override;
 
 private:
 
-    Camera camera;
     EntityFactory ef;
 
 };

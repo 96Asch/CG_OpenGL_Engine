@@ -18,7 +18,7 @@ namespace Factory {
     };
 
 
-    Vao* loadOBJ(const std::string &file);
+    void loadOBJ(const std::string &file);
 
 }
 

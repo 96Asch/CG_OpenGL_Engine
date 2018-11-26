@@ -1,16 +1,22 @@
 #ifndef VAO_H_
 #define VAO_H_
+
 #include <vector>
+#include <memory>
 #include "Global.h"
 #include "Vbo.h"
+
+class VaoFactory;
 
 class Vao {
 
 public:
 
+    Vao(const GLuint &id);
+
     ~Vao();
 
-    static Vao* create();
+    static std::shared_ptr<Vao> create();
 
     int getIndexCount();
 
@@ -29,7 +35,7 @@ public:
     void createAttribute(const int &attribute, const GLsizei &dimension,
                          const GLuint* data, const GLsizeiptr &dataSize);
 
-    void addInstancedAttribute(Vbo* vbo,
+    void addInstancedAttribute(std::shared_ptr<Vbo> vbo,
                                const int &attribute,
                                const GLsizei &datasize,
                                const GLsizei &instancedLength,
@@ -42,12 +48,12 @@ public:
     void unbind();
 
 private:
-    GLuint id;
-    std::vector<Vbo*> vbos;
-	Vbo* indexVbo;
-	int indexCount;
+    friend class VaoFactory;
 
-    Vao(const GLuint &id);
+    GLuint id;
+    std::vector<std::shared_ptr<Vbo>> vbos;
+	std::shared_ptr<Vbo> indexVbo;
+	int indexCount;
 };
 
 template <typename... Args>

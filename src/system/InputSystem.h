@@ -27,9 +27,9 @@ private:
 
     InputHandler* inputHandler;
 
-    void handleMouse(MouseComponent* mouse);
+    void handleMouse(Scene* scene);
 
-    void handleKeys(ActionComponent* action);
+    void handleKeys(Scene* scene);
 
 };
 

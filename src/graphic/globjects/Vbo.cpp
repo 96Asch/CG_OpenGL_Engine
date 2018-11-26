@@ -5,14 +5,14 @@ Vbo::Vbo(const GLenum &target, const GLuint &id)
 
 Vbo::~Vbo() {}
 
-Vbo* Vbo::create(const GLenum &target) {
+std::shared_ptr<Vbo> Vbo::create(const GLenum &target) {
     GLuint id;
     glGenBuffers(1, &id);
-    return new Vbo(target, id);
+    return std::make_shared<Vbo>(target, id);
 }
 
-Vbo* Vbo::createEmpty(const int &numFloats) {
-    Vbo* vbo = create(GL_ARRAY_BUFFER);
+std::shared_ptr<Vbo> Vbo::createEmpty(const int &numFloats) {
+    auto vbo = create(GL_ARRAY_BUFFER);
     vbo->bind();
     vbo->storeEmpty(numFloats);
     vbo->unbind();

@@ -8,8 +8,11 @@ namespace Factory {
         objl::Loader loader;
     }
 
-    Vao* loadOBJ(const std::string &file) {
+    void loadOBJ(const std::string &file) {
         bool success = false;
+
+        if(VAO->isLoaded(file))
+            return;
 
         success = loader.LoadFile((Global::resources + file).c_str());
         ModelData data;
@@ -35,10 +38,7 @@ namespace Factory {
         }
         else {
             std::cerr << "Loading object has failed!" << std::endl;
-            return nullptr;
         }
-
-        return VAO->createVao(data.vertices, data.indices, data.textures, data.normals);
-
+        VAO->createVao(file, data.vertices, data.indices, data.textures, data.normals);
     }
 }

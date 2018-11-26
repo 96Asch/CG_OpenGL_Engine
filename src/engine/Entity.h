@@ -1,55 +1,39 @@
 #ifndef ENTITY_H_
 #define ENTITY_H_
 
-#include <bitset>
+#include <iostream>
+#include "EntityId.h"
 #include "Global.h"
 
 class EntityFactory;
 
-typedef std::bitset<Global::NUM_BITS> ComponentMask;
 
-class Entity {
+struct Entity{
 
-public:
+    Entity(const EntityId &id, EntityFactory* ef)
+        : id(id), ef(ef) {};
 
-    Entity();
-
-    ~Entity() = default;
-
-    template <typename... T>
-    bool hasComponent() const;
-
-    bool hasComponent(const ComponentMask &mask);
-
+    EntityId id;
+    EntityFactory* ef;
+    
     template <typename T>
     T* getComponent();
 
-    bool isEntity(const uint64_t &id);
-
-    friend std::ostream& operator<<(std::ostream &stream, const Entity &entity);
-
-private:
-    friend class EntityFactory;
-
-    Entity(const uint32_t &id, EntityFactory* factory);
-
-    uint64_t id;
-    ComponentMask componentMask;
-    EntityFactory* factory;
 };
 
 #include "../factory/EntityFactory.h"
 
-template <typename... T>
-bool Entity::hasComponent() const {
-    return factory->hasComponent<T...>(*this);
-};
-
 template <typename T>
 T* Entity::getComponent() {
-    T* component = factory->getComponent<T>(*this);
-    assert(component != nullptr);
-    return component;
+    return ef->getComponent<T>(id);
 }
+
+inline std::ostream& operator<<(std::ostream &stream, const Entity &e) {
+    stream << "Entity: { id : " << e.id << " }";
+    if(e.ef)
+        stream << ", { mask : " << e.ef->getMask(e.id) << " }";
+    return stream;
+}
+
 
 #endif

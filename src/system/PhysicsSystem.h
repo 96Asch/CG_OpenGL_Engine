@@ -26,9 +26,13 @@ public:
 
 private:
 
-    void applyRotation(Camera &camera);
+    void applyRotation(Scene* scene);
 
-    void applyMovement(Camera &camera);
+    void applyCameraRotation(Scene* scene);
+
+    void applyMovement(Scene* scene);
+
+    void applyCameraMovement(Scene* scene);
 
 };
 

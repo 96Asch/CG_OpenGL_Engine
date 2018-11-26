@@ -4,7 +4,6 @@
 
 #include "Components.h"
 #include "../engine/Scene.h"
-#include "../engine/Camera.h"
 
 PhysicsSystem::PhysicsSystem() {};
 
@@ -15,8 +14,8 @@ void PhysicsSystem::init() {
 }
 
 void PhysicsSystem::update(Scene* scene) {
-    applyRotation(scene->getCamera());
-    applyMovement(scene->getCamera());
+    applyRotation(scene);
+    applyMovement(scene);
 
 }
 
@@ -24,51 +23,70 @@ void PhysicsSystem::cleanup() {
 
 }
 
-void PhysicsSystem::applyRotation(Camera &camera) {
-    camera.yaw += camera.mouse.dx;
-    camera.pitch -= camera.mouse.dy;
-    camera.lastTarget = camera.target;
-    camera.lastUp = camera.up;
-
-    if(camera.pitch > 89.0f)
-        camera.pitch = 89.0f;
-    if(camera.pitch < -89.0f)
-        camera.pitch = -89.0f;
-
-    glm::vec3 target;
-    target.x = cos(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
-    target.y = sin(glm::radians(camera.pitch));
-    target.z = sin(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
-
-    camera.target = glm::normalize(target);
-    camera.right = glm::normalize(glm::cross(camera.target, camera.worldUp));
-    camera.up = glm::normalize(glm::cross(camera.right, target));
+void PhysicsSystem::applyRotation(Scene* scene) {
+    applyCameraRotation(scene);
 }
 
-void PhysicsSystem::applyMovement(Camera &camera) {
-    glm::vec3 x(0.0f), y(0.0f), z(0.0f);
-    camera.velocity.velocity = glm::vec3(0.0f);
-    camera.lastPosition = camera.position;
-    if(camera.action.action.any()) {
-        if(camera.action.action.test(Action::MOVE_FORWARD)
-            ||camera.action.action.test(Action::MOVE_BACKWARD)) {
-            z = camera.target * camera.velocity.speed;
-            if(camera.action.action.test(Action::MOVE_BACKWARD))
+void PhysicsSystem::applyCameraRotation(Scene* scene) {
+    for(auto e : scene->getEntities().withComponents<Camera, Mouse>()) {
+        Camera* c = e.getComponent<Camera>();
+        Mouse* m = e.getComponent<Mouse>();
+
+        c->yaw += m->dx;
+        c->pitch -= m->dy;
+        c->lastTarget = c->target;
+        c->lastUp = c->up;
+
+        if(c->pitch > 89.0f)
+            c->pitch = 89.0f;
+        if(c->pitch < -89.0f)
+            c->pitch = -89.0f;
+
+        glm::vec3 target;
+        target.x = cos(glm::radians(c->yaw)) * cos(glm::radians(c->pitch));
+        target.y = sin(glm::radians(c->pitch));
+        target.z = sin(glm::radians(c->yaw)) * cos(glm::radians(c->pitch));
+        c->target = glm::normalize(target);
+        c->right = glm::normalize(glm::cross(c->target, c->worldUp));
+        printf("right(%f,%f,%f)\n", c->right.x, c->right.y, c->right.z);
+        c->up = glm::normalize(glm::cross(c->right, c->target));
+    }
+}
+
+void PhysicsSystem::applyMovement(Scene *scene) {
+    applyCameraMovement(scene);
+}
+
+void PhysicsSystem::applyCameraMovement(Scene* scene) {
+    for(auto e : scene->getEntities().withComponents<Camera, Action, Velocity>()) {
+        Action* a = e.getComponent<Action>();
+        Camera* c = e.getComponent<Camera>();
+        Velocity* v = e.getComponent<Velocity>();
+
+        glm::vec3 x(0.0f), y(0.0f), z(0.0f);
+        v->velocity = glm::vec3(0.0f);
+        c->lastPosition = c->position;
+        if(a->action.any()) {
+            if(a->action.test(ActType::MOVE_LEFT)
+                || a->action.test(ActType::MOVE_RIGHT)) {
+                x = c->right;
+                if(a->action.test(ActType::MOVE_LEFT))
+                    x *= -1;
+            }
+            if(a->action.test(ActType::MOVE_UP)
+                || a->action.test(ActType::MOVE_DOWN)) {
+                y = c->up;
+                if(a->action.test(ActType::MOVE_DOWN))
+                    y *= -1;
+            }
+            if(a->action.test(ActType::MOVE_FORWARD)
+            || a->action.test(ActType::MOVE_BACKWARD)) {
+                z = c->target;
+                if(a->action.test(ActType::MOVE_BACKWARD))
                 z *= -1;
+            }
+            v->velocity = glm::normalize(x + y + z) * v->speed;
+            c->position += v->velocity;
         }
-        if(camera.action.action.test(Action::MOVE_LEFT)
-            ||camera.action.action.test(Action::MOVE_RIGHT)) {
-            x = camera.right * camera.velocity.speed;
-            if(camera.action.action.test(Action::MOVE_LEFT))
-                x *= -1;
-        }
-        if(camera.action.action.test(Action::MOVE_UP)
-            ||camera.action.action.test(Action::MOVE_DOWN)) {
-            z = camera.up * camera.velocity.speed;
-            if(camera.action.action.test(Action::MOVE_DOWN))
-                z *= -1;
-        }
-        camera.velocity.velocity = x + y + z;
-        camera.position += camera.velocity.velocity;
     }
 }

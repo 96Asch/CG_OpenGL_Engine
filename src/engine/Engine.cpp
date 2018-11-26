@@ -6,7 +6,8 @@
 
 Engine::Engine(const int &width,
                const int &height,
-               const std::string &title) : window(Window(&input)) {
+               const std::string &title) : window(Window(&input)),
+                                           scene(nullptr) {
     if(!window.init(width, height, title)) {
         fprintf(stderr, "%s\n", "Windows failed to initialize!");
         exit(-1);
@@ -18,8 +19,28 @@ Engine::~Engine(){
         delete system;
 }
 
-void Engine::init() {
+void Engine::loadSetup(const std::string &file) {
     scene = new Scene();
+    std::ifstream in(file);
+    if(in) {
+        if(scene->deserialize(in)) {
+            std::cout << "Deserialization Completed" << std::endl;
+            std::cout << "Loaded Entities: " << scene->getEntities().numEntities() << std:: endl;
+        }
+        else {
+            std::cerr << "Deserialization Failed" << std::endl;
+        }
+    }
+    else {
+        std::cerr << "Could not open file: " << file << std::endl;
+    }
+}
+
+void Engine::init() {
+    if(!scene) {
+        scene = new Scene();
+        std::cout << "e" << std::endl;
+    }
     for(auto system : systems)
         system->init();
 }

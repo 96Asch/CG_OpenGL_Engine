@@ -1,18 +1,20 @@
 #ifndef VBO_H_
 #define VBO_H_
 
-#include "Global.h"
+#include <memory>
 
+#include "Global.h"
 
 class Vbo {
 
 public:
+    Vbo(const GLenum &target, const GLuint &id);
 
     ~Vbo();
 
-    static Vbo* create(const GLenum &target);
+    static std::shared_ptr<Vbo> create(const GLenum &target);
 
-    static Vbo* createEmpty(const int &numFloats);
+    static std::shared_ptr<Vbo> createEmpty(const int &numFloats);
 
     void bind();
 
@@ -32,7 +34,6 @@ private:
     GLenum target;
     GLuint id;
 
-    Vbo(const GLenum &target, const GLuint &id);
 };
 
 #endif

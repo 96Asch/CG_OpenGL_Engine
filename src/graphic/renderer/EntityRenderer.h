@@ -3,7 +3,7 @@
 
 #include "Renderer.h"
 
-struct TransformComponent;
+struct Transform;
 struct Camera;
 
 class Scene;
@@ -32,7 +32,7 @@ private:
 
     virtual void postRender(const float &interpolation, Scene *scene) override;
 
-    void buildModelMatrix(const TransformComponent* transform);
+    void buildModelMatrix(const Transform* transform);
 
 };
 

@@ -2,24 +2,17 @@
 #include <cstdarg>
 #include <iostream>
 
-Vao::Vao(const GLuint &id) : id(id), indexVbo(nullptr), indexCount(0)
+Vao::Vao(const GLuint &id) : id(id), indexCount(0)
 {}
 
 Vao::~Vao() {
-    for(auto vbo : vbos) {
-        delete vbo;
-        vbo = nullptr;
-    }
-    if(indexVbo)
-        delete indexVbo;
-    vbos.clear();
-    indexVbo = nullptr;
+    remove();
 }
 
-Vao* Vao::create() {
+std::shared_ptr<Vao> Vao::create() {
     GLuint id;
     glGenVertexArrays(1, &id);
-    return new Vao(id);
+    return std::make_shared<Vao>(id);
 }
 
 int Vao::getIndexCount() {
@@ -27,7 +20,7 @@ int Vao::getIndexCount() {
 }
 
 void Vao::createIndexBuffer(const GLuint* indices, const GLsizei &size) {
-    indexVbo = Vbo::create(GL_ELEMENT_ARRAY_BUFFER);
+    indexVbo = std::move(Vbo::create(GL_ELEMENT_ARRAY_BUFFER));
     indexVbo->bind();
     indexVbo->storeData(indices, size);
     indexCount = size;
@@ -36,7 +29,7 @@ void Vao::createIndexBuffer(const GLuint* indices, const GLsizei &size) {
 void Vao::createAttribute(const int &attribute,
                           const GLsizei &dimension,
                           const GLfloat* data, const GLsizeiptr & dataSize) {
-    Vbo* vbo = Vbo::create(GL_ARRAY_BUFFER);
+    auto vbo = Vbo::create(GL_ARRAY_BUFFER);
     vbo->bind();
     vbo->storeData(data, dataSize);
     glVertexAttribPointer(attribute, dimension, GL_FLOAT,
@@ -48,7 +41,7 @@ void Vao::createAttribute(const int &attribute,
 void Vao::createAttribute(const int &attribute,
                           const GLsizei &dimension,
                           const GLuint* data, const GLsizeiptr & dataSize) {
-    Vbo* vbo = Vbo::create(GL_ARRAY_BUFFER);
+    auto vbo = Vbo::create(GL_ARRAY_BUFFER);
     vbo->bind();
     vbo->storeData(data, dataSize);
     glVertexAttribPointer(attribute, dimension, GL_INT,
@@ -57,7 +50,7 @@ void Vao::createAttribute(const int &attribute,
     vbos.push_back(vbo);
 }
 
-void Vao::addInstancedAttribute(Vbo* vbo, const int &attribute, const GLsizei &dataSize,
+void Vao::addInstancedAttribute(std::shared_ptr<Vbo> vbo, const int &attribute, const GLsizei &dataSize,
                             const GLsizei &instancedLength, const GLsizei &offset) {
     vbo->bind();
     bind();
@@ -76,8 +69,8 @@ void Vao::remove() {
 	for (auto vbo : vbos) {
 		vbo->remove();
 	}
-	if (indexVbo)
-		indexVbo->remove();
+	indexVbo->remove();
+    vbos.clear();
 }
 
 void Vao::bind() {

@@ -76,7 +76,7 @@ template <typename T>
 T* Shader::getUniform(const std::string &name) {
     auto search = uniforms.find(name);
     if(search != uniforms.end())
-        return (T*) search->second;
+        return static_cast<T*>(search->second);
     fprintf(stderr, "Could not find uniform: %s in the shader", name.c_str());
     exit(-1);
     return nullptr;

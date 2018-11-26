@@ -1,30 +1,28 @@
 #include "Scene.h"
-
+#include "Global.h"
 #include <iostream>
 
-#include "../factory/TextureFactory.h"
-#include "../factory/VaoFactory.h"
-#include "../factory/ModelLoader.h"
-#include "../factory/EntityFactory.h"
-
-Scene::Scene() {
-
-    std::cout << ef.createEntity("models/dragon.obj") << std::endl;
-
-}
+Scene::Scene() {}
 
 Scene::~Scene() {
 
 }
 
-Entity Scene::getEntity(const uint64_t &id) {
-    return ef.getEntity(id);
+void Scene::serialize(std::ofstream &) {}
+
+bool Scene::deserialize(std::ifstream &stream) {
+    bool success(true);
+    std::string buffer;
+    stream >> std::ws;
+    while(std::getline(stream, buffer)) {
+        std::stringstream ss(buffer);
+        if(buffer == "[entity]")
+            success &= ef.deserialize(stream);
+        stream >> std::ws;
+    }
+    return success;
 }
 
 EntityFactory& Scene::getEntities() {
     return ef;
-}
-
-Camera& Scene::getCamera() {
-    return camera;
 }

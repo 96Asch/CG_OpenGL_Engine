@@ -3,7 +3,6 @@
 #include "Renderers.h"
 #include "Global.h"
 #include "../engine/Scene.h"
-#include "../engine/Camera.h"
 
 GraphicSystem::GraphicSystem() : System() {}
 
@@ -20,10 +19,10 @@ void GraphicSystem::init() {
 }
 
 void GraphicSystem::render(const float &interpolation, Scene* scene) {
-    glClearColor(1.0, 0.0, 0.0, 1.0);
+    glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    buildViewMatrix(interpolation, scene->getCamera());
+    buildViewMatrix(interpolation, scene);
 
     for(auto renderer : renderers)
         renderer->render(interpolation, view, scene);
@@ -36,22 +35,25 @@ void GraphicSystem::cleanup() {
     }
 }
 
-void GraphicSystem::buildViewMatrix(const float &interpolation,
-                                     const Camera &camera) {
-    glm::vec3 positionInterpol = lerp(camera.lastPosition,
-                                      camera.position,
-                                      interpolation);
-    glm::vec3 targetInterpol = lerp(camera.lastTarget,
-                                    camera.target,
+void GraphicSystem::buildViewMatrix(const float &interpolation, Scene *scene) {
+    view = glm::mat4(1.0f);
+    for (auto e : scene->getEntities().withComponents<Camera>()) {
+        Camera* c = e.getComponent<Camera>();
+        glm::vec3 positionInterpol = lerp(c->lastPosition,
+                                          c->position,
+                                          interpolation);
+        glm::vec3 targetInterpol = lerp(c->lastTarget,
+                                        c->target,
+                                        interpolation);
+        glm::vec3 upInterpol = lerp(c->lastUp,
+                                    c->up,
                                     interpolation);
-    glm::vec3 upInterpol = lerp(camera.lastUp,
-                                camera.up,
-                                interpolation);
-    view = glm::lookAt(
-                        positionInterpol,
-                        positionInterpol + targetInterpol,
-                        upInterpol
-                      );
+        view = glm::lookAt(
+                            positionInterpol,
+                            positionInterpol + targetInterpol,
+                            upInterpol
+                          );
+    }
 }
 
 void GraphicSystem::buildProjectionMatrix() {

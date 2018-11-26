@@ -19,6 +19,8 @@ public:
 
     ~Engine();
 
+    void loadSetup(const std::string &file);
+
     void init();
 
     void run();
@@ -35,8 +37,8 @@ public:
 
 private:
     std::vector<System*> systems;
-    Scene* scene;
     Window window;
+    Scene* scene;
 
     Factory::TextureFactory t;
     Factory::VaoFactory v;

@@ -3,6 +3,7 @@
 
 #include "EntityRenderer.h"
 #include "Uniforms.h"
+#include "Components.h"
 #include "../../engine/Scene.h"
 
 EntityRenderer::EntityRenderer() {}
@@ -33,15 +34,21 @@ void EntityRenderer::render(const float &interpolation,
                             Scene *scene) {
     preRender(interpolation, view, scene);
 
-    for(auto& e : scene->getEntities().withComponents<ModelComponent, TransformComponent, MaterialComponent>()) {
+    for(auto e : scene->getEntities().withComponents<Model, Transform, Material>()) {
 
-        e.getComponent<ModelComponent>()->vao->bind(0,1);
-        buildModelMatrix(e.getComponent<TransformComponent>());
+        Model* mod = e.getComponent<Model>();
+        Transform* tra = e.getComponent<Transform>();
+        Material* mat = e.getComponent<Material>();
+
+
+        mod->getVao()->bind(0,1);
+        buildModelMatrix(tra);
         shader.getUniform<UniformMat4>("modelMatrix")->load(model);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, e.getComponent<MaterialComponent>()->id);
-        glDrawElements(GL_TRIANGLES, e.getComponent<ModelComponent>()->vao->getIndexCount(), GL_UNSIGNED_INT, 0);
-        e.getComponent<ModelComponent>()->vao->unbind(0,1);
+        glBindTexture(GL_TEXTURE_2D, mat->id);
+        glDrawElements(GL_TRIANGLES, mod->getVao()->getIndexCount(), GL_UNSIGNED_INT, 0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        mod->getVao()->unbind(0,1);
     }
     postRender(interpolation, scene);
 };
@@ -54,7 +61,7 @@ void EntityRenderer::cleanup() {
     shader.cleanup();
 }
 
-void EntityRenderer::buildModelMatrix(const TransformComponent* transform) {
+void EntityRenderer::buildModelMatrix(const Transform* transform) {
     model = glm::mat4(1.0f);
     model = glm::translate(model, transform->position);
     model = glm::rotate(model, glm::radians(transform->rotation.x), glm::vec3(1,0,0));

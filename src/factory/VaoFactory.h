@@ -1,7 +1,9 @@
 #ifndef VAOFACTORY_H_
 #define VAOFACTORY_H_
 
-#include <vector>
+#include <map>
+#include <memory>
+#include <string>
 
 #include "../graphic/globjects/Vao.h"
 
@@ -17,23 +19,30 @@ namespace Factory {
         VaoFactory();
         ~VaoFactory();
 
-        Vao* createVao(const std::vector<GLfloat> &position,
+        void createVao(const std::string &source,
+                       const std::vector<GLfloat> &position,
                        const std::vector<GLuint> &indices);
 
-        Vao* createVao(const std::vector<GLfloat> &position,
+        void createVao(const std::string &source,
+                       const std::vector<GLfloat> &position,
                        const std::vector<GLuint> &indices,
                        const std::vector<GLfloat> &texture);
 
-        Vao* createVao(const std::vector<GLfloat> &position,
+        void createVao(const std::string &source,
+                       const std::vector<GLfloat> &position,
                        const std::vector<GLuint> &indices,
                        const std::vector<GLfloat> &texture,
                        const std::vector<GLfloat> &normals);
 
         void removeVao();
 
+        std::shared_ptr<Vao> getVao(const std::string &source);
+
+        bool isLoaded(const std::string &source) const;
+
     private:
 
-        std::vector<Vao*> vaos;
+        std::map<std::string, std::shared_ptr<Vao>> vaos;
 
 
     };
