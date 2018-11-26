@@ -33,7 +33,7 @@ void PhysicsSystem::applyCameraRotation(Scene* scene) {
         Mouse* m = e.getComponent<Mouse>();
 
         c->yaw += m->dx;
-        c->pitch -= m->dy;
+        c->pitch += m->dy;
         c->lastTarget = c->target;
         c->lastUp = c->up;
 
@@ -43,13 +43,14 @@ void PhysicsSystem::applyCameraRotation(Scene* scene) {
             c->pitch = -89.0f;
 
         glm::vec3 target;
-        target.x = cos(glm::radians(c->yaw)) * cos(glm::radians(c->pitch));
+        target.x = cos(glm::radians(c->pitch)) * sin(glm::radians(c->yaw));
         target.y = sin(glm::radians(c->pitch));
-        target.z = sin(glm::radians(c->yaw)) * cos(glm::radians(c->pitch));
-        c->target = glm::normalize(target);
-        c->right = glm::normalize(glm::cross(c->target, c->worldUp));
-        printf("right(%f,%f,%f)\n", c->right.x, c->right.y, c->right.z);
-        c->up = glm::normalize(glm::cross(c->right, c->target));
+        target.z = cos(glm::radians(c->yaw)) * cos(glm::radians(c->pitch));
+        c->target = -glm::normalize(target);
+        c->right = -glm::normalize(glm::cross(c->target, c->worldUp));
+        // printf("target(%f,%f,%f)\n", c->target.x, c->target.y, c->target.z);
+        // printf("right(%f,%f,%f)\n", c->right.x, c->right.y, c->right.z);
+        c->up = glm::normalize(-glm::cross(c->right, c->target));
     }
 }
 
@@ -71,22 +72,23 @@ void PhysicsSystem::applyCameraMovement(Scene* scene) {
                 || a->action.test(ActType::MOVE_RIGHT)) {
                 x = c->right;
                 if(a->action.test(ActType::MOVE_LEFT))
-                    x *= -1;
+                    x = -x;
             }
             if(a->action.test(ActType::MOVE_UP)
                 || a->action.test(ActType::MOVE_DOWN)) {
                 y = c->up;
                 if(a->action.test(ActType::MOVE_DOWN))
-                    y *= -1;
+                    y = -y;
             }
             if(a->action.test(ActType::MOVE_FORWARD)
             || a->action.test(ActType::MOVE_BACKWARD)) {
                 z = c->target;
                 if(a->action.test(ActType::MOVE_BACKWARD))
-                z *= -1;
+                    z = -z;
             }
             v->velocity = glm::normalize(x + y + z) * v->speed;
             c->position += v->velocity;
+            printf("right(%f,%f,%f)\n", c->position.x, c->position.y, c->position.z);
         }
     }
 }

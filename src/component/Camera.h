@@ -86,6 +86,7 @@ struct Camera : public IComponent<Camera> {
                 }
             }
             else return false;
+            }
         } while(stream && firstAcc && !lastAcc);
         right = glm::cross(this->target, this->worldUp);
         return true;
