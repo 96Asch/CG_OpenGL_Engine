@@ -32,7 +32,7 @@ void PhysicsSystem::applyCameraRotation(Scene* scene) {
         Camera* c = e.getComponent<Camera>();
         Mouse* m = e.getComponent<Mouse>();
 
-        c->yaw += m->dx;
+        c->yaw -= m->dx;
         c->pitch += m->dy;
         c->lastTarget = c->target;
         c->lastUp = c->up;
@@ -43,14 +43,14 @@ void PhysicsSystem::applyCameraRotation(Scene* scene) {
             c->pitch = -89.0f;
 
         glm::vec3 target;
-        target.x = cos(glm::radians(c->pitch)) * sin(glm::radians(c->yaw));
-        target.y = sin(glm::radians(c->pitch));
-        target.z = cos(glm::radians(c->yaw)) * cos(glm::radians(c->pitch));
-        c->target = -glm::normalize(target);
-        c->right = -glm::normalize(glm::cross(c->target, c->worldUp));
-        // printf("target(%f,%f,%f)\n", c->target.x, c->target.y, c->target.z);
-        // printf("right(%f,%f,%f)\n", c->right.x, c->right.y, c->right.z);
-        c->up = glm::normalize(-glm::cross(c->right, c->target));
+        target.x = -cos(glm::radians(c->pitch)) * sin(glm::radians(c->yaw));
+        target.y = -sin(glm::radians(c->pitch));
+        target.z = -cos(glm::radians(c->yaw)) * cos(glm::radians(c->pitch));
+        c->target = glm::normalize(target);
+        c->right = glm::normalize(glm::cross(c->target, c->worldUp));
+        printf("target(%f,%f,%f)\n", c->target.x, c->target.y, c->target.z);
+        printf("right(%f,%f,%f)\n", c->right.x, c->right.y, c->right.z);
+        c->up = glm::normalize(glm::cross(c->right, c->target));
     }
 }
 

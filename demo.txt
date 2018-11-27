@@ -2,9 +2,7 @@
 {
   [camera]
   {
-    position=0.0,1.0,10.0
-    target=0.0,0.0,1.0
-    up=0.0,1.0,0.0
+    position=0.0,1.0,-1.0
     yaw=0.0
     pitch=0.0
   }
@@ -16,60 +14,6 @@
   [velocity]
   {
     speed=0.5
-  }
-}
-
-[entity]
-{
-  [model]
-  {
-    source=models/cube.obj
-  }
-  [transform]
-  {
-    position=0.0,0.0,0.0
-    rotation=45.0,0.0,0.0
-    scale=1.0,1.0,1.0
-  }
-  [material]
-  {
-    source=texture/grassy3.png
-  }
-}
-
-[entity]
-{
-  [model]
-  {
-    source=models/dragon.obj
-  }
-  [transform]
-  {
-    position=5.0,0.0,0.0
-    rotation=0.0,45.0,0.0
-    scale=0.5,0.5,0.5
-  }
-  [material]
-  {
-    source=texture/ice.png
-  }
-}
-
-[entity]
-{
-  [model]
-  {
-    source=models/barrel.obj
-  }
-  [transform]
-  {
-    position=-5.0,0.0,0.0
-    rotation=0.0,45.0,0.0
-    scale=0.5,0.5,0.5
-  }
-  [material]
-  {
-    source=texture/barrel.png
   }
 }
 
