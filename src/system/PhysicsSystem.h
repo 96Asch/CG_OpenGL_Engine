@@ -28,9 +28,13 @@ private:
 
     void applyRotation(Scene* scene);
 
+    void applyEntityRotation(Scene* scene);
+
     void applyCameraRotation(Scene* scene);
 
     void applyMovement(Scene* scene);
+
+    void applyEntityMovement(Scene* scene);
 
     void applyCameraMovement(Scene* scene);
 

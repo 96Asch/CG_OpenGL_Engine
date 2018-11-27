@@ -55,20 +55,7 @@ struct Camera : public IComponent<Camera> {
                             sscanf(value.c_str(), "%f,%f,%f", &v1, &v2, &v3);
                             printf("%f,%f,%f", v1, v2, v3);
                             this->position = glm::vec3(v1, v2, v3);
-                        }
-                    }
-                    else if (var == "target") {
-                        if(std::getline(ss, value, '=')) {
-                            float v1, v2, v3;
-                            sscanf(value.c_str(), "%f,%f,%f", &v1, &v2, &v3);
-                            this->target = glm::vec3(v1, v2, v3);
-                        }
-                    }
-                    else if (var == "up") {
-                        if(std::getline(ss, value, '=')) {
-                            float v1, v2, v3;
-                            sscanf(value.c_str(), "%f,%f,%f", &v1, &v2, &v3);
-                            this->up = glm::vec3(v1, v2, v3);
+                            // this->lastPosition = position;
                         }
                     }
                     else if (var == "yaw") {

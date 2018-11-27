@@ -39,15 +39,15 @@ void GraphicSystem::buildViewMatrix(const float &interpolation, Scene *scene) {
     view = glm::mat4(1.0f);
     for (auto e : scene->getEntities().withComponents<Camera>()) {
         Camera* c = e.getComponent<Camera>();
-        glm::vec3 positionInterpol = lerp(c->lastPosition,
-                                          c->position,
+        glm::vec3 positionInterpol = Util::lerp(c->lastPosition,
+                                                c->position,
+                                                interpolation);
+        glm::vec3 targetInterpol = Util::lerp(c->lastTarget,
+                                              c->target,
+                                              interpolation);
+        glm::vec3 upInterpol = Util::lerp(c->lastUp,
+                                          c->up,
                                           interpolation);
-        glm::vec3 targetInterpol = lerp(c->lastTarget,
-                                        c->target,
-                                        interpolation);
-        glm::vec3 upInterpol = lerp(c->lastUp,
-                                    c->up,
-                                    interpolation);
         view = glm::lookAt(
                             positionInterpol,
                             positionInterpol + targetInterpol,

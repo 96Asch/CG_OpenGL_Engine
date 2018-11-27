@@ -24,16 +24,28 @@ void PhysicsSystem::cleanup() {
 }
 
 void PhysicsSystem::applyRotation(Scene* scene) {
+    applyEntityRotation(scene);
     applyCameraRotation(scene);
 }
 
+void PhysicsSystem::applyEntityRotation(Scene *scene) {
+    for (auto e : scene->getEntities().withComponents<Transform, Action, Motion>()) {
+        Transform* t = e.getComponent<Transform>();
+        Action* a = e.getComponent<Action>();
+        Motion* m = e.getComponent<Motion>();
+
+        t->lastRotation = t->rotation;
+    }
+}
+
 void PhysicsSystem::applyCameraRotation(Scene* scene) {
-    for(auto e : scene->getEntities().withComponents<Camera, Mouse>()) {
+    for(auto e : scene->getEntities().withComponents<Camera, Mouse, Motion>()) {
         Camera* c = e.getComponent<Camera>();
         Mouse* m = e.getComponent<Mouse>();
+        Motion* mov = e.getComponent<Motion>();
 
-        c->yaw -= m->dx;
-        c->pitch += m->dy;
+        c->yaw -= m->dx * mov->rotSpeed;
+        c->pitch += m->dy * mov->rotSpeed;
         c->lastTarget = c->target;
         c->lastUp = c->up;
 
@@ -48,24 +60,34 @@ void PhysicsSystem::applyCameraRotation(Scene* scene) {
         target.z = -cos(glm::radians(c->yaw)) * cos(glm::radians(c->pitch));
         c->target = glm::normalize(target);
         c->right = glm::normalize(glm::cross(c->target, c->worldUp));
-        printf("target(%f,%f,%f)\n", c->target.x, c->target.y, c->target.z);
-        printf("right(%f,%f,%f)\n", c->right.x, c->right.y, c->right.z);
         c->up = glm::normalize(glm::cross(c->right, c->target));
     }
 }
 
 void PhysicsSystem::applyMovement(Scene *scene) {
+    applyEntityMovement(scene);
     applyCameraMovement(scene);
 }
 
+void PhysicsSystem::applyEntityMovement(Scene *scene) {
+    for(auto e : scene->getEntities().withComponents<Transform, Action, Motion>()) {
+        Transform* t = e.getComponent<Transform>();
+        Action* a = e.getComponent<Action>();
+        Motion* m = e.getComponent<Motion>();
+
+        t->lastPosition = t->position;
+        t->lastScale = t->scale;
+    }
+}
+
 void PhysicsSystem::applyCameraMovement(Scene* scene) {
-    for(auto e : scene->getEntities().withComponents<Camera, Action, Velocity>()) {
+    for(auto e : scene->getEntities().withComponents<Camera, Action, Motion>()) {
         Action* a = e.getComponent<Action>();
         Camera* c = e.getComponent<Camera>();
-        Velocity* v = e.getComponent<Velocity>();
+        Motion* m = e.getComponent<Motion>();
 
         glm::vec3 x(0.0f), y(0.0f), z(0.0f);
-        v->velocity = glm::vec3(0.0f);
+        m->direction = glm::vec3(0.0f);
         c->lastPosition = c->position;
         if(a->action.any()) {
             if(a->action.test(ActType::MOVE_LEFT)
@@ -86,8 +108,8 @@ void PhysicsSystem::applyCameraMovement(Scene* scene) {
                 if(a->action.test(ActType::MOVE_BACKWARD))
                     z = -z;
             }
-            v->velocity = glm::normalize(x + y + z) * v->speed;
-            c->position += v->velocity;
+            m->direction = glm::normalize(x + y + z) * m->movSpeed;
+            c->position += m->direction;
             printf("right(%f,%f,%f)\n", c->position.x, c->position.y, c->position.z);
         }
     }

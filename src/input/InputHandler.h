@@ -56,7 +56,6 @@ private:
     bool m_mouseClick[MAX_MOUSE_BUTTON];
     bool m_mouseHold[MAX_MOUSE_BUTTON];
 
-    const float SENSITIVITY = 0.5f;
     void resetKeys();
 
 };

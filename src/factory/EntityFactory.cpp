@@ -52,8 +52,11 @@ bool EntityFactory::deserialize(std::ifstream &stream) {
                 addComponent(newEnt.id, Mouse(stream));
             else if (comp == "[transform]")
                 addComponent(newEnt.id, Transform(stream));
-            else if (comp == "[velocity]")
-                addComponent(newEnt.id, Velocity(stream));
+            else if (comp == "[motion]")
+                addComponent(newEnt.id, Motion(stream));
+            else if (comp.front() == '[' && comp.back() == ']') {
+                std::cerr << "ERR: Unidentified component: " << comp << std::endl;
+            }
         }
         else return false;
     } while(stream && firstAcc && !lastAcc);

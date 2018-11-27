@@ -30,6 +30,10 @@ namespace Util{
     /**
     */
 
+    template <typename T>
+    T lerp(const T &start, const T &end, const float &alpha) {
+        return (start * (1 - alpha) + end * alpha);
+    }
 
 }
 

@@ -13,6 +13,10 @@ enum ActType {
     MOVE_RIGHT = 4,
     MOVE_UP = 5,
     MOVE_DOWN = 6,
+    ROTATE_LEFT = 7,
+    ROTATE_RIGHT = 8,
+    ROTATE_UP = 9,
+    ROTATE_DOWN = 10
 };
 
 struct Action : public IComponent<Action> {

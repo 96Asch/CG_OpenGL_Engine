@@ -4,7 +4,6 @@
 #include "Renderer.h"
 
 struct Transform;
-struct Camera;
 
 class Scene;
 class EntityRenderer : public Renderer {
@@ -24,15 +23,13 @@ public:
 
 private:
 
-    glm::mat4 model;
-
     virtual void preRender(const float &interpolation,
                            const glm::mat4 &view,
                            Scene *scene) override;
 
     virtual void postRender(const float &interpolation, Scene *scene) override;
 
-    void buildModelMatrix(const Transform* transform);
+    glm::mat4 buildModelMatrix(const Transform* t, const float &interpolation);
 
 };
 

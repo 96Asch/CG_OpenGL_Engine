@@ -1,9 +1,9 @@
 #include <glm/mat4x4.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
 #include "EntityRenderer.h"
 #include "Uniforms.h"
 #include "Components.h"
+#include "Global.h"
 #include "../../engine/Scene.h"
 
 EntityRenderer::EntityRenderer() {}
@@ -42,8 +42,7 @@ void EntityRenderer::render(const float &interpolation,
 
 
         mod->getVao()->bind(0,1);
-        buildModelMatrix(tra);
-        shader.getUniform<UniformMat4>("modelMatrix")->load(model);
+        shader.getUniform<UniformMat4>("modelMatrix")->load(buildModelMatrix(tra, interpolation));
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, mat->id);
         glDrawElements(GL_TRIANGLES, mod->getVao()->getIndexCount(), GL_UNSIGNED_INT, 0);
@@ -61,11 +60,16 @@ void EntityRenderer::cleanup() {
     shader.cleanup();
 }
 
-void EntityRenderer::buildModelMatrix(const Transform* transform) {
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, transform->position);
-    model = glm::rotate(model, glm::radians(transform->rotation.x), glm::vec3(1,0,0));
-    model = glm::rotate(model, glm::radians(transform->rotation.y), glm::vec3(0,1,0));
-    model = glm::rotate(model, glm::radians(transform->rotation.z), glm::vec3(0,0,1));
-    model = glm::scale(model, transform->scale);
+glm::mat4 EntityRenderer::buildModelMatrix(const Transform* t, const float &interpolation) {
+    glm::mat4 model = glm::mat4(1.0f);
+    glm::vec3 positionInterpol = Util::lerp(t->lastPosition, t->position, interpolation);
+    glm::vec3 rotationInterpol = Util::lerp(t->lastRotation, t->rotation, interpolation);
+    glm::vec3 scaleInterpol = Util::lerp(t->lastScale, t->scale, interpolation);
+    fprintf(stderr, "pos(%f,%f,%f)\n",  t->lastPosition.x, t->lastPosition.y, t->lastPosition.z);
+    model = glm::translate(model, positionInterpol);
+    model = glm::rotate(model, glm::radians(rotationInterpol.x), glm::vec3(1,0,0));
+    model = glm::rotate(model, glm::radians(rotationInterpol.y), glm::vec3(0,1,0));
+    model = glm::rotate(model, glm::radians(rotationInterpol.z), glm::vec3(0,0,1));
+    model = glm::scale(model, scaleInterpol);
+    return model;
 }

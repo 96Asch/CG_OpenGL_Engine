@@ -32,15 +32,6 @@ private:
     void buildViewMatrix(const float &interpolation, Scene* scene);
 
     void buildProjectionMatrix();
-
-    template <typename T>
-    T lerp(const T &start, const T &end, const float &alpha);
-
 };
-
-template <typename T>
-T GraphicSystem::lerp(const T &start, const T &end, const float &alpha) {
-    return (start * (1 - alpha) + end * alpha);
-}
 
 #endif
