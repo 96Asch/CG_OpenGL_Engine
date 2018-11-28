@@ -5,8 +5,6 @@
 
 struct UniformFloat : public Uniform {
 
-    float current;
-    bool first;
 
     UniformFloat(const std::string &name) : Uniform(name),
                                             first(true)  {};
@@ -19,6 +17,8 @@ struct UniformFloat : public Uniform {
         }
     };
 
+    float current;
+    bool first;
 };
 
 #endif

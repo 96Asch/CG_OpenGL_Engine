@@ -1,6 +1,7 @@
+#include <iostream>
+
 #include "Scene.h"
 #include "Global.h"
-#include <iostream>
 
 Scene::Scene() {}
 
@@ -12,12 +13,14 @@ void Scene::serialize(std::ofstream &) {}
 
 bool Scene::deserialize(std::ifstream &stream) {
     bool success(true);
-    std::string buffer;
+    std::string tag;
     stream >> std::ws;
-    while(std::getline(stream, buffer)) {
-        std::stringstream ss(buffer);
-        if(buffer == "[entity]")
+    while(std::getline(stream, tag)) {
+        std::stringstream ss(tag);
+        if(tag == "[entity]")
             success &= ef.deserialize(stream);
+        else if (tag == "[directionallight]")
+            success &= light.deserialize(stream);
         stream >> std::ws;
     }
     return success;
@@ -25,4 +28,8 @@ bool Scene::deserialize(std::ifstream &stream) {
 
 EntityFactory& Scene::getEntities() {
     return ef;
+}
+
+DirectionalLight Scene::getDirectional() {
+    return light;
 }

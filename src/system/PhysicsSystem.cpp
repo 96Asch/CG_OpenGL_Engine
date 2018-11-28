@@ -110,7 +110,6 @@ void PhysicsSystem::applyCameraMovement(Scene* scene) {
             }
             m->direction = glm::normalize(x + y + z) * m->movSpeed;
             c->position += m->direction;
-            printf("right(%f,%f,%f)\n", c->position.x, c->position.y, c->position.z);
         }
     }
 }

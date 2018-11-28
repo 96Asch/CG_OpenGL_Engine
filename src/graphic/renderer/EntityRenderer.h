@@ -29,6 +29,10 @@ private:
 
     virtual void postRender(const float &interpolation, Scene *scene) override;
 
+    void loadPointLights(const glm::mat4 &view, Scene* scene);
+
+    void loadDirectionalLight(const glm::mat4 &view, Scene* scene);
+
     glm::mat4 buildModelMatrix(const Transform* t, const float &interpolation);
 
 };

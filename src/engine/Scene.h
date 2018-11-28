@@ -2,10 +2,9 @@
 #define SCENE_H_
 
 #include "Components.h"
-#include "../factory/EntityFactory.h"
 #include "../util/Serializable.h"
-
-class Entity;
+#include "../factory/EntityFactory.h"
+#include "../environment/DirectionalLight.h"
 
 class Scene : public Serializable{
 
@@ -17,6 +16,8 @@ public:
 
     EntityFactory& getEntities();
 
+    DirectionalLight getDirectional();
+
     virtual void serialize(std::ofstream &out) override;
 
     virtual bool deserialize(std::ifstream &stream) override;
@@ -24,6 +25,7 @@ public:
 private:
 
     EntityFactory ef;
+    DirectionalLight light;
 
 };
 

@@ -1,0 +1,4 @@
+screenWidth=1080
+screenHeight=720
+fov=70
+resources=resources/

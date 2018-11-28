@@ -13,7 +13,6 @@ namespace Global {
     extern std::string resources;
 
     extern int height, width;
-    extern int targetFPS, targetUPS;
 
     extern float fov;
     extern float aspectRatio;
@@ -21,6 +20,7 @@ namespace Global {
     extern float farPlane;
 
     const size_t NUM_BITS = 64;
+    const size_t MAX_POINT_LIGHTS = 5;
 }
 
 

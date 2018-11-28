@@ -22,8 +22,8 @@ void Shader::cleanup() {
     glDeleteProgram(id);
 }
 
-void Shader::addUniform(const std::string &name, Uniform *uniform) {
-    uniforms.insert({name, uniform});
+void Shader::addUniform(Uniform *uniform) {
+    uniforms.insert({uniform->name, uniform});
 }
 
 void Shader::storeUniformLocations() {

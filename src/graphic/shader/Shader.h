@@ -2,6 +2,7 @@
 #define Shader_H_
 
 #include <string>
+#include <iostream>
 #include <unordered_map>
 #include "../uniform/Uniform.h"
 #include "Global.h"
@@ -24,7 +25,7 @@ public:
 
     void cleanup();
 
-    void addUniform(const std::string &name, Uniform* uniform);
+    void addUniform(Uniform* uniform);
 
     template <typename T>
     T* getUniform(const std::string &name);
@@ -62,8 +63,8 @@ void Shader::init(const std::string &shader,
         glGetProgramiv(id, GL_INFO_LOG_LENGTH, &maxLength);
         infolog = new char[maxLength];
         glGetProgramInfoLog(id, maxLength, &maxLength, infolog);
-        fprintf(stderr, "Error: %s\n", infolog);
-        exit(0);
+        std::cerr << "SHADER LINK ERROR: " << infolog << std::endl;
+        throw std::runtime_error("Could not link shaders");
     }
 
     glDetachShader(id, vsId);
@@ -77,8 +78,7 @@ T* Shader::getUniform(const std::string &name) {
     auto search = uniforms.find(name);
     if(search != uniforms.end())
         return static_cast<T*>(search->second);
-    fprintf(stderr, "Could not find uniform: %s in the shader", name.c_str());
-    exit(-1);
+    throw std::runtime_error("Could not find uniform: " + name + " in the shader");
     return nullptr;
 }
 
