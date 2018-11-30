@@ -44,6 +44,8 @@ namespace Factory {
 
         std::map<std::string, std::shared_ptr<Vao>> vaos;
 
+        // void getCubeVertices(const float &size,
+        //                      std::vector<GLfloat> &vertices);
 
     };
 

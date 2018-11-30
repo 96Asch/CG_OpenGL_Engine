@@ -18,7 +18,7 @@ namespace Factory {
     };
 
 
-    void loadOBJ(const std::string &file);
+    void loadOBJ(const std::string &file, const float &scale = 1);
 
 }
 

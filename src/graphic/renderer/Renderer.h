@@ -13,10 +13,11 @@ public:
 
     virtual ~Renderer() = default;
 
-    virtual void init(const glm::mat4 &projection) = 0;
+    virtual void init() = 0;
 
     virtual void render(const float &interpolation,
                         const glm::mat4 &view,
+                        const glm::mat4 &projection,
                         Scene *scene) = 0;
 
     virtual void cleanup() = 0;
@@ -27,6 +28,7 @@ protected:
 
     virtual void preRender(const float &interpolation,
                            const glm::mat4 &view,
+                           const glm::mat4 &projection,
                            Scene *scene) = 0;
 
     virtual void postRender(const float &interpolation, Scene *scene) = 0;

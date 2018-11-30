@@ -11,7 +11,7 @@ out vec2 outTexCoord;
 out vec3 mvVertexNormal;
 out vec3 mvVertexPos;
 out vec3 toLightVector[MAX_POINT_LIGHTS];
-// out float visibility;
+out float visibility;
 
 uniform struct PointLight {
     vec3 color;
@@ -20,12 +20,12 @@ uniform struct PointLight {
     vec3 attenuation;
 } pointLight[MAX_POINT_LIGHTS];
 
-// uniform struct Fog {
-// 	float isActive;
-// 	vec3 colour;
-// 	float density;
-// 	float gradient;
-// } fog;
+uniform struct Fog {
+	float isActive;
+	vec3 color;
+	float density;
+	float gradient;
+} fog;
 
 uniform struct Material {
     vec4 ambient;
@@ -43,42 +43,43 @@ uniform struct Material {
 // } tex;
 
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+uniform mat4 mv;
+uniform mat4 mvp;
 // uniform vec4 clipPlane;
 
-// float calcFog(Fog f, vec4 positionRelativeToCam) {
-//
-// 	float vis = 0;
-// 	float distance = length(positionRelativeToCam.xyz);
-// 	vis = exp(-pow((distance* f.density), f.gradient));
-// 	vis = clamp(vis,0.0,1.0);
-// 	return vis;
-//
-// }
+float calcFog(Fog f, vec4 positionRelativeToCam) {
+
+  float vis = 0;
+  if(f.isActive == 1.0) {
+  	float distance = length(positionRelativeToCam.xyz);
+  	vis = exp(-pow((distance* f.density), f.gradient));
+  	vis = clamp(vis,0.0,1.0);
+  }
+	return vis;
+}
 
 void main()
 {
 	vec4 worldPosition = model * vec4(position,1.0);
-	mat4 modelViewMatrix = view * model;
-	// gl_ClipDistance[0] = dot(worldPosition, clipPlane);
+  // gl_ClipDistance[0] = dot(worldPosition, clipPlane);
+  gl_ClipDistance[0] = dot(worldPosition, vec4(0.0));
 
-    vec4 mvPos = modelViewMatrix * vec4(position,1.0);
-    gl_Position = projection * mvPos;
+  vec4 mvPos = mv * vec4(position,1.0);
+  gl_Position = mvp * vec4(position,1.0);
 
-    // outTexCoord = (texCoord / tex.numberOfRows) + tex.offset;
-    outTexCoord = texCoord;
-    vec3 normal = vertexNormal;
+  // outTexCoord = (texCoord / tex.numberOfRows) + tex.offset;
+  outTexCoord = texCoord;
+  vec3 normal = vertexNormal;
 
-    if(material.hasFakeLighting == 1){
-    	normal = vec3(0,1,0);
-    }
+  if(material.hasFakeLighting == 1){
+  	normal = vec3(0,1,0);
+  }
 
-    vec3 surfaceNormal = normalize(modelViewMatrix * vec4(normal, 0.0)).xyz;
+  vec3 surfaceNormal = normalize(mv * vec4(normal, 0.0)).xyz;
 
 	if(material.hasNormalMap == 1) {
 		vec3 norm = normalize(surfaceNormal);
-		vec3 tang = normalize((modelViewMatrix * vec4(tangent, 0.0)).xyz);
+		vec3 tang = normalize((mv * vec4(tangent, 0.0)).xyz);
 		vec3 bitang = normalize(cross(norm, tang));
 
 		mat3 toTangentSpace = mat3(
@@ -100,8 +101,8 @@ void main()
 		}
 
 		mvVertexPos = -mvPos.xyz;
-    }
-    mvVertexNormal = surfaceNormal;
-    // visibility = calcFog(fog, mvPos);
+  }
 
+  mvVertexNormal = surfaceNormal;
+  visibility = calcFog(fog, mvPos);
 }

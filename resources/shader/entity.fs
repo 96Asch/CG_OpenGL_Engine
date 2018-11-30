@@ -9,7 +9,7 @@ in vec2 outTexCoord;
 in vec3 mvVertexNormal;
 in vec3 mvVertexPos;
 in vec3 toLightVector[MAX_POINT_LIGHTS];
-// in float visibility;
+in float visibility;
 
 out vec4 fragColor;
 
@@ -37,12 +37,12 @@ uniform struct Material {
     float hasNormalMap;
 } material;
 
-// uniform struct Fog {
-// 	float isActive;
-// 	vec3 color;
-// 	float density;
-// 	float gradient;
-// } fog;
+uniform struct Fog {
+	float isActive;
+	vec3 color;
+	float density;
+	float gradient;
+} fog;
 
 uniform sampler2D texture_sampler;
 // uniform sampler2D normalMap;
@@ -100,17 +100,17 @@ vec4 calcDirectionalLight(DirectionalLight light, vec3 position, vec3 normal) {
     return calcLightColour(light.color, light.intensity, position, normalize(light.direction), normal);
 }
 
-// vec4 setFog(vec4 currColour, Fog f, float vis) {
-// 	vec4 outColour = vec4(0);
-// 	if (f.isActive == 1) {
-// 		outColour = mix(vec4(f.color, 1.0), currColour, vis);
-// 	}
-// 	else {
-// 		outColour = currColour;
-// 	}
-//
-// 	return outColour;
-// }
+vec4 setFog(vec4 currColour, Fog f, float vis) {
+	vec4 outColour = vec4(0);
+	if (f.isActive == 1) {
+		outColour = mix(vec4(f.color, 1.0), currColour, vis);
+	}
+	else {
+		outColour = currColour;
+	}
+
+	return outColour;
+}
 
 
 // vec3 calcNormal(vec3 currNormal, sampler2D normalMap, vec2 outTexCoord, Material mat) {
@@ -147,6 +147,5 @@ void main() {
     }
 
     fragColor = ambientC * vec4(ambientLight, 1) + diffuseSpecularComp;
-    // fragColor = setFog(fragColor, fog, visibility);
-    // fragColor = vec4(1);
+    fragColor = setFog(fragColor, fog, visibility);
 }

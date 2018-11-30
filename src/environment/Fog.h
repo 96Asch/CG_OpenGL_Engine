@@ -1,33 +1,23 @@
-#ifndef DIRECTIONALLIGHT_H_
-#define DIRECTIONALLIGHT_H_
+#ifndef FOG_H_
+#define FOG_H_
 
-#include <glm/vec3.hpp>
-#include <sstream>
 #include "../util/Serializable.h"
 
-struct DirectionalLight : public Serializable{
+struct Fog : public Serializable{
 
-    DirectionalLight()
-                     : color(glm::vec3(1.0f)),
-                       direction(glm::vec3(0.0f,0.0f,1.0f)),
-                       intensity(1.0f)
-                      {};
+    Fog() : active(false),
+            color(glm::vec3(0.0f)),
+            density(0.0f),
+            gradient(0.0f)
+    {};
 
-    DirectionalLight(const glm::vec3 &color,
-                     const glm::vec3 &direction,
-                     const float &intensity)
-                     : color(color),
-                       direction(direction),
-                       intensity(intensity)
-                       {};
-
-    DirectionalLight(std::ifstream &stream)
-                     : color(glm::vec3(1.0f)),
-                       direction(glm::vec3(0.0f,0.0f,1.0f)),
-                       intensity(1.0f)
+    Fog(std::ifstream &stream) : active(false),
+            color(glm::vec3(0.0f)),
+            density(0.0f),
+            gradient(0.0f)
     {
         if(!deserialize(stream))
-             std::cerr << "ERR: Deserializing DirectionalLight" << std::endl;
+             std::cerr << "ERR: Deserializing Fog" << std::endl;
     };
 
     virtual void serialize(std::ofstream &) override {};
@@ -53,30 +43,31 @@ struct DirectionalLight : public Serializable{
                             this->color = glm::vec3(v1, v2, v3);
                         }
                     }
-                    else if (var == "direction") {
+                    else if (var == "density") {
                         if(std::getline(ss, value, '=')) {
-                            float v1, v2, v3;
-                            sscanf(value.c_str(), "%f,%f,%f", &v1, &v2, &v3);
-                            this->direction = glm::normalize(glm::vec3(v1, v2, v3));
+                            float density = std::stof(value);
+                            this->density = density;
                         }
                     }
-                    else if (var == "intensity") {
+                    else if (var == "gradient") {
                         if(std::getline(ss, value, '=')) {
-                            float intensity = std::stof(value);
-                            this->intensity = intensity;
+                            float gradient = std::stof(value);
+                            this->gradient = gradient;
                         }
                     }
                 }
             }
             else return false;
         } while(stream && firstAcc && !lastAcc);
+        if(density > 0.0f)
+            active = true;
         return true;
     };
 
+    bool active;
     glm::vec3 color;
-    glm::vec3 direction;
-    float intensity;
-
+    float density;
+    float gradient;
 };
 
 #endif

@@ -8,9 +8,8 @@ namespace Factory {
         objl::Loader loader;
     }
 
-    void loadOBJ(const std::string &file) {
+    void loadOBJ(const std::string &file, const float &scale) {
         bool success = false;
-
         if(VAO->isLoaded(file))
             return;
 
@@ -22,16 +21,17 @@ namespace Factory {
             printf("Mesh: %s\n", mesh.MeshName.c_str());
 
             for(unsigned i = 0; i < mesh.Vertices.size(); ++i) {
-                data.vertices.push_back(mesh.Vertices[i].Position.X);
-                data.vertices.push_back(mesh.Vertices[i].Position.Y);
-                data.vertices.push_back(mesh.Vertices[i].Position.Z);
+                std::cout << mesh.Vertices[i].Position.X * scale << std::endl;
+                data.vertices.push_back(mesh.Vertices[i].Position.X * scale);
+                data.vertices.push_back(mesh.Vertices[i].Position.Y * scale);
+                data.vertices.push_back(mesh.Vertices[i].Position.Z * scale);
 
-                data.textures.push_back(mesh.Vertices[i].TextureCoordinate.X);
-                data.textures.push_back(mesh.Vertices[i].TextureCoordinate.Y);
+                data.textures.push_back(mesh.Vertices[i].TextureCoordinate.X * scale);
+                data.textures.push_back(mesh.Vertices[i].TextureCoordinate.Y * scale);
 
-                data.normals.push_back(mesh.Vertices[i].Normal.X);
-                data.normals.push_back(mesh.Vertices[i].Normal.Y);
-                data.normals.push_back(mesh.Vertices[i].Normal.Z);
+                data.normals.push_back(mesh.Vertices[i].Normal.X * scale);
+                data.normals.push_back(mesh.Vertices[i].Normal.Y * scale);
+                data.normals.push_back(mesh.Vertices[i].Normal.Z* scale);
             }
 
             data.indices = mesh.Indices;
@@ -41,4 +41,5 @@ namespace Factory {
         }
         VAO->createVao(file, data.vertices, data.indices, data.textures, data.normals);
     }
+
 }

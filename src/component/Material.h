@@ -18,9 +18,11 @@ struct Material : public IComponent<Material> {
                       reflectance(0.0f),
                       hasTexture(true),
                       hasFakeLighting(false),
-                      hasNormalMap(false),
-                      id(Factory::TEXTURE->createTexture(source))
-                      {};
+                      hasNormalMap(false)
+    {
+        if(!source.empty())
+            id = Factory::TEXTURE->createTexture(source);
+    };
 
     Material(std::ifstream &stream)
                     : source(""),
@@ -53,7 +55,8 @@ struct Material : public IComponent<Material> {
                     if (var == "source") {
                         if(std::getline(ss, value, '=')) {
                             this->source = value;
-                            this->id = Factory::TEXTURE->createTexture(source);
+                            if(!source.empty())
+                                this->id = Factory::TEXTURE->createTexture(source);
                         }
                     }
                     else if (var == "ambient") {
@@ -103,9 +106,7 @@ struct Material : public IComponent<Material> {
         return true;
     };
 
-    virtual void serialize(std::ofstream &) override {
-
-    };
+    virtual void serialize(std::ofstream &) override {};
 
     std::string source;
     glm::vec4 ambient;

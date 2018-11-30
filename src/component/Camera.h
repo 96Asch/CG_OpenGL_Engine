@@ -51,11 +51,9 @@ struct Camera : public IComponent<Camera> {
                     if (var == "position") {
                         if(std::getline(ss, value, '=')) {
                             float v1, v2, v3;
-                            std::cout << value << std::endl;
                             sscanf(value.c_str(), "%f,%f,%f", &v1, &v2, &v3);
-                            printf("%f,%f,%f", v1, v2, v3);
                             this->position = glm::vec3(v1, v2, v3);
-                            // this->lastPosition = position;
+                            this->lastPosition = position;
                         }
                     }
                     else if (var == "yaw") {

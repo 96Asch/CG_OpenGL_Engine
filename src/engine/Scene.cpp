@@ -21,6 +21,10 @@ bool Scene::deserialize(std::ifstream &stream) {
             success &= ef.deserialize(stream);
         else if (tag == "[directionallight]")
             success &= light.deserialize(stream);
+        else if (tag == "[skybox]")
+            success &= sky.deserialize(stream);
+        else if (tag == "[fog]")
+            success &= fog.deserialize(stream);
         stream >> std::ws;
     }
     return success;
@@ -32,4 +36,12 @@ EntityFactory& Scene::getEntities() {
 
 DirectionalLight Scene::getDirectional() {
     return light;
+}
+
+Fog& Scene::getFog() {
+    return fog;
+}
+
+Skybox& Scene::getSky() {
+    return sky;
 }

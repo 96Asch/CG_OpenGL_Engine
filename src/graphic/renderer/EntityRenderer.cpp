@@ -13,36 +13,34 @@ EntityRenderer::EntityRenderer() {}
 
 EntityRenderer::~EntityRenderer() {}
 
-void EntityRenderer::init(const glm::mat4 &projection) {
+void EntityRenderer::init() {
     shader.init("shader/entity", "position", "texCoord", "vertexNormal", "tangent");
     shader.addUniform(new UniformMat4("model"));
-    shader.addUniform(new UniformMat4("view"));
-    shader.addUniform(new UniformMat4("projection"));
+    shader.addUniform(new UniformMat4("mv"));
+    shader.addUniform(new UniformMat4("mvp"));
     shader.addUniform(new UniformMaterial("material"));
     shader.addUniform(new UniformPLights("pointLight"));
     shader.addUniform(new UniformDLight("directionalLight"));
-
+    shader.addUniform(new UniformFog("fog"));
     shader.storeUniformLocations();
-
-    shader.start();
-    shader.getUniform<UniformMat4>("projection")->load(projection);
-    shader.stop();
 }
 
 void EntityRenderer::preRender(const float &,
                                const glm::mat4 &view,
+                               const glm::mat4&,
                                Scene* scene) {
     GLUtil::cullBackFaces(true);
     shader.start();
-    shader.getUniform<UniformMat4>("view")->load(view);
     loadPointLights(view, scene);
     loadDirectionalLight(view, scene);
+    shader.getUniform<UniformFog>("fog")->load(scene->getFog());
 }
 
 void EntityRenderer::render(const float &interpolation,
                             const glm::mat4 &view,
+                            const glm::mat4 &projection,
                             Scene *scene) {
-    preRender(interpolation, view, scene);
+    preRender(interpolation, view, projection, scene);
 
     for(auto e : scene->getEntities().withComponents<Model, Transform, Material>()) {
 
@@ -52,7 +50,13 @@ void EntityRenderer::render(const float &interpolation,
 
         mod->getVao()->bind(0,1,2);
         shader.getUniform<UniformMaterial>("material")->load(*mat);
-        shader.getUniform<UniformMat4>("model")->load(buildModelMatrix(tra, interpolation));
+        glm::mat4 model;
+        buildModelMatrix(model, tra, interpolation);
+        shader.getUniform<UniformMat4>("model")->load(model);
+        glm::mat4 mv = view * model;
+        shader.getUniform<UniformMat4>("mv")->load(mv);
+        glm::mat4 mvp = projection * mv;
+        shader.getUniform<UniformMat4>("mvp")->load(mvp);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, mat->id);
         glDrawElements(GL_TRIANGLES, mod->getVao()->getIndexCount(), GL_UNSIGNED_INT, 0);
@@ -64,7 +68,7 @@ void EntityRenderer::render(const float &interpolation,
 
 void EntityRenderer::postRender(const float &, Scene*) {
     shader.stop();
-    GLUtil::cullBackFaces(true);
+    GLUtil::cullBackFaces(false);
 }
 
 void EntityRenderer::cleanup() {
@@ -91,8 +95,8 @@ void EntityRenderer::loadDirectionalLight(const glm::mat4 &view, Scene *scene) {
     shader.getUniform<UniformDLight>("directionalLight")->load(light);
 }
 
-glm::mat4 EntityRenderer::buildModelMatrix(const Transform* t, const float &interpolation) {
-    glm::mat4 model = glm::mat4(1.0f);
+void EntityRenderer::buildModelMatrix(glm::mat4 &model, const Transform* t, const float &interpolation) {
+    model = glm::mat4(1.0f);
     glm::vec3 positionInterpol = Util::lerp(t->lastPosition, t->position, interpolation);
     glm::vec3 rotationInterpol = Util::lerp(t->lastRotation, t->rotation, interpolation);
     glm::vec3 scaleInterpol = Util::lerp(t->lastScale, t->scale, interpolation);
@@ -101,5 +105,4 @@ glm::mat4 EntityRenderer::buildModelMatrix(const Transform* t, const float &inte
     model = glm::rotate(model, glm::radians(rotationInterpol.y), glm::vec3(0,1,0));
     model = glm::rotate(model, glm::radians(rotationInterpol.z), glm::vec3(0,0,1));
     model = glm::scale(model, scaleInterpol);
-    return model;
 }

@@ -1,17 +1,17 @@
-#ifndef ENTITYRENDERER_H_
-#define ENTITYRENDERER_H_
+#ifndef SKYBOXRENDERER_H_
+#define SKYBOXRENDERER_H_
 
 #include "Renderer.h"
 
-struct Transform;
+struct Skybox;
 
-class Scene;
-class EntityRenderer : public Renderer {
+class SkyboxRenderer : public Renderer {
 
 public:
 
-    EntityRenderer();
-    ~EntityRenderer();
+    SkyboxRenderer();
+
+    virtual ~SkyboxRenderer() override;
 
     virtual void init() override;
 
@@ -22,9 +22,9 @@ public:
 
     virtual void cleanup() override;
 
-private:
+protected:
 
-    void setShader();
+    void setupShader();
 
     virtual void preRender(const float &interpolation,
                            const glm::mat4 &view,
@@ -33,12 +33,10 @@ private:
 
     virtual void postRender(const float &interpolation, Scene *scene) override;
 
-    void loadPointLights(const glm::mat4 &view, Scene* scene);
-
-    void loadDirectionalLight(const glm::mat4 &view, Scene* scene);
-
-    void buildModelMatrix(glm::mat4 &model, const Transform* t, const float &interpolation);
-
+    void buildProjectionViewMatrix(glm::mat4 &pv,
+                                   Skybox &box,
+                                   const glm::mat4 &view,
+                                   const glm::mat4 &projection);
 };
 
 #endif

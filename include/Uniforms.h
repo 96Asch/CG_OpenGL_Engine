@@ -10,5 +10,7 @@
 #include "../src/graphic/uniform/UniformDLight.h"
 #include "../src/graphic/uniform/UniformPLight.h"
 #include "../src/graphic/uniform/UniformPLights.h"
+#include "../src/graphic/uniform/UniformFog.h"
+#include "../src/graphic/uniform/UniformSampler.h"
 
 #endif

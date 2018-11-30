@@ -74,4 +74,12 @@ namespace Factory {
         return (vaos.find(source) != vaos.end());
     }
 
+    // void VaoFactory::getCubeVertices(const float &size,
+    //                                  std::vector<GLfloat> &vertices,
+    //                                  std::vector<GLuint> &indices) {
+    //     vertices.clear();
+    //     indices.clear();
+    //     vertices.
+    // }
+
 }

@@ -29,4 +29,16 @@ namespace GLUtil {
         }
     }
 
+    void enableDepthMask(const bool &enable) {
+        static bool isDepthMasking = false;
+        if (enable && !isDepthMasking) {
+            glDepthMask(true);
+            isDepthMasking = true;
+        }
+        else if (!enable && isDepthMasking) {
+            glDepthMask(false);
+            isDepthMasking = false;
+        }
+    }
+
 }

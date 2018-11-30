@@ -2,5 +2,6 @@
 #define RENDERERS_H_
 
 #include "../src/graphic/renderer/EntityRenderer.h"
+#include "../src/graphic/renderer/SkyboxRenderer.h"
 
 #endif

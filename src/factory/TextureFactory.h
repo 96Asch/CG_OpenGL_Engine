@@ -3,6 +3,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "Global.h"
 
@@ -18,14 +19,21 @@ namespace Factory {
     public:
 
         TextureFactory();
+
         ~TextureFactory();
 
         GLuint createTexture(const std::string &file);
+
+        GLuint createCubeMapTexture(const std::vector<std::string> &files);
+
         void removeTexture(const std::string &file);
 
-
     private:
+
         std::unordered_map<std::string, GLuint> textures;
+
+        bool loadCubeMapSide(GLuint texture, GLenum side_target,
+                             const std::string file);
 
     };
 }

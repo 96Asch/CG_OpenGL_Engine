@@ -9,23 +9,25 @@ GraphicSystem::GraphicSystem() : System() {}
 GraphicSystem::~GraphicSystem(){}
 
 void GraphicSystem::init() {
+    renderers.push_back(new SkyboxRenderer());
     renderers.push_back(new EntityRenderer());
     buildProjectionMatrix();
 
     for(auto renderer : renderers)
-        renderer->init(projection);
+        renderer->init();
 
     GLUtil::enableDepthTesting(true);
 }
 
 void GraphicSystem::render(const float &interpolation, Scene* scene) {
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    const glm::vec3& color = scene->getFog().color;
+    glClearColor(color.x, color.y, color.z, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     buildViewMatrix(interpolation, scene);
 
     for(auto renderer : renderers)
-        renderer->render(interpolation, view, scene);
+        renderer->render(interpolation, view, projection, scene);
 }
 
 void GraphicSystem::cleanup() {
