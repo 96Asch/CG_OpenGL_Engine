@@ -59,6 +59,7 @@ int main(int argc, char** argv) {
     initGlobals();
     Engine engine(Global::width, Global::height, "First screen!");
     engine.add(new InputSystem());
+    engine.add(new EnvironmentSystem());
     engine.add(new PhysicsSystem());
     engine.add(new GraphicSystem());
 

@@ -18,7 +18,7 @@ public:
 
     EntityFactory& getEntities();
 
-    DirectionalLight getDirectional();
+    DirectionalLight& getDirectional();
 
     Fog& getFog();
 

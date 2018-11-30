@@ -34,7 +34,7 @@ EntityFactory& Scene::getEntities() {
     return ef;
 }
 
-DirectionalLight Scene::getDirectional() {
+DirectionalLight& Scene::getDirectional() {
     return light;
 }
 

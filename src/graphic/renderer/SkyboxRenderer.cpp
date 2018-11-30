@@ -70,7 +70,6 @@ void SkyboxRenderer::buildProjectionViewMatrix(glm::mat4 &pv,
     v[3][0] = 0.0f;
     v[3][1] = 0.0f;
     v[3][2] = 0.0f;
-    box.rotation += box.rotationSpeed;
     v = glm::rotate(v, glm::radians(box.rotation), glm::vec3(0.0f, 1.0f, 0.0f));
     pv = glm::mat4(projection * v);
 }

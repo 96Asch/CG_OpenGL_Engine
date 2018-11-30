@@ -4,5 +4,6 @@
 #include "../src/system/GraphicSystem.h"
 #include "../src/system/InputSystem.h"
 #include "../src/system/PhysicsSystem.h"
+#include "../src/system/EnvironmentSystem.h"
 
 #endif

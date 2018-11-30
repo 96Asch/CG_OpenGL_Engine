@@ -84,6 +84,7 @@ struct Camera : public IComponent<Camera> {
     glm::vec3 target, lastTarget;
     glm::vec3 up, lastUp, worldUp;
     glm::vec3 right;
+    glm::vec3 rotation;
     float yaw, pitch;
 };
 
