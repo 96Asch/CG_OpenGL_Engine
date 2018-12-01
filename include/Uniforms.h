@@ -12,5 +12,6 @@
 #include "../src/graphic/uniform/UniformPLights.h"
 #include "../src/graphic/uniform/UniformFog.h"
 #include "../src/graphic/uniform/UniformSampler.h"
+#include "../src/graphic/uniform/UniformTerrainMaterial.h"
 
 #endif

@@ -26,7 +26,7 @@ bool Window::init(const int &width,
 
     SDL_WM_SetCaption(title.c_str(), 0);
     window = SDL_SetVideoMode(width, height, 32,
-                              SDL_OPENGL | SDL_DOUBLEBUF);
+                              SDL_OPENGL | SDL_DOUBLEBUF | SDL_RESIZABLE);
     if(!window) {
         fprintf(stderr, "SDL failed to initialize");
         return false;

@@ -20,6 +20,9 @@ namespace Factory {
 
     void loadOBJ(const std::string &file, const float &scale = 1);
 
+    void generateTerrain(const unsigned &numVertex,
+                         std::vector<std::vector<float>> &heights);
+
 }
 
 #endif

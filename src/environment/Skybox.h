@@ -18,9 +18,7 @@ struct Skybox : public Serializable {
               size(400.0f),
               rotationSpeed(0.5f),
               source("")
-    {
-        // Factory::loadOBJ(CUBEMODEL,size);
-    };
+    { };
 
     Skybox(std::ifstream &stream)
             : FACES(6),

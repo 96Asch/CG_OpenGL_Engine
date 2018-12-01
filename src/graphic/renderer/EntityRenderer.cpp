@@ -26,42 +26,35 @@ void EntityRenderer::init() {
 }
 
 void EntityRenderer::preRender(const float &,
-                               const glm::mat4 &view,
-                               const glm::mat4&,
+                               TransMat &mat,
                                Scene* scene) {
     GLUtil::cullBackFaces(true);
     shader.start();
-    loadPointLights(view, scene);
-    loadDirectionalLight(view, scene);
+    loadPointLights(mat.view, scene);
+    loadDirectionalLight(mat.view, scene);
     shader.getUniform<UniformFog>("fog")->load(scene->getFog());
 }
 
 void EntityRenderer::render(const float &interpolation,
-                            const glm::mat4 &view,
-                            const glm::mat4 &projection,
+                            TransMat &mat,
                             Scene *scene) {
-    preRender(interpolation, view, projection, scene);
+    preRender(interpolation, mat, scene);
 
     for(auto e : scene->getEntities().withComponents<Model, Transform, Material>()) {
 
-        Model* mod = e.getComponent<Model>();
-        Transform* tra = e.getComponent<Transform>();
-        Material* mat = e.getComponent<Material>();
+        Model* model = e.getComponent<Model>();
+        Transform* trans = e.getComponent<Transform>();
+        Material* material = e.getComponent<Material>();
 
-        mod->getVao()->bind(0,1,2);
-        shader.getUniform<UniformMaterial>("material")->load(*mat);
-        glm::mat4 model;
-        buildModelMatrix(model, tra, interpolation);
-        shader.getUniform<UniformMat4>("model")->load(model);
-        glm::mat4 mv = view * model;
-        shader.getUniform<UniformMat4>("mv")->load(mv);
-        glm::mat4 mvp = projection * mv;
-        shader.getUniform<UniformMat4>("mvp")->load(mvp);
+        buildModelMatrix(mat.model, trans, interpolation);
+        shader.getUniform<UniformMaterial>("material")->load(*material);
+        loadMatrices(mat);
+        model->getVao()->bind(0,1,2);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, mat->id);
-        glDrawElements(GL_TRIANGLES, mod->getVao()->getIndexCount(), GL_UNSIGNED_INT, 0);
+        glBindTexture(GL_TEXTURE_2D, material->id);
+        glDrawElements(GL_TRIANGLES, model->getVao()->getIndexCount(), GL_UNSIGNED_INT, 0);
         glBindTexture(GL_TEXTURE_2D, 0);
-        mod->getVao()->unbind(0,1,2);
+        model->getVao()->unbind(0,1,2);
     }
     postRender(interpolation, scene);
 };
@@ -73,6 +66,14 @@ void EntityRenderer::postRender(const float &, Scene*) {
 
 void EntityRenderer::cleanup() {
     shader.cleanup();
+}
+
+void EntityRenderer::loadMatrices(TransMat &mat) {
+    shader.getUniform<UniformMat4>("model")->load(mat.model);
+    mat.mv = mat.view * mat.model;
+    shader.getUniform<UniformMat4>("mv")->load(mat.mv);
+    mat.mvp = mat.projection * mat.mv;
+    shader.getUniform<UniformMat4>("mvp")->load(mat.mvp);
 }
 
 void EntityRenderer::loadPointLights(const glm::mat4 &view, Scene *scene) {

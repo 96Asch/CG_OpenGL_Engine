@@ -21,7 +21,6 @@ namespace Factory {
             printf("Mesh: %s\n", mesh.MeshName.c_str());
 
             for(unsigned i = 0; i < mesh.Vertices.size(); ++i) {
-                std::cout << mesh.Vertices[i].Position.X * scale << std::endl;
                 data.vertices.push_back(mesh.Vertices[i].Position.X * scale);
                 data.vertices.push_back(mesh.Vertices[i].Position.Y * scale);
                 data.vertices.push_back(mesh.Vertices[i].Position.Z * scale);
@@ -39,7 +38,7 @@ namespace Factory {
         else {
             std::cerr << "Loading object has failed!" << std::endl;
         }
-        VAO->createVao(file, data.vertices, data.indices, data.textures, data.normals);
+        VAO->createVao(file, data.indices, data.vertices, data.textures, data.normals);
     }
 
 }

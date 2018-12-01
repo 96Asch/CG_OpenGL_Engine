@@ -2,8 +2,10 @@
 #define GRAPHICSYSTEM_H_
 
 #include <vector>
-#include "System.h"
 #include <glm/mat4x4.hpp>
+
+#include "System.h"
+#include "../util/TransMat.h"
 
 class Scene;
 class Renderer;
@@ -27,7 +29,7 @@ private:
 
     std::vector<Renderer*> renderers;
 
-    glm::mat4 view, projection;
+    TransMat transform;
 
     void buildViewMatrix(const float &interpolation, Scene* scene);
 

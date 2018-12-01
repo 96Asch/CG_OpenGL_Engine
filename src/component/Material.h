@@ -22,6 +22,8 @@ struct Material : public IComponent<Material> {
     {
         if(!source.empty())
             id = Factory::TEXTURE->createTexture(source);
+        else
+            hasTexture = false;
     };
 
     Material(std::ifstream &stream)
@@ -55,8 +57,10 @@ struct Material : public IComponent<Material> {
                     if (var == "source") {
                         if(std::getline(ss, value, '=')) {
                             this->source = value;
-                            if(!source.empty())
+                            if(!source.empty()) {
                                 this->id = Factory::TEXTURE->createTexture(source);
+                                this->hasTexture = true;
+                            }
                         }
                     }
                     else if (var == "ambient") {

@@ -25,6 +25,8 @@ bool Scene::deserialize(std::ifstream &stream) {
             success &= sky.deserialize(stream);
         else if (tag == "[fog]")
             success &= fog.deserialize(stream);
+        else if (tag == "[terrain]")
+            success &= terrain.deserialize(stream);
         stream >> std::ws;
     }
     return success;
@@ -40,6 +42,10 @@ DirectionalLight& Scene::getDirectional() {
 
 Fog& Scene::getFog() {
     return fog;
+}
+
+Terrain& Scene::getTerrain() {
+    return terrain;
 }
 
 Skybox& Scene::getSky() {

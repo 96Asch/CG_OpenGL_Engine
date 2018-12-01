@@ -51,7 +51,7 @@ void initGlobals() {
     Global::fov = Global::fov == 0 ? 70.0f : Global::fov;
     Global::aspectRatio = Global::width / Global::height;
     Global::nearPlane = 0.1f;
-    Global::farPlane = 100.0f;
+    Global::farPlane = 1000.0f;
 }
 
 int main(int argc, char** argv) {

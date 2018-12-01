@@ -18,10 +18,10 @@ namespace Factory {
     }
 
     void VaoFactory::createVao(const std::string &source,
-                               const std::vector<GLfloat> &position,
-                               const std::vector<GLuint> &indices) {
-        auto it = vaos.find(source);
-        if(it == vaos.end()) {
+                               const std::vector<GLuint> &indices,
+                               const std::vector<GLfloat> &position)
+    {
+        if(!isLoaded(source)) {
             auto vao = Vao::create();
             vao->bind();
             vao->createIndexBuffer(&indices[0], indices.size());
@@ -32,11 +32,11 @@ namespace Factory {
     }
 
     void VaoFactory::createVao(const std::string &source,
-                               const std::vector<GLfloat> &position,
                                const std::vector<GLuint> &indices,
-                               const std::vector<GLfloat> &texture) {
-        auto it = vaos.find(source);
-        if(it == vaos.end()) {
+                               const std::vector<GLfloat> &position,
+                               const std::vector<GLfloat> &texture)
+    {
+        if(!isLoaded(source)) {
             auto vao = Vao::create();
             vao->bind();
             vao->createIndexBuffer(&indices[0], indices.size());
@@ -48,12 +48,12 @@ namespace Factory {
     }
 
     void VaoFactory::createVao(const std::string &source,
-                               const std::vector<GLfloat> &position,
                                const std::vector<GLuint> &indices,
+                               const std::vector<GLfloat> &position,
                                const std::vector<GLfloat> &texture,
-                               const std::vector<GLfloat> &normals) {
-        auto it = vaos.find(source);
-        if(it == vaos.end()) {
+                               const std::vector<GLfloat> &normals)
+    {
+        if(!isLoaded(source)) {
             auto vao = Vao::create();
             vao->bind();
             vao->createIndexBuffer(&indices[0], indices.size());
@@ -73,13 +73,5 @@ namespace Factory {
     bool VaoFactory::isLoaded(const std::string &source) const {
         return (vaos.find(source) != vaos.end());
     }
-
-    // void VaoFactory::getCubeVertices(const float &size,
-    //                                  std::vector<GLfloat> &vertices,
-    //                                  std::vector<GLuint> &indices) {
-    //     vertices.clear();
-    //     indices.clear();
-    //     vertices.
-    // }
 
 }

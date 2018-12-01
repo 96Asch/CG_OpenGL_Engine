@@ -5,19 +5,36 @@
   intensity=0.5
 }
 
-[fog]
-{
-  color=0.1,0.1,0.2
-  density=0.1
-  gradient=0.4
-}
 
 [skybox]
 {
-  size=40
+  size=400
   rotationSpeed=0.01
   source=texture/skybox/sky
   ext=.png
+}
+
+[terrain]
+{
+  size=200
+  heightMap=h
+  position=-0.5,-0.5
+  [material]
+  {
+    source=texture/grassy3.png
+    ambient=0.0,0.0,0.0,1.0
+    diffuse=0.0,0.0,0.0,1.0
+    specular=0.0,0.5,0.5,1.0
+    reflectance=1.0
+  }
+}
+
+
+[fog]
+{
+  color=0.15,0.14,0.25
+  density=0.1
+  gradient=0.4
 }
 
 [entity]

@@ -9,6 +9,7 @@ GraphicSystem::GraphicSystem() : System() {}
 GraphicSystem::~GraphicSystem(){}
 
 void GraphicSystem::init() {
+    renderers.push_back(new TerrainRenderer());
     renderers.push_back(new SkyboxRenderer());
     renderers.push_back(new EntityRenderer());
     buildProjectionMatrix();
@@ -27,7 +28,7 @@ void GraphicSystem::render(const float &interpolation, Scene* scene) {
     buildViewMatrix(interpolation, scene);
 
     for(auto renderer : renderers)
-        renderer->render(interpolation, view, projection, scene);
+        renderer->render(interpolation, transform, scene);
 }
 
 void GraphicSystem::cleanup() {
@@ -38,7 +39,7 @@ void GraphicSystem::cleanup() {
 }
 
 void GraphicSystem::buildViewMatrix(const float &interpolation, Scene *scene) {
-    view = glm::mat4(1.0f);
+    transform.view = glm::mat4(1.0f);
     for (auto e : scene->getEntities().withComponents<Camera>()) {
         Camera* c = e.getComponent<Camera>();
         glm::vec3 positionInterpol = Util::lerp(c->lastPosition,
@@ -50,19 +51,19 @@ void GraphicSystem::buildViewMatrix(const float &interpolation, Scene *scene) {
         glm::vec3 upInterpol = Util::lerp(c->lastUp,
                                           c->up,
                                           interpolation);
-        view = glm::lookAt(
-                            positionInterpol,
-                            positionInterpol + targetInterpol,
-                            upInterpol
-                          );
+        transform.view = glm::lookAt(
+                                     positionInterpol,
+                                     positionInterpol + targetInterpol,
+                                     upInterpol
+                                    );
     }
 }
 
 void GraphicSystem::buildProjectionMatrix() {
-    projection = glm::perspective(
-                                    glm::radians(Global::fov),
-                                    Global::aspectRatio,
-                                    Global::nearPlane,
-                                    Global::farPlane
-                                 );
+    transform.projection = glm::perspective(
+                                            glm::radians(Global::fov),
+                                            Global::aspectRatio,
+                                            Global::nearPlane,
+                                            Global::farPlane
+                                           );
 }
