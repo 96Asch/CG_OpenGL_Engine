@@ -29,6 +29,7 @@ void TerrainRenderer::render(const float &interpolation,
 
         buildModelMatrix(mat.model, terrain.position);
         loadMatrices(mat);
+        shader.getUniform<UniformFog>("fog")->load(scene->getFog());
         shader.getUniform<UniformTerrainMaterial>("material")->load(terrain.material);
         terrain.getVao()->bind(0,1,2);
         glActiveTexture(GL_TEXTURE0);

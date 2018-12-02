@@ -66,11 +66,11 @@ bool Window::isRunning() const {
     return !glfwWindowShouldClose(window);
 }
 
-void Window::keyCallback(GLFWwindow* window,
+void Window::keyCallback(GLFWwindow*,
                          int key,
-                         int scancode,
+                         int,
                          int action,
-                         int mods)
+                         int)
 {
     if(action == GLFW_PRESS)
         Input::INPUT->pressKey(key);
@@ -78,10 +78,10 @@ void Window::keyCallback(GLFWwindow* window,
         Input::INPUT->releaseKey(key);
 }
 
-void Window::mouseButtonCallback(GLFWwindow* window,
+void Window::mouseButtonCallback(GLFWwindow*,
                                  int button,
                                  int action,
-                                 int mods)
+                                 int)
 {
     if(action == GLFW_PRESS)
         Input::INPUT->clickMouse(button);
@@ -89,7 +89,7 @@ void Window::mouseButtonCallback(GLFWwindow* window,
         Input::INPUT->releaseMouse(button);
 }
 
-void Window::mouseCursorCallback(GLFWwindow* window, double xpos, double ypos) {
+void Window::mouseCursorCallback(GLFWwindow*, double xpos, double ypos) {
     Input::INPUT->onMouseMoved(xpos, ypos);
 }
 

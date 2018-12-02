@@ -15,13 +15,15 @@ struct Terrain : public Serializable{
               material(Material("")),
               heightMap(""),
               size(0.0f),
+              maxHeight(0.0f),
               position(glm::vec2(0.0f))
     {};
 
     Terrain(const std::string &heightMap,
             const std::string &texture,
             const glm::vec2 &position,
-            const float &size)
+            const float &size,
+            const float &maxHeight)
             : active(false),
               material(Material(texture)),
               heightMap(heightMap),
@@ -29,7 +31,7 @@ struct Terrain : public Serializable{
               position(position * size)
     {
         if(!texture.empty() && size > 0) {
-            Factory::generateTerrain(heightMap, size);
+            Factory::generateTerrain(heightMap, size, maxHeight);
             active = true;
         }
     };
@@ -39,6 +41,7 @@ struct Terrain : public Serializable{
               material(Material("")),
               heightMap(""),
               size(100.0f),
+              maxHeight(0.0f),
               position(glm::vec2(0.0f))
     {
         if(!deserialize(stream))
@@ -73,11 +76,18 @@ struct Terrain : public Serializable{
                             counter++;
                         }
                     }
+                    else if (var == "maxHeight") {
+                        if(std::getline(ss, value, '=')) {
+                            this->maxHeight = std::stof(value);
+                            std::cout << this->maxHeight << std::endl;
+                        }
+                    }
                     else if (var == "position") {
                         if(std::getline(ss, value, '=')) {
                             float v1, v2;
                             sscanf(value.c_str(), "%f,%f", &v1, &v2);
                             this->position = glm::vec2(v1, v2);
+                            this->position *= size;
                             counter++;
                         }
                     }
@@ -91,7 +101,7 @@ struct Terrain : public Serializable{
         } while(stream && firstAcc && !lastAcc);
         if(counter == 3) {
             active = true;
-            Factory::generateTerrain(heightMap, size);
+            Factory::generateTerrain(heightMap, size, maxHeight);
         }
         return true;
     };
@@ -106,7 +116,7 @@ struct Terrain : public Serializable{
     Material material;
     std::string heightMap;
     float size;
-    float maxHeight, minHeight;
+    float maxHeight;
     glm::vec2 position;
 
 

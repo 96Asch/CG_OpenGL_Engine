@@ -1,8 +1,8 @@
 [directionallight]
 {
   color=0.4,0.4,0.4
-  direction=1.0,0.0,0.0
-  intensity=1.0
+  direction=0.0,-1.0,0.0
+  intensity=5.0
 }
 
 
@@ -16,12 +16,13 @@
 
 [terrain]
 {
-  size=200
-  heightMap=h
+  size=100
+  heightMap=heightmap/hm.png
   position=-0.5,-0.5
+  maxHeight=10
   [material]
   {
-    source=texture/grassy3.png
+    source=texture/ice.png
     ambient=0.0,0.0,0.0,1.0
     diffuse=0.0,0.0,0.0,1.0
     specular=0.0,0.5,0.5,1.0
@@ -33,8 +34,8 @@
 [fog]
 {
   color=0.15,0.14,0.25
-  density=0.1
-  gradient=0.4
+  density=0.01
+  gradient=0.2
 }
 
 [entity]
@@ -62,7 +63,7 @@
   [pointlight]
   {
     color=1.0,1.0,1.0
-    position=5.0,3.0,0.0
+    position=5.0,40.0,0.0
     intensity=2.0
     attenuation=1.0,0.01,0.002
   }
@@ -78,7 +79,7 @@
   {
     position=0.0,0.0,0.0
     rotation=0.0,0.0,0.0
-    scale=1.5,1.5,1.5
+    scale=1.0,1.0,1.0
   }
   [material]
   {

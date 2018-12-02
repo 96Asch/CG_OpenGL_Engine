@@ -105,7 +105,7 @@ namespace Factory {
       // copy image data into 'target' side of cube map
       glTexImage2D(side_target, 0, GL_RGBA, w, h,
                     0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-      free(image);
+      stbi_image_free(image);
       return true;
     }
 }
