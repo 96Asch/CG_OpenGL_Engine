@@ -1,36 +1,37 @@
 #include "Window.h"
 #include <iostream>
 
-Window::Window(InputHandler* input) :input(input), running(true) {}
+Window::Window() {}
 
 Window::~Window(){
-    input = nullptr;
-    SDL_Quit();
+    glfwTerminate();
 }
 
 bool Window::init(const int &width,
                   const int &height,
                   const std::string &title) {
-    if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
-  		std::cerr << "Unable to initialize SDL: " << SDL_GetError() << std::endl;
-  		return false;
-  	}
+    glfwSetErrorCallback(errorCallback);
 
-    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-  	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-  	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-  	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-  	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-  	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-  	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
+    if (!glfwInit())
+        return false;
 
-    SDL_WM_SetCaption(title.c_str(), 0);
-    window = SDL_SetVideoMode(width, height, 32,
-                              SDL_OPENGL | SDL_DOUBLEBUF | SDL_RESIZABLE);
-    if(!window) {
-        fprintf(stderr, "SDL failed to initialize");
+    glfwDefaultWindowHints();
+    glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+
+    window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+
+    if (!window) {
         return false;
     }
+
+    const GLFWvidmode* vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    glfwSetWindowPos(window, (vidmode->width - width) / 2, (vidmode->height - height) / 2);
+    glfwMakeContextCurrent(window);
 
     if (gl3wInit()) {
         fprintf(stderr, "failed to initialize OpenGL\n");
@@ -41,57 +42,58 @@ bool Window::init(const int &width,
         return false;
     }
     printf("OpenGL %s, GLSL %s\n", glGetString(GL_VERSION),
-                glGetString(GL_SHADING_LANGUAGE_VERSION));
+             glGetString(GL_SHADING_LANGUAGE_VERSION));
+
     glEnable( GL_DEBUG_OUTPUT );
     glDebugMessageCallback( MessageCallback, 0 );
+    glfwSetMouseButtonCallback(window, mouseButtonCallback);
+    glfwSetCursorPosCallback(window, mouseCursorCallback);
+    glfwSetKeyCallback(window, keyCallback);
+    glfwShowWindow(window);
     return true;
 }
 
 void Window::update() {
-    SDL_GL_SwapBuffers();
+    glfwSwapBuffers(window);
+    glfwPollEvents();
 }
 
 void Window::cleanup() {
-    SDL_FreeSurface(window);
+    glfwDestroyWindow(window);
 }
 
 bool Window::isRunning() const {
-    return running;
+    return !glfwWindowShouldClose(window);
 }
 
-void Window::pollEvents() {
-    input->resetPressed();
-    SDL_Event event;
-	while (SDL_PollEvent(&event)) {
-		switch (event.type) {
-        case SDL_QUIT:
-            running = false;
-            break;
-        case SDL_KEYDOWN:
-            input->pressKey(event.key.keysym.sym);
-            break;
-        case SDL_KEYUP:
-            input->releaseKey(event.key.keysym.sym);
-            break;
-        case SDL_MOUSEMOTION:
-            input->onMouseMoved(event.motion.x,
-                                event.motion.y,
-                                event.motion.xrel,
-                                event.motion.yrel);
-            break;
-        case SDL_MOUSEBUTTONDOWN:
-			input->clickMouse(event.button.button);
-            break;
-        case SDL_MOUSEBUTTONUP:
-            input->releaseMouse(event.button.button);
-            break;
-        default:
-            break;
-        }
-	}
+void Window::keyCallback(GLFWwindow* window,
+                         int key,
+                         int scancode,
+                         int action,
+                         int mods)
+{
+    if(action == GLFW_PRESS)
+        Input::INPUT->pressKey(key);
+    else if(action == GLFW_RELEASE)
+        Input::INPUT->releaseKey(key);
 }
 
-SDL_Surface* Window::getWindow() {
+void Window::mouseButtonCallback(GLFWwindow* window,
+                                 int button,
+                                 int action,
+                                 int mods)
+{
+    if(action == GLFW_PRESS)
+        Input::INPUT->clickMouse(button);
+    else if(action == GLFW_RELEASE)
+        Input::INPUT->releaseMouse(button);
+}
+
+void Window::mouseCursorCallback(GLFWwindow* window, double xpos, double ypos) {
+    Input::INPUT->onMouseMoved(xpos, ypos);
+}
+
+GLFWwindow* Window::getWindow() {
     return window;
 }
 
@@ -100,7 +102,7 @@ std::string Window::getTitle() const {
 }
 
 void Window::setTitle(const std::string &newTitle) {
-    SDL_WM_SetCaption(newTitle.c_str(), 0);
+     glfwSetWindowTitle(window, newTitle.c_str());
 }
 
 void Window::errorCallback(int i, const char* desc) {

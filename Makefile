@@ -6,10 +6,11 @@ OBJDIRS = $(sort $(dir $(addprefix $(OBJDIR)/, $(FILES:$(SRC)/%=%))))
 SOURCES = $(wildcard $(SRC)/*.cpp) $(wildcard $(SRC)/*/*.cpp) $(wildcard $(SRC)/*/*/*.cpp)
 OBJS =	$(addprefix $(OBJDIR)/, $(patsubst $(SRC)/%.cpp, %.o, $(SOURCES)))
 SRC = src
-INC = -Iinclude/ -I$(SRC)/global/
+INC = -Iinclude/ -I$(SRC)/global/ -Ideps/glfw/include
+STATIC = -lglfw
 DEP = $(wildcard dep/*.c)
 DEPOBJS = $(addprefix $(OBJDIR)/, $(DEP:.c=.o))
-LDFLAGS = -lGL -lSDL -ldl
+LDFLAGS = -lGL -ldl
 PRECOMPILE = include/Global.h include/Uniforms.h include/Components.h \
   					 include/Systems.h
 PRECOMPILED = $(PRECOMPILE:.h=.h.gch)
@@ -43,7 +44,7 @@ $(OBJDIR)/%.o:	$(SRC)/%.cpp
 
 $(TARGET):	$(DEPOBJS) $(OBJS)
 	@echo Building executable $@
-	@$(CXX) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+	@$(CXX) $(CFLAGS) -o $@ $^ $(STATIC) $(LDFLAGS)
 
 run:
 	@./$(TARGET)

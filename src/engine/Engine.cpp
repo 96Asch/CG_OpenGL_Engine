@@ -6,8 +6,9 @@
 
 Engine::Engine(const int &width,
                const int &height,
-               const std::string &title) : window(Window(&input)),
-                                           scene(nullptr) {
+               const std::string &title)
+               : scene(nullptr)
+{
     if(!window.init(width, height, title)) {
         fprintf(stderr, "%s\n", "Windows failed to initialize!");
         exit(-1);
@@ -39,43 +40,51 @@ void Engine::loadSetup(const std::string &file) {
 void Engine::init() {
     if(!scene) {
         scene = new Scene();
-        std::cout << "e" << std::endl;
     }
     for(auto system : systems)
         system->init();
 }
 
 void Engine::run() {
-    const int TPS = 30;
-    const int SKIP_TICKS = 1000 / TPS;
-    const int MAX_FRAMESKIP = 5;
-
-    Uint32 currentTick = SDL_GetTicks(), nextTick;
-    int loops;
-    float interpolation;
+    const double TPS = 1.0 / 25.0;
+    double lastTime = glfwGetTime(), timer = lastTime;
+    double accumulator = 0, nowTime = 0;
+    double frameTime = 0;
+    int frames = 0 , updates = 0;
 
     while (window.isRunning()) {
-        nextTick = SDL_GetTicks();
-        loops = 0;
 
-        while (nextTick > currentTick && loops < MAX_FRAMESKIP) {
-            update();
-            currentTick += SKIP_TICKS;
-            ++loops;
+        nowTime = glfwGetTime();
+        frameTime = (nowTime - lastTime);
+        if(frameTime > 0.25)
+            frameTime = 0.25;
+        lastTime = nowTime;
 
+        accumulator += frameTime;
+
+        while (accumulator >= TPS){
+            update(TPS);
+            updates++;
+            accumulator -= TPS;
         }
 
-        interpolation = (float) (nextTick + SKIP_TICKS - currentTick)
-                        / (float) (SKIP_TICKS);
-        render(interpolation);
+        const float alpha = accumulator / TPS;
+        render(alpha);
+        frames++;
         window.update();
+
+        if (glfwGetTime() - timer > 1.0) {
+            timer ++;
+            std::cout << "FPS: " << frames << " Updates:" << updates << std::endl;
+            updates = 0, frames = 0;
+        }
+
     }
 }
 
-void Engine::update() {
-    window.pollEvents();
+void Engine::update(const float &TPS) {
     for(auto system : systems)
-        system->update(scene);
+        system->update(TPS, scene);
 }
 
 void Engine::render(const float &interpolation) {
@@ -92,9 +101,4 @@ void Engine::cleanup() {
 
 void Engine::add(System *system) {
     systems.push_back(system);
-    system->setEngine(this);
-}
-
-InputHandler* Engine::getInputHandler() {
-    return &input;
 }

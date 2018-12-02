@@ -13,27 +13,24 @@ InputSystem::InputSystem() : System() {}
 InputSystem::~InputSystem() {}
 
 
-void InputSystem::init() {
-    inputHandler = owner->getInputHandler();
-}
+void InputSystem::init() {}
 
-void InputSystem::update(Scene* scene) {
+void InputSystem::update(const float &, Scene* scene) {
     handleMouse(scene);
     handleKeys(scene);
 }
 
 void InputSystem::cleanup() {
-    inputHandler = nullptr;
 }
 
 void InputSystem::handleMouse(Scene* scene) {
     for(auto e : scene->getEntities().withComponents<Mouse>()) {
         Mouse* m = e.getComponent<Mouse>();
         m->dx = m->dy = 0.0f;
-        if(inputHandler->isMouseHeld(SDL_BUTTON_LEFT)) {
-            inputHandler->getDelta(m->dx, m->dy);
+        if(Input::INPUT->isMouseHeld(GLFW_MOUSE_BUTTON_LEFT)) {
+            Input::INPUT->getDelta(m->dx, m->dy);
         }
-        inputHandler->getMousePosition(m->x, m->y);
+        Input::INPUT->getMousePosition(m->x, m->y);
     }
 }
 
@@ -41,22 +38,22 @@ void InputSystem::handleKeys(Scene* scene) {
     for(auto e : scene->getEntities().withComponents<Action>()) {
         Action* a = e.getComponent<Action>();
         a->action.reset();
-        if(inputHandler->isKeyRepeated(SDLK_w)) {
+        if(Input::INPUT->isKeyRepeated(GLFW_KEY_W)) {
             a->addAction(ActType::MOVE_FORWARD);
         }
-        if(inputHandler->isKeyRepeated(SDLK_a)){
+        if(Input::INPUT->isKeyRepeated(GLFW_KEY_A)){
             a->addAction(ActType::MOVE_LEFT);
         }
-        if(inputHandler->isKeyRepeated(SDLK_s)){
+        if(Input::INPUT->isKeyRepeated(GLFW_KEY_S)){
             a->addAction(ActType::MOVE_BACKWARD);
         }
-        if(inputHandler->isKeyRepeated(SDLK_d)){
+        if(Input::INPUT->isKeyRepeated(GLFW_KEY_D)){
             a->addAction(ActType::MOVE_RIGHT);
         }
-        if(inputHandler->isKeyRepeated(SDLK_q)){
+        if(Input::INPUT->isKeyRepeated(GLFW_KEY_Q)){
             a->addAction(ActType::MOVE_UP);
         }
-        if(inputHandler->isKeyRepeated(SDLK_e)){
+        if(Input::INPUT->isKeyRepeated(GLFW_KEY_E)){
             a->addAction(ActType::MOVE_DOWN);
         }
     }

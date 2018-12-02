@@ -13,13 +13,11 @@ public:
 
     virtual void init() = 0;
 
-    virtual void update(Scene*) {};
+    virtual void update(const float &, Scene*) {};
 
     virtual void render(const float &, Scene*) {};
 
     virtual void cleanup() = 0;
-
-    void setEngine(Engine* engine) {owner = engine;};
 
 protected:
 

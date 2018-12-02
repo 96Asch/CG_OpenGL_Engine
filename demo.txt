@@ -2,14 +2,14 @@
 {
   color=0.4,0.4,0.4
   direction=1.0,0.0,0.0
-  intensity=0.5
+  intensity=1.0
 }
 
 
 [skybox]
 {
   size=400
-  rotationSpeed=0.01
+  rotationSpeed=0.5
   source=texture/skybox/sky
   ext=.png
 }
@@ -52,8 +52,8 @@
 
   [motion]
   {
-    movSpeed=0.5
-    rotSpeed=0.3
+    movSpeed=10
+    rotSpeed=6
   }
 }
 

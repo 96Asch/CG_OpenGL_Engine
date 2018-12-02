@@ -6,11 +6,13 @@
 #include "Global.h"
 #include "../input/InputHandler.h"
 
+class GLFWwindow;
+
 class Window {
 
 public:
 
-    Window(InputHandler* input);
+    Window();
 
     ~Window();
 
@@ -24,9 +26,23 @@ public:
 
     bool isRunning() const;
 
-    void pollEvents();
+    static void keyCallback(GLFWwindow* window,
+                            int key,
+                            int scancode,
+                            int action,
+                            int mods);
 
-    SDL_Surface* getWindow();
+    static void mouseCursorCallback(GLFWwindow* window,
+                                    double xpos,
+                                    double ypos);
+
+    static void mouseButtonCallback(GLFWwindow* window,
+                                    int button,
+                                    int action,
+                                    int mods);
+
+
+    GLFWwindow* getWindow();
 
     std::string getTitle() const;
 
@@ -34,9 +50,7 @@ public:
 
 private:
 
-    SDL_Surface* window;
-    InputHandler* input;
-    bool running;
+    GLFWwindow* window;
     std::string title;
 
     static void errorCallback(int, const char* desc);

@@ -25,15 +25,13 @@ public:
 
     void run();
 
-    void update();
+    void update(const float &TPS);
 
     void render(const float &interpolation);
 
     void cleanup();
 
     void add(System* system);
-
-    InputHandler* getInputHandler();
 
 private:
     std::vector<System*> systems;
@@ -43,7 +41,7 @@ private:
     Factory::TextureFactory t;
     Factory::VaoFactory v;
 
-    InputHandler input;
+    Input::InputHandler input;
 };
 
 #endif

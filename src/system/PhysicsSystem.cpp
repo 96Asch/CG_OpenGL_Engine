@@ -13,9 +13,9 @@ void PhysicsSystem::init() {
 
 }
 
-void PhysicsSystem::update(Scene* scene) {
-    applyRotation(scene);
-    applyMovement(scene);
+void PhysicsSystem::update(const float &tps, Scene* scene) {
+    applyRotation(tps, scene);
+    applyMovement(tps, scene);
 
 }
 
@@ -23,12 +23,12 @@ void PhysicsSystem::cleanup() {
 
 }
 
-void PhysicsSystem::applyRotation(Scene* scene) {
-    applyEntityRotation(scene);
-    applyCameraRotation(scene);
+void PhysicsSystem::applyRotation(const float &tps, Scene* scene) {
+    applyEntityRotation(tps, scene);
+    applyCameraRotation(tps, scene);
 }
 
-void PhysicsSystem::applyEntityRotation(Scene *scene) {
+void PhysicsSystem::applyEntityRotation(const float &tps, Scene *scene) {
     for (auto e : scene->getEntities().withComponents<Transform, Action, Motion>()) {
         Transform* t = e.getComponent<Transform>();
         Action* a = e.getComponent<Action>();
@@ -38,14 +38,14 @@ void PhysicsSystem::applyEntityRotation(Scene *scene) {
     }
 }
 
-void PhysicsSystem::applyCameraRotation(Scene* scene) {
+void PhysicsSystem::applyCameraRotation(const float &tps, Scene* scene) {
     for(auto e : scene->getEntities().withComponents<Camera, Mouse, Motion>()) {
         Camera* c = e.getComponent<Camera>();
         Mouse* m = e.getComponent<Mouse>();
         Motion* mov = e.getComponent<Motion>();
 
-        c->yaw -= m->dx * mov->rotSpeed;
-        c->pitch += m->dy * mov->rotSpeed;
+        c->yaw -= m->dx * mov->rotSpeed * tps;
+        c->pitch -= m->dy * mov->rotSpeed * tps;
         c->lastTarget = c->target;
         c->lastUp = c->up;
 
@@ -64,12 +64,12 @@ void PhysicsSystem::applyCameraRotation(Scene* scene) {
     }
 }
 
-void PhysicsSystem::applyMovement(Scene *scene) {
-    applyEntityMovement(scene);
-    applyCameraMovement(scene);
+void PhysicsSystem::applyMovement(const float &tps, Scene *scene) {
+    applyEntityMovement(tps, scene);
+    applyCameraMovement(tps, scene);
 }
 
-void PhysicsSystem::applyEntityMovement(Scene *scene) {
+void PhysicsSystem::applyEntityMovement(const float &tps, Scene *scene) {
     for(auto e : scene->getEntities().withComponents<Transform, Action, Motion>()) {
         Transform* t = e.getComponent<Transform>();
         Action* a = e.getComponent<Action>();
@@ -80,7 +80,7 @@ void PhysicsSystem::applyEntityMovement(Scene *scene) {
     }
 }
 
-void PhysicsSystem::applyCameraMovement(Scene* scene) {
+void PhysicsSystem::applyCameraMovement(const float &tps, Scene* scene) {
     for(auto e : scene->getEntities().withComponents<Camera, Action, Motion>()) {
         Action* a = e.getComponent<Action>();
         Camera* c = e.getComponent<Camera>();
@@ -108,7 +108,7 @@ void PhysicsSystem::applyCameraMovement(Scene* scene) {
                 if(a->action.test(ActType::MOVE_BACKWARD))
                     z = -z;
             }
-            m->direction = glm::normalize(x + y + z) * m->movSpeed;
+            m->direction = glm::normalize(x + y + z) * m->movSpeed * tps;
             c->position += m->direction;
         }
     }

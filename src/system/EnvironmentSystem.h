@@ -16,15 +16,17 @@ public:
 
     virtual void init() override;
 
-    virtual void update(Scene* scene) override;
+    virtual void update(const float &tps, Scene* scene) override;
 
     virtual void cleanup() override;
 
 private:
 
-    void updateSky(Skybox &box);
+    void updateSky(const float &tps, Skybox &box);
 
-    void updateDirectionalLight(DirectionalLight &light, const float &angle);
+    void updateDirectionalLight(const float &tps,
+                                DirectionalLight &light,
+                                const float &angle);
 
 };
 

@@ -2,97 +2,100 @@
 
 #include <iostream>
 
-InputHandler::InputHandler() : m_hasInput(false), firstClick(true) {
-    resetKeys();
-}
+namespace Input {
 
-InputHandler::~InputHandler() {}
+    InputHandler* INPUT = nullptr;
 
-void InputHandler::pressKey(const int &key) {
-    m_hasInput = true;
-    m_keyPress[key] = true;
-    m_keyRepeat[key] = true;
-}
+    InputHandler::InputHandler() : m_hasInput(false), firstClick(true) {
+        resetKeys();
+        INPUT = this;
+    }
 
-void InputHandler::releaseKey(const int &key) {
-    m_keyPress[key] = false;
-    m_keyRepeat[key] = false;
-    m_hasInput = false;
-}
+    InputHandler::~InputHandler() {}
 
-bool InputHandler::isKeyPressed(const int &key) {
-    if(m_keyPress[key]) {
+    void InputHandler::pressKey(const int &key) {
+        m_hasInput = true;
+        m_keyPress[key] = true;
+        m_keyRepeat[key] = true;
+        keysPressed.push_back(key);
+    }
+
+    void InputHandler::releaseKey(const int &key) {
         m_keyPress[key] = false;
-        return true;
+        m_keyRepeat[key] = false;
+        m_hasInput = false;
     }
-    return m_keyPress[key];
-}
 
-bool InputHandler::isKeyRepeated(const int &key) {
-    return m_keyRepeat[key];
-}
-
-void InputHandler::resetPressed() {
-    for(unsigned i = 0; i < SDLK_LAST; ++i)
-        m_keyPress[i] = false;
-}
-
-void InputHandler::resetKeys() {
-    m_hasInput = false;
-    for (unsigned i = 0; i < SDLK_LAST; ++i) {
-        m_keyPress[i] = false;
-        m_keyRepeat[i] = false;
+    bool InputHandler::isKeyPressed(const int &key) {
+        if(m_keyPress[key]) {
+            m_keyPress[key] = false;
+            return true;
+        }
+        return m_keyPress[key];
     }
-}
 
-bool InputHandler::hasInput() {
-    return m_hasInput;
-}
+    bool InputHandler::isKeyRepeated(const int &key) {
+        return m_keyRepeat[key];
+    }
 
-void InputHandler::clickMouse(const int &button) {
-    m_mouseClick[button] = true;
-    m_mouseHold[button] = true;
-}
+    void InputHandler::resetPressed() {
+        for(auto key : keysPressed)
+            m_keyPress[key] = false;
+    }
 
-void InputHandler::releaseMouse(const int &button) {
-    m_mouseClick[button] = false;
-    m_mouseHold[button] = false;
-}
+    void InputHandler::resetKeys() {
+        m_hasInput = false;
+        for (unsigned i = 0; i < GLFW_KEY_LAST; ++i) {
+            m_keyPress[i] = false;
+            m_keyRepeat[i] = false;
+        }
+    }
 
-bool InputHandler::isMouseClicked(const int &button) {
-    if(m_mouseClick[button]) {
+    bool InputHandler::hasInput() {
+        return m_hasInput;
+    }
+
+    void InputHandler::clickMouse(const int &button) {
+        m_mouseClick[button] = true;
+        m_mouseHold[button] = true;
+    }
+
+    void InputHandler::releaseMouse(const int &button) {
         m_mouseClick[button] = false;
-        return true;
+        m_mouseHold[button] = false;
     }
-    return m_mouseClick[button];
-}
 
-bool InputHandler::isMouseHeld(const int &button) {
-    return m_mouseHold[button];
-}
+    bool InputHandler::isMouseClicked(const int &button) {
+        if(m_mouseClick[button]) {
+            m_mouseClick[button] = false;
+            return true;
+        }
+        return m_mouseClick[button];
+    }
 
-void InputHandler::onMouseMoved(const int &x,
-                                const int &y,
-                                const int &dx,
-                                const int &dy) {
-    mouseX = x;
-    mouseY = y;
-    deltaX = dx;
-    deltaY = dy;
-}
+    bool InputHandler::isMouseHeld(const int &button) {
+        return m_mouseHold[button];
+    }
 
-void InputHandler::getMousePosition(float &x, float &y) {
-    x = mouseX;
-    y = mouseY;
-}
+    void InputHandler::onMouseMoved(const double &x, const double &y) {
+        prevX = mouseX;
+        prevY = mouseY;
+        mouseX = (float) x;
+        mouseY = (float) y;
+    }
 
-void InputHandler::getDelta(float &dx, float &dy) {
-    dx = (float) deltaX;
-    dy = (float) deltaY;
-    deltaX = deltaY = 0;
-}
+    void InputHandler::getMousePosition(float &x, float &y) {
+        x = mouseX;
+        y = mouseY;
+    }
 
-void InputHandler::resetClicked() {
-    for(unsigned i = 0; i < MAX_MOUSE_BUTTON; ++i)
-        m_mouseClick[i] = false;
+    void InputHandler::getDelta(float &dx, float &dy) {
+        dx = mouseX - prevX;
+        dy = prevY - mouseY;
+    }
+
+    void InputHandler::resetClicked() {
+        for(unsigned i = 0; i < GLFW_MOUSE_BUTTON_LAST; ++i)
+            m_mouseClick[i] = false;
+    }
 }

@@ -1,64 +1,69 @@
 #ifndef INPUTHANDLER_H_
 #define INPUTHANDLER_H_
 
+#include <vector>
+
 #include "Global.h"
 
-#define MAX_MOUSE_BUTTON 5
+namespace Input {
 
-class InputHandler {
+    class InputHandler;
 
-public:
+    extern InputHandler* INPUT;
 
-    InputHandler();
+    class InputHandler {
 
-    ~InputHandler();
+    public:
 
-    void pressKey(const int &key);
+        InputHandler();
 
-    void releaseKey(const int &key);
+        ~InputHandler();
 
-    bool isKeyPressed(const int &key);
+        void pressKey(const int &key);
 
-    bool isKeyRepeated(const int &key);
+        void releaseKey(const int &key);
 
-    bool hasInput();
+        bool isKeyPressed(const int &key);
 
-    void resetPressed();
+        bool isKeyRepeated(const int &key);
 
-    void clickMouse(const int &button);
+        bool hasInput();
 
-    void releaseMouse(const int &button);
+        void resetPressed();
 
-    bool isMouseClicked(const int &button);
+        void clickMouse(const int &button);
 
-    bool isMouseHeld(const int &button);
+        void releaseMouse(const int &button);
 
-    void onMouseMoved(const int &x,
-                      const int &y,
-                      const int &dx,
-                      const int &dy);
+        bool isMouseClicked(const int &button);
 
-    void getMousePosition(float &x, float &y);
+        bool isMouseHeld(const int &button);
 
-    void getDelta(float &dx, float &dy);
+        void onMouseMoved(const double &x, const double &y);
 
-    void resetClicked();
+        void getMousePosition(float &x, float &y);
 
-private:
+        void getDelta(float &dx, float &dy);
 
-    bool m_hasInput;
-    bool m_keyPress[SDLK_LAST];
-    bool m_keyRepeat[SDLK_LAST];
+        void resetClicked();
 
-    bool firstClick;
-    int mouseX, mouseY;
-    int deltaX, deltaY;
-    bool m_mouseClick[MAX_MOUSE_BUTTON];
-    bool m_mouseHold[MAX_MOUSE_BUTTON];
+    private:
 
-    void resetKeys();
+        std::vector<int> keysPressed;
 
-};
+        bool m_hasInput;
+        bool m_keyPress[GLFW_KEY_LAST];
+        bool m_keyRepeat[GLFW_KEY_LAST];
+
+        bool firstClick;
+        float mouseX, mouseY, prevX, prevY;
+        bool m_mouseClick[GLFW_MOUSE_BUTTON_LAST];
+        bool m_mouseHold[GLFW_MOUSE_BUTTON_LAST];
+
+        void resetKeys();
+
+    };
+}
 
 
 #endif

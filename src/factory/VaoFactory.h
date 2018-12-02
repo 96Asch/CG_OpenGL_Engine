@@ -10,6 +10,7 @@
 namespace Factory {
 
     class VaoFactory;
+    
     extern VaoFactory* VAO;
 
     class VaoFactory {
