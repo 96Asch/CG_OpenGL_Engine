@@ -3,6 +3,8 @@
 
 #include "Renderer.h"
 
+struct Terrain;
+
 class TerrainRenderer : public Renderer {
 
 public:
@@ -26,6 +28,10 @@ protected:
                            Scene *scene) override;
 
     virtual void postRender(const float &interpolation, Scene *scene) override;
+
+    void loadTextures(const Terrain &terrain);
+
+    void loadMaterials(const Terrain &terrain);
 
     void loadMatrices(TransMat &mat);
 

@@ -8,38 +8,46 @@
 #include "../util/Serializable.h"
 #include "../component/Material.h"
 
+#define MAX_TEXTURES 4
+
 struct Terrain : public Serializable{
 
     Terrain()
             : active(false),
-              material(Material("")),
-              heightMap(""),
+              numMaterials(0),
+              hMapSource(""),
+              bMapSource(""),
               size(0.0f),
               maxHeight(0.0f),
               position(glm::vec2(0.0f))
     {};
 
-    Terrain(const std::string &heightMap,
-            const std::string &texture,
+    Terrain(const std::string &hMapSource,
+            const std::string &blendMap,
+            const std::vector<std::string> &textures,
             const glm::vec2 &position,
             const float &size,
             const float &maxHeight)
             : active(false),
-              material(Material(texture)),
-              heightMap(heightMap),
+              numMaterials(textures.size()),
+              hMapSource(hMapSource),
+              bMapSource(blendMap),
               size(size),
               position(position * size)
     {
-        if(!texture.empty() && size > 0) {
-            Factory::generateTerrain(heightMap, size, maxHeight);
+        if(size > 0) {
+            Factory::generateTerrain(hMapSource, size, maxHeight);
             active = true;
         }
+        for(unsigned i = 0; i < numMaterials; ++i)
+            materials[i] = Material(textures.at(i));
     };
 
     Terrain(std::ifstream &stream)
             : active(false),
-              material(Material("")),
-              heightMap(""),
+              numMaterials(0),
+              hMapSource(""),
+              bMapSource(""),
               size(100.0f),
               maxHeight(0.0f),
               position(glm::vec2(0.0f))
@@ -67,7 +75,14 @@ struct Terrain : public Serializable{
                 else if(std::getline(ss, var, '=')) {
                     if (var == "heightMap") {
                         if(std::getline(ss, value, '=')) {
-                            this->heightMap = value;
+                            this->hMapSource = value;
+                        }
+                    }
+                    else if (var == "blendMap") {
+                        if(std::getline(ss, value, '=')) {
+                            this->bMapSource = value;
+                            blendMap = Factory::TEXTURE->createTexture(bMapSource);
+                            counter++;
                         }
                     }
                     else if (var == "size") {
@@ -79,7 +94,6 @@ struct Terrain : public Serializable{
                     else if (var == "maxHeight") {
                         if(std::getline(ss, value, '=')) {
                             this->maxHeight = std::stof(value);
-                            std::cout << this->maxHeight << std::endl;
                         }
                     }
                     else if (var == "position") {
@@ -92,8 +106,10 @@ struct Terrain : public Serializable{
                         }
                     }
                     else if (var == "[material]") {
-                        ret &= material.deserialize(stream);
-                        counter++;
+                        if(numMaterials < MAX_TEXTURES) {
+                            ret &= materials[numMaterials].deserialize(stream);
+                            numMaterials++;
+                        }
                     }
                 }
             }
@@ -101,26 +117,26 @@ struct Terrain : public Serializable{
         } while(stream && firstAcc && !lastAcc);
         if(counter == 3) {
             active = true;
-            Factory::generateTerrain(heightMap, size, maxHeight);
+            Factory::generateTerrain(hMapSource, size, maxHeight);
         }
-        return true;
+        return true & ret;
     };
 
 
     std::shared_ptr<Vao> getVao() {
-       return Factory::VAO->getVao(heightMap);
+       return Factory::VAO->getVao(hMapSource);
     };
 
     bool active;
+    GLuint blendMap;
+    unsigned numMaterials;
 
-    Material material;
-    std::string heightMap;
+    Material materials[4];
+    std::string hMapSource;
+    std::string bMapSource;
     float size;
     float maxHeight;
     glm::vec2 position;
-
-
-
 };
 
 #endif

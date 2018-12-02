@@ -8,7 +8,6 @@ EntityFactory::EntityFactory() : index(0) {
     	masks.clear();
 }
 
-
 EntityFactory::~EntityFactory() {}
 
 bool EntityFactory::valid(const EntityId &id){

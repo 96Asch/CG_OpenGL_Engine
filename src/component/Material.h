@@ -26,6 +26,22 @@ struct Material : public IComponent<Material> {
             hasTexture = false;
     };
 
+    Material()
+            : source(""),
+              ambient(glm::vec4(0.0f)),
+              diffuse(glm::vec4(0.0f)),
+              specular(glm::vec4(0.0f)),
+              reflectance(0.0f),
+              hasTexture(true),
+              hasFakeLighting(false),
+              hasNormalMap(false)
+    {
+        if(!source.empty())
+            id = Factory::TEXTURE->createTexture(source);
+        else
+            hasTexture = false;
+    };
+
     Material(std::ifstream &stream)
                     : source(""),
                       ambient(glm::vec4(0.0f)),

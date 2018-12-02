@@ -12,11 +12,17 @@ void TerrainRenderer::init() {
     shader.addUniform(new UniformMat4("model"));
     shader.addUniform(new UniformMat4("mv"));
     shader.addUniform(new UniformMat4("mvp"));
-    shader.addUniform(new UniformTerrainMaterial("material"));
+    shader.addUniform(new UniformInt("numMaterials"));
+    shader.addUniform(new UniformTerrainMaterials("materials"));
+    shader.addUniform(new UniformSamplers("textures"));
     shader.addUniform(new UniformPLights("pointLight"));
     shader.addUniform(new UniformDLight("directionalLight"));
     shader.addUniform(new UniformFog("fog"));
     shader.storeUniformLocations();
+
+    shader.start();
+    shader.getUniform<UniformSamplers>("textures")->loadTexUnits();
+    shader.stop();
 }
 
 void TerrainRenderer::render(const float &interpolation,
@@ -30,10 +36,9 @@ void TerrainRenderer::render(const float &interpolation,
         buildModelMatrix(mat.model, terrain.position);
         loadMatrices(mat);
         shader.getUniform<UniformFog>("fog")->load(scene->getFog());
-        shader.getUniform<UniformTerrainMaterial>("material")->load(terrain.material);
+        loadMaterials(terrain);
         terrain.getVao()->bind(0,1,2);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, terrain.material.id);
+        loadTextures(terrain);
         glDrawElements(GL_TRIANGLES, terrain.getVao()->getIndexCount(), GL_UNSIGNED_INT, 0);
         glBindTexture(GL_TEXTURE_2D, 0);
         terrain.getVao()->unbind(0,1,2);
@@ -58,6 +63,22 @@ void TerrainRenderer::preRender(const float &,
 
 void TerrainRenderer::postRender(const float &, Scene *) {
     shader.stop();
+}
+
+void TerrainRenderer::loadTextures(const Terrain &terrain) {
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, terrain.blendMap);
+    for(unsigned i = 0; i < terrain.numMaterials; ++i) {
+        glActiveTexture(GL_TEXTURE1 + i);
+        glBindTexture(GL_TEXTURE_2D, terrain.materials[i].id);
+    }
+}
+
+void TerrainRenderer::loadMaterials(const Terrain &terrain) {
+    shader.getUniform<UniformInt>("numMaterials")->load(terrain.numMaterials);
+    for(unsigned i = 0; i < terrain.numMaterials; ++i) {
+        shader.getUniform<UniformTerrainMaterials>("materials")->load(terrain.materials[i], i);
+    }
 }
 
 void TerrainRenderer::loadMatrices(TransMat &mat) {

@@ -19,6 +19,7 @@ void EntityRenderer::init() {
     shader.addUniform(new UniformMat4("mv"));
     shader.addUniform(new UniformMat4("mvp"));
     shader.addUniform(new UniformMaterial("material"));
+    shader.addUniform(new UniformSampler("texture"));
     shader.addUniform(new UniformPLights("pointLight"));
     shader.addUniform(new UniformDLight("directionalLight"));
     shader.addUniform(new UniformFog("fog"));
@@ -33,6 +34,7 @@ void EntityRenderer::preRender(const float &,
     loadPointLights(mat.view, scene);
     loadDirectionalLight(mat.view, scene);
     shader.getUniform<UniformFog>("fog")->load(scene->getFog());
+    shader.getUniform<UniformSampler>("texture")->loadTexUnit(0);
 }
 
 void EntityRenderer::render(const float &interpolation,

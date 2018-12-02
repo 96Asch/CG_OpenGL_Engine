@@ -44,7 +44,7 @@ uniform struct Fog {
 	float gradient;
 } fog;
 
-uniform sampler2D texture_sampler;
+uniform sampler2D texture;
 // uniform sampler2D normalMap;
 
 vec4 ambientC;
@@ -53,7 +53,7 @@ vec4 speculrC;
 
 void setupColours(Material material, vec2 textCoord) {
     if (material.hasTexture == 1) {
-        ambientC = texture2D(texture_sampler, textCoord);
+        ambientC = texture2D(texture, textCoord);
         diffuseC = ambientC;
         speculrC = ambientC;
     }

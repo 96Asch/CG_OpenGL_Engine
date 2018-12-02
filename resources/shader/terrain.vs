@@ -1,6 +1,5 @@
 #version 430 core
 
-const float tiling = 40;
 const int MAX_POINT_LIGHTS = 5;
 
 layout (location=0) in vec3 position;
@@ -48,7 +47,7 @@ void main() {
     vec4 mvPos = mv * vec4(position,1.0);
     gl_Position = mvp * vec4(position, 1.0);
 
-    outTexCoord = texCoord * tiling;
+    outTexCoord = texCoord;
 
     for(int i = 0; i < MAX_POINT_LIGHTS; i++){
 		toLightVector[i] = pointLight[i].position - mvPos.xyz;

@@ -18,15 +18,41 @@
 {
   size=100
   heightMap=heightmap/hm.png
+  blendMap=blendmap/bm.png
   position=-0.5,-0.5
-  maxHeight=10
+  maxHeight=30
+
+  [material]
+  {
+    source=texture/grassy3.png
+    ambient=0.0,0.0,0.0,1.0
+    diffuse=0.0,0.0,0.0,1.0
+    specular=0.0,0.5,0.5,1.0
+    reflectance=0.0
+  }
+  [material]
+  {
+    source=texture/path.png
+    ambient=0.0,0.0,0.0,1.0
+    diffuse=0.0,0.0,0.0,1.0
+    specular=0.0,0.5,0.5,1.0
+    reflectance=10.0
+  }
   [material]
   {
     source=texture/ice.png
     ambient=0.0,0.0,0.0,1.0
     diffuse=0.0,0.0,0.0,1.0
     specular=0.0,0.5,0.5,1.0
-    reflectance=1.0
+    reflectance=20.0
+  }
+  [material]
+  {
+    source=texture/mud.png
+    ambient=0.0,0.0,0.0,1.0
+    diffuse=0.0,0.0,0.0,1.0
+    specular=0.0,0.5,0.5,1.0
+    reflectance=0.0
   }
 }
 
@@ -83,7 +109,7 @@
   }
   [material]
   {
-    source=texture/grassblock.png
+    source=texture/mud.png
     ambient=0.0,0.0,0.0,1.0
     diffuse=0.0,0.0,0.0,1.0
     specular=0.0,0.5,0.5,1.0
