@@ -17,8 +17,7 @@ struct Material : public IComponent<Material> {
                       specular(glm::vec4(0.0f)),
                       reflectance(0.0f),
                       hasTexture(true),
-                      hasFakeLighting(false),
-                      hasNormalMap(false)
+                      hasFakeLighting(false)
     {
         if(!source.empty())
             id = Factory::TEXTURE->createTexture(source);
@@ -33,8 +32,7 @@ struct Material : public IComponent<Material> {
               specular(glm::vec4(0.0f)),
               reflectance(0.0f),
               hasTexture(true),
-              hasFakeLighting(false),
-              hasNormalMap(false)
+              hasFakeLighting(false)
     {
         if(!source.empty())
             id = Factory::TEXTURE->createTexture(source);
@@ -49,8 +47,7 @@ struct Material : public IComponent<Material> {
                       specular(glm::vec4(0.0f)),
                       reflectance(0.0f),
                       hasTexture(false),
-                      hasFakeLighting(false),
-                      hasNormalMap(false)
+                      hasFakeLighting(false)
     {
         if(!deserialize(stream))
              std::cerr << "ERR: Deserializing Material Component" << std::endl;
@@ -112,12 +109,6 @@ struct Material : public IComponent<Material> {
                             this->hasFakeLighting = hasFakeLighting;
                         }
                     }
-                    else if (var == "hasNormalMap") {
-                        if(std::getline(ss, value, '=')) {
-                            bool hasNormalMap = std::stoi(value);
-                            this->hasNormalMap = hasNormalMap;
-                        }
-                    }
                 }
             }
             else return false;
@@ -135,7 +126,6 @@ struct Material : public IComponent<Material> {
     float reflectance;
     bool hasTexture;
     bool hasFakeLighting;
-    bool hasNormalMap;
 
     GLuint id;
 };

@@ -15,8 +15,7 @@ struct UniformMaterial : public Uniform {
                       specular(UniformVec4(name + ".specular")),
                       hasTexture(UniformFloat(name + ".hasTexture")),
                       reflectance(UniformFloat(name + ".reflectance")),
-                      hasFakeLighting(UniformFloat(name + ".hasFakeLighting")),
-                      hasNormalMap(UniformFloat(name + ".hasNormalMap"))
+                      hasFakeLighting(UniformFloat(name + ".hasFakeLighting"))
                       {};
 
     virtual void storeUniformLocation(const GLuint &id) override {
@@ -26,7 +25,6 @@ struct UniformMaterial : public Uniform {
         hasTexture.storeUniformLocation(id);
         reflectance.storeUniformLocation(id);
         hasFakeLighting.storeUniformLocation(id);
-        hasNormalMap.storeUniformLocation(id);
     };
 
     void load(const Material &mat) {
@@ -36,7 +34,6 @@ struct UniformMaterial : public Uniform {
         hasTexture.load(mat.hasTexture);
         reflectance.load(mat.reflectance);
         hasFakeLighting.load(mat.hasFakeLighting);
-        hasNormalMap.load(mat.hasNormalMap);
     };
 
     UniformVec4 ambient;
@@ -45,7 +42,6 @@ struct UniformMaterial : public Uniform {
     UniformFloat hasTexture;
     UniformFloat reflectance;
     UniformFloat hasFakeLighting;
-    UniformFloat hasNormalMap;
 
 };
 

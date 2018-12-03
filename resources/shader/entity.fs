@@ -34,7 +34,6 @@ uniform struct Material {
     float hasTexture;
     float reflectance;
     float hasFakeLighting;
-    float hasNormalMap;
 } material;
 
 uniform struct Fog {
@@ -112,29 +111,12 @@ vec4 setFog(vec4 currColour, Fog f, float vis) {
 	return outColour;
 }
 
-
-// vec3 calcNormal(vec3 currNormal, sampler2D normalMap, vec2 outTexCoord, Material mat) {
-// 	vec3 normal = currNormal;
-//
-// 	if(mat.hasNormalMap == 1) {
-// 		vec4 normalMapValue = 2.0 * texture2D(normalMap, outTexCoord) - 1.0;
-// 		normal = normalize(normalMapValue.rgb);
-// 	}
-//
-// 	return normal;
-// }
-
 void main() {
     setupColours(material, outTexCoord);
 
-    // vec3 normal = calcNormal(mvVertexNormal, normalMap, outTexCoord, material);
     vec3 normal = mvVertexNormal;
     if(material.hasTexture == 1 && ambientC.a < 0.5) {
     	discard;
-    }
-
-    if(material.hasNormalMap == 1){
-
     }
 
     vec4 diffuseSpecularComp = calcDirectionalLight(directionalLight, mvVertexPos, normal);

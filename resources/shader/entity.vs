@@ -5,7 +5,6 @@ const int MAX_POINT_LIGHTS = 5;
 layout (location=0) in vec3 position;
 layout (location=1) in vec2 texCoord;
 layout (location=2) in vec3 vertexNormal;
-layout (location=3) in vec3 tangent;
 
 out vec2 outTexCoord;
 out vec3 mvVertexNormal;
@@ -34,7 +33,6 @@ uniform struct Material {
     float hasTexture;
     float reflectance;
     float hasFakeLighting;
-    float hasNormalMap;
 } material;
 
 // uniform struct TextureOffset {
@@ -45,7 +43,6 @@ uniform struct Material {
 uniform mat4 model;
 uniform mat4 mv;
 uniform mat4 mvp;
-// uniform vec4 clipPlane;
 
 float calcFog(Fog f, vec4 positionRelativeToCam) {
 
@@ -61,8 +58,6 @@ float calcFog(Fog f, vec4 positionRelativeToCam) {
 void main()
 {
 	vec4 worldPosition = model * vec4(position,1.0);
-  // gl_ClipDistance[0] = dot(worldPosition, clipPlane);
-  gl_ClipDistance[0] = dot(worldPosition, vec4(0.0));
 
   vec4 mvPos = mv * vec4(position,1.0);
   gl_Position = mvp * vec4(position,1.0);
@@ -77,31 +72,11 @@ void main()
 
   vec3 surfaceNormal = normalize(mv * vec4(normal, 0.0)).xyz;
 
-	if(material.hasNormalMap == 1) {
-		vec3 norm = normalize(surfaceNormal);
-		vec3 tang = normalize((mv * vec4(tangent, 0.0)).xyz);
-		vec3 bitang = normalize(cross(norm, tang));
-
-		mat3 toTangentSpace = mat3(
-			tang.x, bitang.x, norm.x,
-			tang.y, bitang.y, norm.y,
-			tang.z, bitang.z, norm.z
-			);
-
-		for(int i = 0; i < MAX_POINT_LIGHTS; i++){
-			toLightVector[i] = toTangentSpace * (pointLight[i].position - mvPos.xyz);
-		}
-
-		mvVertexPos = toTangentSpace * (-mvPos.xyz);
+	for(int i = 0; i < MAX_POINT_LIGHTS; i++){
+		toLightVector[i] = pointLight[i].position - mvPos.xyz;
 	}
-	else {
 
-		for(int i = 0; i < MAX_POINT_LIGHTS; i++){
-			toLightVector[i] = pointLight[i].position - mvPos.xyz;
-		}
-
-		mvVertexPos = -mvPos.xyz;
-  }
+	mvVertexPos = -mvPos.xyz;
 
   mvVertexNormal = surfaceNormal;
   visibility = calcFog(fog, mvPos);
