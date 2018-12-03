@@ -13,6 +13,8 @@ void TerrainRenderer::init() {
     shader.addUniform(new UniformMat4("mv"));
     shader.addUniform(new UniformMat4("mvp"));
     shader.addUniform(new UniformInt("numMaterials"));
+    shader.addUniform(new UniformVec3("ambientLight"));
+    shader.addUniform(new UniformVec3("camPosition"));
     shader.addUniform(new UniformTerrainMaterials("materials"));
     shader.addUniform(new UniformSamplers("textures"));
     shader.addUniform(new UniformPLights("pointLight"));
@@ -33,14 +35,20 @@ void TerrainRenderer::render(const float &interpolation,
     if(terrain.active) {
         preRender(interpolation, mat, scene);
 
-        buildModelMatrix(mat.model, terrain.position);
-        loadMatrices(mat);
+        shader.getUniform<UniformVec3>("ambientLight")->load(glm::vec3(0.0,0.0,0.0));
+        loadDirectionalLight(mat.view, scene);
+        loadPointLights(mat.view, scene);
+
+        loadCamPosition(scene);
+
+        loadMatrices(terrain, mat);
         shader.getUniform<UniformFog>("fog")->load(scene->getFog());
-        loadMaterials(terrain);
+
         terrain.getVao()->bind(0,1,2);
-        loadTextures(terrain);
+        bindTextures(terrain);
+        loadMaterials(terrain);
         glDrawElements(GL_TRIANGLES, terrain.getVao()->getIndexCount(), GL_UNSIGNED_INT, 0);
-        glBindTexture(GL_TEXTURE_2D, 0);
+        unbindTextures(terrain);
         terrain.getVao()->unbind(0,1,2);
 
         postRender(interpolation, scene);
@@ -57,20 +65,35 @@ void TerrainRenderer::preRender(const float &,
                                 Scene *scene)
 {
     shader.start();
-    loadDirectionalLight(mat.view, scene);
-    loadPointLights(mat.view, scene);
+
 }
 
 void TerrainRenderer::postRender(const float &, Scene *) {
     shader.stop();
 }
 
-void TerrainRenderer::loadTextures(const Terrain &terrain) {
+void TerrainRenderer::loadCamPosition(Scene* scene) {
+    glm::vec3 position(glm::vec3(0.0f));
+    for(auto e : scene->getEntities().withComponents<Camera>()) {
+        position = e.getComponent<Camera>()->position;
+    }
+    shader.getUniform<UniformVec3>("camPosition")->load(position);
+}
+
+
+void TerrainRenderer::bindTextures(const Terrain &terrain) {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, terrain.blendMap);
     for(unsigned i = 0; i < terrain.numMaterials; ++i) {
         glActiveTexture(GL_TEXTURE1 + i);
         glBindTexture(GL_TEXTURE_2D, terrain.materials[i].id);
+    }
+}
+
+void TerrainRenderer::unbindTextures(const Terrain &terrain) {
+    for(unsigned i = 0; i < terrain.numMaterials; ++i) {
+        glActiveTexture(GL_TEXTURE0 + i);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 }
 
@@ -81,7 +104,8 @@ void TerrainRenderer::loadMaterials(const Terrain &terrain) {
     }
 }
 
-void TerrainRenderer::loadMatrices(TransMat &mat) {
+void TerrainRenderer::loadMatrices(const Terrain &terrain, TransMat &mat) {
+    buildModelMatrix(mat.model, terrain.position);
     shader.getUniform<UniformMat4>("model")->load(mat.model);
     mat.mv = mat.view * mat.model;
     shader.getUniform<UniformMat4>("mv")->load(mat.mv);
@@ -90,23 +114,16 @@ void TerrainRenderer::loadMatrices(TransMat &mat) {
 }
 
 void TerrainRenderer::loadPointLights(const glm::mat4 &view, Scene *scene) {
-    std::vector<PointLight> eyeSpacePLights;
+    std::vector<PointLight> list;
     for(auto light : scene->getEntities().withComponents<PointLight>()) {
         PointLight copy = *(light.getComponent<PointLight>());
-        glm::vec4 aux = glm::vec4(copy.position, 1);
-        aux = view * aux;
-        copy.position = glm::vec3(aux);
-        eyeSpacePLights.push_back(copy);
+        list.push_back(copy);
     }
-    shader.getUniform<UniformPLights>("pointLight")->load(eyeSpacePLights);
+    shader.getUniform<UniformPLights>("pointLight")->load(list);
 }
 
 void TerrainRenderer::loadDirectionalLight(const glm::mat4 &view, Scene *scene) {
-    DirectionalLight light = scene->getDirectional();
-    glm::vec4 aux = glm::vec4(light.direction, 0);
-    aux = view * aux;
-    light.direction = glm::vec3(aux.x, aux.y, aux.z);
-    shader.getUniform<UniformDLight>("directionalLight")->load(light);
+    shader.getUniform<UniformDLight>("directionalLight")->load(scene->getDirectional());
 }
 
 void TerrainRenderer::buildModelMatrix(glm::mat4 &model, const glm::vec2 &position) {

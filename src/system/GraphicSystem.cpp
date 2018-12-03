@@ -11,7 +11,7 @@ GraphicSystem::~GraphicSystem(){}
 void GraphicSystem::init() {
     renderers.push_back(new TerrainRenderer());
     renderers.push_back(new SkyboxRenderer());
-    renderers.push_back(new EntityRenderer());
+    // renderers.push_back(new EntityRenderer());
     buildProjectionMatrix();
 
     for(auto renderer : renderers)

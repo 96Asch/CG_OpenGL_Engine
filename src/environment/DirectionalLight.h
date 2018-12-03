@@ -4,27 +4,16 @@
 #include <glm/vec3.hpp>
 #include <sstream>
 #include "../util/Serializable.h"
+#include "BaseLight.h"
 
 struct DirectionalLight : public Serializable{
 
     DirectionalLight()
-                     : color(glm::vec3(1.0f)),
-                       direction(glm::vec3(0.0f,0.0f,1.0f)),
-                       intensity(1.0f)
+                     : direction(glm::vec3(0.0f,0.0f,0.0f))
                       {};
 
-    DirectionalLight(const glm::vec3 &color,
-                     const glm::vec3 &direction,
-                     const float &intensity)
-                     : color(color),
-                       direction(direction),
-                       intensity(intensity)
-                       {};
-
     DirectionalLight(std::ifstream &stream)
-                     : color(glm::vec3(1.0f)),
-                       direction(glm::vec3(0.0f,0.0f,1.0f)),
-                       intensity(1.0f)
+                     : direction(glm::vec3(0.0f,0.0f,0.0f))
     {
         if(!deserialize(stream))
              std::cerr << "ERR: Deserializing DirectionalLight" << std::endl;
@@ -33,7 +22,7 @@ struct DirectionalLight : public Serializable{
     virtual void serialize(std::ofstream &) override {};
 
     virtual bool deserialize(std::ifstream &stream) override {
-        bool firstAcc(false), lastAcc(false);
+        bool firstAcc(false), lastAcc(false), ret(true);
         do {
             std::string buffer;
             std::string var;
@@ -46,36 +35,26 @@ struct DirectionalLight : public Serializable{
                 else if (firstAcc && buffer == "}")
                     lastAcc = true;
                 else if(std::getline(ss, var, '=')) {
-                    if (var == "color") {
-                        if(std::getline(ss, value, '=')) {
-                            float v1, v2, v3;
-                            sscanf(value.c_str(), "%f,%f,%f", &v1, &v2, &v3);
-                            this->color = glm::vec3(v1, v2, v3);
-                        }
-                    }
-                    else if (var == "direction") {
+                    if (var == "direction") {
                         if(std::getline(ss, value, '=')) {
                             float v1, v2, v3;
                             sscanf(value.c_str(), "%f,%f,%f", &v1, &v2, &v3);
                             this->direction = glm::normalize(glm::vec3(v1, v2, v3));
                         }
                     }
-                    else if (var == "intensity") {
-                        if(std::getline(ss, value, '=')) {
-                            float intensity = std::stof(value);
-                            this->intensity = intensity;
-                        }
+                    else if (var == "[baselight]") {
+                        std::cout << "here" << std::endl;
+                        ret &= light.deserialize(stream);
                     }
                 }
             }
             else return false;
         } while(stream && firstAcc && !lastAcc);
-        return true;
+        return true & ret;
     };
 
-    glm::vec3 color;
+    BaseLight light;
     glm::vec3 direction;
-    float intensity;
 
 };
 

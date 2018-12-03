@@ -3,33 +3,29 @@
 
 #include "Uniform.h"
 #include "UniformVec3.h"
-#include "UniformFloat.h"
+#include "UniformBaseLight.h"
 #include "../../environment/DirectionalLight.h"
 
 struct UniformDLight : public Uniform {
 
     UniformDLight(const std::string &name)
                     : Uniform(name),
-                      color(UniformVec3(name + ".color")),
-                      direction(UniformVec3(name + ".direction")),
-                      intensity(UniformFloat(name + ".intensity"))
+                      light(UniformBaseLight(name + ".light")),
+                      direction(UniformVec3(name + ".direction"))
                       {};
 
     virtual void storeUniformLocation(const GLuint &id) override {
-        color.storeUniformLocation(id);
+        light.storeUniformLocation(id);
         direction.storeUniformLocation(id);
-        intensity.storeUniformLocation(id);
     }
 
-    void load(const DirectionalLight &light) {
-        color.load(light.color);
-        direction.load(light.direction);
-        intensity.load(light.intensity);
+    void load(const DirectionalLight &dLight) {
+        light.load(dLight.light);
+        direction.load(dLight.direction);
     }
 
-    UniformVec3 color;
+    UniformBaseLight light;
     UniformVec3 direction;
-    UniformFloat intensity;
 };
 
 #endif

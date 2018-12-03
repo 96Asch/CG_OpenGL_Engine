@@ -1,10 +1,3 @@
-[directionallight]
-{
-  color=0.4,0.4,0.4
-  direction=0.0,-1.0,0.0
-  intensity=5.0
-}
-
 
 [skybox]
 {
@@ -14,13 +7,24 @@
   ext=.png
 }
 
+[directionallight]
+{
+  [baselight]
+  {
+    color=1.0,1.0,1.0
+    intensity=0.8
+  }
+
+  direction=1.0,1.0,1.0
+}
+
 [terrain]
 {
   size=100
   heightMap=heightmap/hm.png
   blendMap=blendmap/bm.png
   position=-0.5,-0.5
-  maxHeight=30
+  maxHeight=0
 
   [material]
   {
@@ -28,7 +32,7 @@
     ambient=0.0,0.0,0.0,1.0
     diffuse=0.0,0.0,0.0,1.0
     specular=0.0,0.5,0.5,1.0
-    reflectance=0.0
+    reflectance=6.0
   }
   [material]
   {
@@ -36,7 +40,7 @@
     ambient=0.0,0.0,0.0,1.0
     diffuse=0.0,0.0,0.0,1.0
     specular=0.0,0.5,0.5,1.0
-    reflectance=10.0
+    reflectance=0.5
   }
   [material]
   {
@@ -44,7 +48,7 @@
     ambient=0.0,0.0,0.0,1.0
     diffuse=0.0,0.0,0.0,1.0
     specular=0.0,0.5,0.5,1.0
-    reflectance=20.0
+    reflectance=0.5
   }
   [material]
   {
@@ -52,7 +56,7 @@
     ambient=0.0,0.0,0.0,1.0
     diffuse=0.0,0.0,0.0,1.0
     specular=0.0,0.5,0.5,1.0
-    reflectance=0.0
+    reflectance=0.5
   }
 }
 
@@ -88,33 +92,52 @@
 {
   [pointlight]
   {
-    color=1.0,1.0,1.0
-    position=5.0,40.0,0.0
-    intensity=2.0
-    attenuation=1.0,0.01,0.002
+    [baselight]
+    {
+      color=1.0,0.0,0.0
+      intensity=3.8
+    }
+
+    position=10.0,2.0,10.0
+    attenuation=0.0,0.0,1.0
   }
+
 }
+
 
 [entity]
 {
+  [pointlight]
+  {
+    [baselight]
+    {
+      color=0.0,1.0,0.0
+      intensity=2.8
+    }
+
+    position=0.0,2.0,0.0
+    attenuation=0.0,0.0,1.0
+  }
+
   [model]
   {
-    source=models/barrel.obj
+    source=models/cube.obj
   }
-  [transform]
-  {
-    position=0.0,0.0,0.0
-    rotation=0.0,0.0,0.0
-    scale=1.0,1.0,1.0
-  }
+
   [material]
   {
-    source=texture/mud.png
+    source=texture/path.png
     ambient=0.0,0.0,0.0,1.0
     diffuse=0.0,0.0,0.0,1.0
     specular=0.0,0.5,0.5,1.0
-    reflectance=1.0
-    hasFakeLighting=0
-    hasNormalMap=0
+    reflectance=2.5
   }
+
+  [transform]
+  {
+    position=0.0,0.0,0.0
+    rotation=0.0,0.0,45.0
+    scale=1.0,1.0,1.0
+  }
+
 }

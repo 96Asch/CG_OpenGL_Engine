@@ -9,14 +9,17 @@ layout (location=2) in vec3 vertexNormal;
 out vec2 outTexCoord;
 out vec3 mvVertexNormal;
 out vec3 mvVertexPos;
-out vec3 toLightVector[MAX_POINT_LIGHTS];
 out vec3 worldPos;
 out float visibility;
 
+struct BaseLight {
+  vec3 color;
+  float intensity;
+};
+
 uniform struct PointLight {
-    vec3 color;
+    BaseLight light;
     vec3 position;
-    float intensity;
     vec3 attenuation;
 } pointLight[MAX_POINT_LIGHTS];
 
@@ -41,21 +44,16 @@ float calcFog(Fog f, vec4 positionRelativeToCam) {
 }
 
 void main() {
-	vec4 worldPosition = model * vec4(position,1.0);
-	// gl_ClipDistance[0] = dot(worldPosition, clipPlane);
-  gl_ClipDistance[0] = dot(worldPosition, vec4(0.0));
-    vec4 mvPos = mv * vec4(position,1.0);
+	// // gl_ClipDistance[0] = dot(worldPosition, clipPlane);
+  // gl_ClipDistance[0] = dot(worldPosition, vec4(0.0));
     gl_Position = mvp * vec4(position, 1.0);
-
+    vec4 mvPos = model * vec4(position, 1.0);
     outTexCoord = texCoord;
 
-    for(int i = 0; i < MAX_POINT_LIGHTS; i++){
-		toLightVector[i] = pointLight[i].position - mvPos.xyz;
-	}
-
-   	mvVertexPos = -mvPos.xyz;
-    mvVertexNormal = normalize(mv * vec4(vertexNormal, 0.0)).xyz;
-   	worldPos = worldPosition.xyz;
+  //
+  //  	mvVertexPos = -mvPos.xyz;
+    mvVertexNormal = normalize(model * vec4(vertexNormal, 0.0)).xyz;
+   	worldPos = (model * vec4(position, 1.0)).xyz;
 
     visibility = calcFog(fog, mvPos);
 }

@@ -56,7 +56,7 @@ namespace Factory {
         GLuint id;
 
         glGenTextures(1, &id);
-        glActiveTexture(id);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, id);
 
         for(unsigned i = 0; i < files.size(); ++i) {
@@ -102,7 +102,6 @@ namespace Factory {
         	file.c_str());
       }
 
-      // copy image data into 'target' side of cube map
       glTexImage2D(side_target, 0, GL_RGBA, w, h,
                     0, GL_RGBA, GL_UNSIGNED_BYTE, image);
       stbi_image_free(image);

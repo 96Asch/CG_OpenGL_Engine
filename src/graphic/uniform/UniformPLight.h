@@ -3,36 +3,32 @@
 
 #include "Uniform.h"
 #include "UniformVec3.h"
-#include "UniformFloat.h"
+#include "UniformBaseLight.h"
 #include "../../component/PointLight.h"
 
 struct UniformPLight : public Uniform {
 
     UniformPLight(const std::string &name)
                   : Uniform(name),
-                    color(UniformVec3(name + ".color")),
+                    light(UniformBaseLight(name + ".light")),
                     position(UniformVec3(name + ".position")),
-                    intensity(UniformFloat(name + ".intensity")),
                     attenuation(UniformVec3(name + ".attenuation"))
                     {};
 
     virtual void storeUniformLocation(const GLuint &id) override {
-        color.storeUniformLocation(id);
+        light.storeUniformLocation(id);
         position.storeUniformLocation(id);
-        intensity.storeUniformLocation(id);
         attenuation.storeUniformLocation(id);
     }
 
-    void load(const PointLight &light) {
-        color.load(light.color);
-        position.load(light.position);
-        intensity.load(light.intensity);
-        attenuation.load(light.attenuation);
+    void load(const PointLight &pLight) {
+        light.load(pLight.light);
+        position.load(pLight.position);
+        attenuation.load(pLight.attenuation);
     };
 
-    UniformVec3 color;
+    UniformBaseLight light;
     UniformVec3 position;
-    UniformFloat intensity;
     UniformVec3 attenuation;
 };
 

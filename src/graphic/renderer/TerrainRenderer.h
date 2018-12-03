@@ -29,11 +29,15 @@ protected:
 
     virtual void postRender(const float &interpolation, Scene *scene) override;
 
-    void loadTextures(const Terrain &terrain);
+    void bindTextures(const Terrain &terrain);
+
+    void unbindTextures(const Terrain &terrain);
+
+    void loadCamPosition(Scene* scene);
 
     void loadMaterials(const Terrain &terrain);
 
-    void loadMatrices(TransMat &mat);
+    void loadMatrices(const Terrain &terrain, TransMat &mat);
 
     void loadPointLights(const glm::mat4 &view, Scene* scene);
 
