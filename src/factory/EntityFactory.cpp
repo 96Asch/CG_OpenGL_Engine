@@ -55,8 +55,10 @@ bool EntityFactory::deserialize(std::ifstream &stream) {
                 addComponent(newEnt.id, Motion(stream));
             else if (comp == "[pointlight]")
                 addComponent(newEnt.id, PointLight(stream));
+            else if (comp == "[spotlight]")
+                addComponent(newEnt.id, SpotLight(stream));
             else if (comp.front() == '[' && comp.back() == ']') {
-                std::cerr << "ERR: Unidentified component: " << comp << std::endl;
+                std::cerr << "Warning: Unidentified component: " << comp << std::endl;
             }
         }
         else return false;

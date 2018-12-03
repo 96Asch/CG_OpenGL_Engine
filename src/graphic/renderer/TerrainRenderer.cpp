@@ -18,6 +18,7 @@ void TerrainRenderer::init() {
     shader.addUniform(new UniformTerrainMaterials("materials"));
     shader.addUniform(new UniformSamplers("textures"));
     shader.addUniform(new UniformPLights("pointLight"));
+    shader.addUniform(new UniformSLights("spotLight"));
     shader.addUniform(new UniformDLight("directionalLight"));
     shader.addUniform(new UniformFog("fog"));
     shader.storeUniformLocations();
@@ -36,9 +37,10 @@ void TerrainRenderer::render(const float &interpolation,
         preRender(interpolation, mat, scene);
 
         shader.getUniform<UniformVec3>("ambientLight")->load(glm::vec3(0.0,0.0,0.0));
-        loadDirectionalLight(mat.view, scene);
-        loadPointLights(mat.view, scene);
 
+        loadDirectionalLight(scene);
+        loadPointLights(scene);
+        loadSpotLights(scene);
         loadCamPosition(scene);
 
         loadMatrices(terrain, mat);
@@ -113,7 +115,7 @@ void TerrainRenderer::loadMatrices(const Terrain &terrain, TransMat &mat) {
     shader.getUniform<UniformMat4>("mvp")->load(mat.mvp);
 }
 
-void TerrainRenderer::loadPointLights(const glm::mat4 &view, Scene *scene) {
+void TerrainRenderer::loadPointLights(Scene *scene) {
     std::vector<PointLight> list;
     for(auto light : scene->getEntities().withComponents<PointLight>()) {
         PointLight copy = *(light.getComponent<PointLight>());
@@ -122,7 +124,16 @@ void TerrainRenderer::loadPointLights(const glm::mat4 &view, Scene *scene) {
     shader.getUniform<UniformPLights>("pointLight")->load(list);
 }
 
-void TerrainRenderer::loadDirectionalLight(const glm::mat4 &view, Scene *scene) {
+void TerrainRenderer::loadSpotLights(Scene *scene) {
+    std::vector<SpotLight> list;
+    for(auto light : scene->getEntities().withComponents<SpotLight>()) {
+        SpotLight copy = *(light.getComponent<SpotLight>());
+        list.push_back(copy);
+    }
+    shader.getUniform<UniformSLights>("spotLight")->load(list);
+}
+
+void TerrainRenderer::loadDirectionalLight(Scene *scene) {
     shader.getUniform<UniformDLight>("directionalLight")->load(scene->getDirectional());
 }
 

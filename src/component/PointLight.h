@@ -54,6 +54,13 @@ struct PointLight : public IComponent<PointLight>{
                             float v1, v2, v3;
                             sscanf(value.c_str(), "%f,%f,%f", &v1, &v2, &v3);
                             this->attenuation = glm::vec3(v1, v2, v3);
+                            std::cout << "attenuation" << std::endl;
+                        }
+                    }
+                    else if (var == "range") {
+                        if(std::getline(ss, value, '=')) {
+                            this->range = std::stof(value);
+                            std::cout << "range" << std::endl;
                         }
                     }
                 }
@@ -69,6 +76,7 @@ struct PointLight : public IComponent<PointLight>{
     BaseLight light;
     glm::vec3 position, lastPosition;
     glm::vec3 attenuation;
+    float range;
 
 };
 

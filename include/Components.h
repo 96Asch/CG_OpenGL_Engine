@@ -9,5 +9,6 @@
 #include "../src/component/Mouse.h"
 #include "../src/component/Camera.h"
 #include "../src/component/PointLight.h"
+#include "../src/component/SpotLight.h"
 
 #endif

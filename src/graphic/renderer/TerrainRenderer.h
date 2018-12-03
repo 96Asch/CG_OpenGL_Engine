@@ -39,9 +39,11 @@ protected:
 
     void loadMatrices(const Terrain &terrain, TransMat &mat);
 
-    void loadPointLights(const glm::mat4 &view, Scene* scene);
+    void loadSpotLights(Scene *scene);
 
-    void loadDirectionalLight(const glm::mat4 &view, Scene* scene);
+    void loadPointLights(Scene* scene);
+
+    void loadDirectionalLight(Scene* scene);
 
     void buildModelMatrix(glm::mat4 &model, const glm::vec2 &position);
 

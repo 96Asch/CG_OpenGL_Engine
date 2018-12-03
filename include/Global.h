@@ -21,6 +21,7 @@ namespace Global {
 
     const size_t NUM_BITS = 64;
     const size_t MAX_POINT_LIGHTS = 5;
+    const size_t MAX_SPOT_LIGHTS = 5;
 }
 
 

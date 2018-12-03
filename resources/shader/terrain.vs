@@ -6,22 +6,10 @@ layout (location=0) in vec3 position;
 layout (location=1) in vec2 texCoord;
 layout (location=2) in vec3 vertexNormal;
 
-out vec2 outTexCoord;
-out vec3 mvVertexNormal;
-out vec3 mvVertexPos;
-out vec3 worldPos;
-out float visibility;
-
-struct BaseLight {
-  vec3 color;
-  float intensity;
-};
-
-uniform struct PointLight {
-    BaseLight light;
-    vec3 position;
-    vec3 attenuation;
-} pointLight[MAX_POINT_LIGHTS];
+out vec2 tex0;
+out vec3 normal0;
+out vec3 world0;
+out float vis0;
 
 uniform struct Fog {
 	float isActive;
@@ -44,16 +32,16 @@ float calcFog(Fog f, vec4 positionRelativeToCam) {
 }
 
 void main() {
-	// // gl_ClipDistance[0] = dot(worldPosition, clipPlane);
-  // gl_ClipDistance[0] = dot(worldPosition, vec4(0.0));
+	// // gl_ClipDistance[0] = dot(world0ition, clipPlane);
+  // gl_ClipDistance[0] = dot(world0ition, vec4(0.0));
     gl_Position = mvp * vec4(position, 1.0);
     vec4 mvPos = model * vec4(position, 1.0);
-    outTexCoord = texCoord;
+    tex0 = texCoord;
 
   //
   //  	mvVertexPos = -mvPos.xyz;
-    mvVertexNormal = normalize(model * vec4(vertexNormal, 0.0)).xyz;
-   	worldPos = (model * vec4(position, 1.0)).xyz;
+    normal0 = normalize(model * vec4(vertexNormal, 0.0)).xyz;
+   	world0 = (model * vec4(position, 1.0)).xyz;
 
-    visibility = calcFog(fog, mvPos);
+    vis0 = calcFog(fog, mvPos);
 }
