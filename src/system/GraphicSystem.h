@@ -21,7 +21,7 @@ public:
 
     virtual void init() override;
 
-    void render(const float &interpolation, Scene* scene);
+    void renderStep(const float &interpolation, Scene* scene);
 
     virtual void cleanup() override;
 
@@ -31,9 +31,17 @@ private:
 
     TransMat transform;
 
-    void buildViewMatrix(const float &interpolation, Scene* scene);
+    void buildViewMatrix(Scene* scene);
 
     void buildProjectionMatrix();
+
+    void interpolatePositions(const float &interpolation, Scene *scene);
+
+    void interpolateRotations(const float &interpolation, Scene *scene);
+
+    void interpolateScales(const float &interpolation, Scene *scene);
+
+    void interpolateCamera(const float &interpolation, Scene* scene);
 };
 
 #endif

@@ -42,13 +42,14 @@ void EntityRenderer::render(const float &interpolation,
                             Scene *scene) {
     preRender(interpolation, mat, scene);
 
-    for(auto e : scene->getEntities().withComponents<Model, Transform, Material>()) {
-
+    for(auto e : scene->getEntities().withComponents<Model, Material, Position, Rotation, Scale>()) {
         Model* model = e.getComponent<Model>();
-        Transform* trans = e.getComponent<Transform>();
         Material* material = e.getComponent<Material>();
+        Position* pos = e.getComponent<Position>();
+        Rotation* rot = e.getComponent<Rotation>();
+        Scale* sca = e.getComponent<Scale>();
 
-        buildModelMatrix(mat.model, trans, interpolation);
+        buildModelMatrix(mat.model, pos, rot, sca, interpolation);
         shader.getUniform<UniformMaterial>("material")->load(*material);
         loadMatrices(mat);
         model->getVao()->bind(0,1,2);
@@ -79,33 +80,33 @@ void EntityRenderer::loadMatrices(TransMat &mat) {
 }
 
 void EntityRenderer::loadPointLights(const glm::mat4 &view, Scene *scene) {
-    std::vector<PointLight> eyeSpacePLights;
-    for(auto light : scene->getEntities().withComponents<PointLight>()) {
-        PointLight copy = *(light.getComponent<PointLight>());
-        glm::vec4 aux = glm::vec4(copy.position, 1);
-        aux = view * aux;
-        copy.position = glm::vec3(aux);
-        eyeSpacePLights.push_back(copy);
+    unsigned counter = 0;
+    for(auto light : scene->getEntities().withComponents<PointLight, Position>()) {
+        PointLight* pl = light.getComponent<PointLight>();
+        Position* pos = light.getComponent<Position>();
+        shader.getUniform<UniformPLights>("pointLight")->load(*pl, pos->interpolated, counter);
+        ++counter;
     }
-    shader.getUniform<UniformPLights>("pointLight")->load(eyeSpacePLights);
+    while(counter < Global::MAX_POINT_LIGHTS) {
+        shader.getUniform<UniformPLights>("pointLight")->loadEmpty(counter);
+        ++counter;
+    }
 }
 
 void EntityRenderer::loadDirectionalLight(const glm::mat4 &view, Scene *scene) {
-    DirectionalLight light = scene->getDirectional();
-    glm::vec4 aux = glm::vec4(light.direction, 0);
-    aux = view * aux;
-    light.direction = glm::vec3(aux.x, aux.y, aux.z);
-    shader.getUniform<UniformDLight>("directionalLight")->load(light);
+    shader.getUniform<UniformDLight>("directionalLight")->load(scene->getDirectional());
 }
 
-void EntityRenderer::buildModelMatrix(glm::mat4 &model, const Transform* t, const float &interpolation) {
+void EntityRenderer::buildModelMatrix(glm::mat4 &model,
+                                      const Position* p,
+                                      const Rotation* r,
+                                      const Scale* s,
+                                      const float &interpolation)
+{
     model = glm::mat4(1.0f);
-    glm::vec3 positionInterpol = Util::lerp(t->lastPosition, t->position, interpolation);
-    glm::vec3 rotationInterpol = Util::lerp(t->lastRotation, t->rotation, interpolation);
-    glm::vec3 scaleInterpol = Util::lerp(t->lastScale, t->scale, interpolation);
-    model = glm::translate(model, positionInterpol);
-    model = glm::rotate(model, glm::radians(rotationInterpol.x), glm::vec3(1,0,0));
-    model = glm::rotate(model, glm::radians(rotationInterpol.y), glm::vec3(0,1,0));
-    model = glm::rotate(model, glm::radians(rotationInterpol.z), glm::vec3(0,0,1));
-    model = glm::scale(model, scaleInterpol);
+    model = glm::translate(model, p->interpolated);
+    model = glm::rotate(model, glm::radians(r->interpolated.x), glm::vec3(1,0,0));
+    model = glm::rotate(model, glm::radians(r->interpolated.y), glm::vec3(0,1,0));
+    model = glm::rotate(model, glm::radians(r->interpolated.z), glm::vec3(0,0,1));
+    model = glm::scale(model, s->interpolated);
 }

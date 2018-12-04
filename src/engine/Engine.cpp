@@ -84,12 +84,12 @@ void Engine::run() {
 
 void Engine::update(const float &TPS) {
     for(auto system : systems)
-        system->update(TPS, scene);
+        system->updateStep(TPS, scene);
 }
 
 void Engine::render(const float &interpolation) {
     for(auto system : systems)
-        system->render(interpolation, scene);
+        system->renderStep(interpolation, scene);
 }
 
 void Engine::cleanup() {

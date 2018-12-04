@@ -16,7 +16,7 @@ void EnvironmentSystem::init() {
 
 }
 
-void EnvironmentSystem::update(const float &tps, Scene* scene) {
+void EnvironmentSystem::updateStep(const float &tps, Scene* scene) {
     updateSky(tps, scene->getSky());
     updateDirectionalLight(tps, scene->getDirectional(), scene->getSky().rotation);
 }

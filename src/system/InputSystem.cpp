@@ -15,7 +15,7 @@ InputSystem::~InputSystem() {}
 
 void InputSystem::init() {}
 
-void InputSystem::update(const float &, Scene* scene) {
+void InputSystem::updateStep(const float &, Scene* scene) {
     handleMouse(scene);
     handleKeys(scene);
 }

@@ -1,5 +1,7 @@
 #include "TerrainRenderer.h"
 #include "Uniforms.h"
+#include "Global.h"
+#include "Components.h"
 #include "../../engine/Scene.h"
 #include "../../environment/Terrain.h"
 
@@ -76,8 +78,8 @@ void TerrainRenderer::postRender(const float &, Scene *) {
 
 void TerrainRenderer::loadCamPosition(Scene* scene) {
     glm::vec3 position(glm::vec3(0.0f));
-    for(auto e : scene->getEntities().withComponents<Camera>()) {
-        position = e.getComponent<Camera>()->position;
+    for(auto e : scene->getEntities().withComponents<Camera, Position>()) {
+        position = e.getComponent<Position>()->interpolated;
     }
     shader.getUniform<UniformVec3>("camPosition")->load(position);
 }
@@ -116,21 +118,31 @@ void TerrainRenderer::loadMatrices(const Terrain &terrain, TransMat &mat) {
 }
 
 void TerrainRenderer::loadPointLights(Scene *scene) {
-    std::vector<PointLight> list;
-    for(auto light : scene->getEntities().withComponents<PointLight>()) {
-        PointLight copy = *(light.getComponent<PointLight>());
-        list.push_back(copy);
+    unsigned counter = 0;
+    for(auto light : scene->getEntities().withComponents<PointLight, Position>()) {
+        PointLight* pl = light.getComponent<PointLight>();
+        Position* pos = light.getComponent<Position>();
+        shader.getUniform<UniformPLights>("pointLight")->load(*pl, pos->interpolated, counter);
+        ++counter;
     }
-    shader.getUniform<UniformPLights>("pointLight")->load(list);
+    while(counter < Global::MAX_POINT_LIGHTS) {
+        shader.getUniform<UniformPLights>("pointLight")->loadEmpty(counter);
+        ++counter;
+    }
 }
 
 void TerrainRenderer::loadSpotLights(Scene *scene) {
-    std::vector<SpotLight> list;
-    for(auto light : scene->getEntities().withComponents<SpotLight>()) {
-        SpotLight copy = *(light.getComponent<SpotLight>());
-        list.push_back(copy);
+    unsigned counter = 0;
+    for(auto light : scene->getEntities().withComponents<SpotLight, Position>()) {
+        SpotLight* pl = light.getComponent<SpotLight>();
+        Position* pos = light.getComponent<Position>();
+        shader.getUniform<UniformSLights>("spotLight")->load(*pl, pos->interpolated, counter);
+        ++counter;
     }
-    shader.getUniform<UniformSLights>("spotLight")->load(list);
+    while(counter < Global::MAX_SPOT_LIGHTS) {
+        shader.getUniform<UniformSLights>("spotLight")->loadEmpty(counter);
+        ++counter;
+    }
 }
 
 void TerrainRenderer::loadDirectionalLight(Scene *scene) {

@@ -3,7 +3,9 @@
 
 #include "Renderer.h"
 
-struct Transform;
+struct Position;
+struct Rotation;
+struct Scale;
 
 class Scene;
 class EntityRenderer : public Renderer {
@@ -37,7 +39,11 @@ private:
 
     void loadDirectionalLight(const glm::mat4 &view, Scene* scene);
 
-    void buildModelMatrix(glm::mat4 &model, const Transform* t, const float &interpolation);
+    void buildModelMatrix(glm::mat4 &model,
+                          const Position* p,
+                          const Rotation* r,
+                          const Scale* s,
+                          const float &interpolation);
 
 };
 

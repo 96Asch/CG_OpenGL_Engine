@@ -23,9 +23,9 @@ struct UniformPLight : public Uniform {
         range.storeUniformLocation(id);
     }
 
-    void load(const PointLight &pLight) {
+    void load(const PointLight &pLight, const glm::vec3 &pos) {
         light.load(pLight.light);
-        position.load(pLight.position);
+        position.load(pos);
         attenuation.load(pLight.attenuation);
         range.load(pLight.range);
     };

@@ -25,13 +25,16 @@ struct UniformPLights : public Uniform {
             lights[i]->storeUniformLocation(id);
     }
 
-    void load(const std::vector<PointLight> &pLights) {
-        for(unsigned i = 0; i < Global::MAX_POINT_LIGHTS; ++i) {
-            if(i < pLights.size())
-                lights[i]->load(pLights[i]);
-            else
-                lights[i]->load(PointLight());
-        }
+    void load(const PointLight &pLight, const glm::vec3 &pos, const unsigned &i) {
+        if(i < Global::MAX_POINT_LIGHTS)
+            lights[i]->load(pLight, pos);
+        else
+            lights[i]->load(PointLight(), glm::vec3(0.0f));
+    }
+
+    void loadEmpty(const unsigned &index) {
+        if(index < Global::MAX_POINT_LIGHTS)
+            lights[index]->load(PointLight(), glm::vec3(0.0f));
     }
 
     std::vector<std::unique_ptr<UniformPLight>> lights;

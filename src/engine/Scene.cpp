@@ -2,8 +2,9 @@
 
 #include "Scene.h"
 #include "Global.h"
+#include "Components.h"
 
-Scene::Scene() {}
+Scene::Scene() : upDirection(glm::vec3(0.0f ,1.0f, 0.0f)){}
 
 Scene::~Scene() {
 
@@ -50,4 +51,8 @@ Terrain& Scene::getTerrain() {
 
 Skybox& Scene::getSky() {
     return sky;
+}
+
+glm::vec3 Scene::getUpDirection() {
+    return upDirection;
 }

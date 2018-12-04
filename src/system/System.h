@@ -13,9 +13,9 @@ public:
 
     virtual void init() = 0;
 
-    virtual void update(const float &, Scene*) {};
+    virtual void updateStep(const float &, Scene*) {};
 
-    virtual void render(const float &, Scene*) {};
+    virtual void renderStep(const float &, Scene*) {};
 
     virtual void cleanup() = 0;
 

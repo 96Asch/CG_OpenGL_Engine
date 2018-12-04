@@ -49,8 +49,12 @@ bool EntityFactory::deserialize(std::ifstream &stream) {
                 addComponent(newEnt.id, Material(stream));
             else if (comp == "[mouse]")
                 addComponent(newEnt.id, Mouse(stream));
-            else if (comp == "[transform]")
-                addComponent(newEnt.id, Transform(stream));
+            else if (comp == "[position]")
+                addComponent(newEnt.id, Position(stream));
+            else if (comp == "[rotation]")
+                addComponent(newEnt.id, Rotation(stream));
+            else if (comp == "[scale]")
+                addComponent(newEnt.id, Scale(stream));
             else if (comp == "[motion]")
                 addComponent(newEnt.id, Motion(stream));
             else if (comp == "[pointlight]")

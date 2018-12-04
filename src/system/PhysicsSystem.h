@@ -20,7 +20,7 @@ public:
 
     virtual void init() override;
 
-    virtual void update(const float &tps, Scene* scene) override;
+    virtual void updateStep(const float &tps, Scene* scene) override;
 
     virtual void cleanup() override;
 
@@ -28,13 +28,9 @@ private:
 
     void applyRotation(const float &tps, Scene* scene);
 
-    void applyEntityRotation(const float &tps, Scene* scene);
-
     void applyCameraRotation(const float &tps, Scene* scene);
 
     void applyMovement(const float &tps, Scene* scene);
-
-    void applyEntityMovement(const float &tps, Scene* scene);
 
     void applyCameraMovement(const float &tps, Scene* scene);
 
