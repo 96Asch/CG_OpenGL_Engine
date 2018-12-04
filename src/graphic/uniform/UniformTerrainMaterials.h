@@ -17,7 +17,7 @@ struct UniformTerrainMaterials : public Uniform {
                     : Uniform(name)
     {
         tMaterials.resize(MAX_TERRAIN_MATERIALS);
-        for(unsigned i = 0; i < MAX_SAMPLERS; ++i)
+        for(unsigned i = 0; i < MAX_TERRAIN_MATERIALS; ++i)
             tMaterials[i].reset(new UniformTerrainMaterial(name + "[" + std::to_string(i) + "]"));
     };
 

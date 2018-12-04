@@ -4,7 +4,9 @@
 #include "Global.h"
 #include "Components.h"
 
-Scene::Scene() : upDirection(glm::vec3(0.0f ,1.0f, 0.0f)){}
+Scene::Scene() : upDirection(glm::vec3(0.0f, 1.0f, 0.0f)),
+                 ambientLight(glm::vec3(0.2f, 0.2f, 0.2f))
+                 {}
 
 Scene::~Scene() {
 
@@ -55,4 +57,8 @@ Skybox& Scene::getSky() {
 
 glm::vec3 Scene::getUpDirection() {
     return upDirection;
+}
+
+glm::vec3 Scene::getAmbient() {
+    return ambientLight;
 }

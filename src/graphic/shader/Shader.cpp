@@ -47,7 +47,7 @@ GLuint Shader::loadShader(const std::string &file, const GLenum &type) {
          glGetShaderInfoLog(shaderId, maxLength, &maxLength, infolog);
          fprintf(stderr, "SHADER ERROR: %s\n", infolog);
          delete[] infolog;
-         exit(-1);
+         throw std::runtime_error("Could not compile shaders");
     }
     return shaderId;
 }

@@ -24,8 +24,7 @@ void SkyboxRenderer::preRender(const float &,
                                TransMat &,
                                Scene *)
 {
-    GLUtil::enableDepthMask(false);
-    shader.start();
+
 }
 
 void SkyboxRenderer::render(const float &interpolation,
@@ -34,7 +33,10 @@ void SkyboxRenderer::render(const float &interpolation,
 {
     Skybox &box = scene->getSky();
     if(box.active) {
-        preRender(interpolation, mat, scene);
+        GLUtil::cullFrontFaces(true);
+        GLUtil::enableDepthMask(false);
+        shader.start();
+
         buildProjectionViewMatrix(mat, box);
         shader.getUniform<UniformMat4>("pv")->load(mat.pv);
         shader.getUniform<UniformSampler>("map1")->loadTexUnit(0);
@@ -47,13 +49,14 @@ void SkyboxRenderer::render(const float &interpolation,
         glBindTexture(GL_TEXTURE_2D, 0);
         box.getVao()->unbind(0);
 
-        postRender(interpolation, scene);
+        shader.stop();
+        GLUtil::cullFrontFaces(false);
+        GLUtil::enableDepthMask(true);
     }
 }
 
 void SkyboxRenderer::postRender(const float &, Scene *) {
-    shader.stop();
-    GLUtil::enableDepthMask(true);
+
 }
 
 void SkyboxRenderer::cleanup() {

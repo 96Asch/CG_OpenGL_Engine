@@ -12,9 +12,8 @@ struct Material : public IComponent<Material> {
 
     Material(const std::string &source)
                     : source(source),
-                      ambient(glm::vec4(0.0f)),
                       diffuse(glm::vec4(0.0f)),
-                      specular(glm::vec4(0.0f)),
+                      specularPower(0.0f),
                       reflectance(0.0f),
                       hasTexture(true),
                       hasFakeLighting(false)
@@ -27,9 +26,8 @@ struct Material : public IComponent<Material> {
 
     Material()
             : source(""),
-              ambient(glm::vec4(0.0f)),
               diffuse(glm::vec4(0.0f)),
-              specular(glm::vec4(0.0f)),
+              specularPower(0.0f),
               reflectance(0.0f),
               hasTexture(true),
               hasFakeLighting(false)
@@ -42,9 +40,8 @@ struct Material : public IComponent<Material> {
 
     Material(std::ifstream &stream)
                     : source(""),
-                      ambient(glm::vec4(0.0f)),
                       diffuse(glm::vec4(0.0f)),
-                      specular(glm::vec4(0.0f)),
+                      specularPower(0.0f),
                       reflectance(0.0f),
                       hasTexture(false),
                       hasFakeLighting(false)
@@ -76,13 +73,6 @@ struct Material : public IComponent<Material> {
                             }
                         }
                     }
-                    else if (var == "ambient") {
-                        if(std::getline(ss, value, '=')) {
-                            float v1, v2, v3, v4;
-                            sscanf(value.c_str(), "%f,%f,%f,%f", &v1, &v2, &v3, &v4);
-                            this->ambient = glm::vec4(v1, v2, v3, v4);
-                        }
-                    }
                     else if (var == "diffuse") {
                         if(std::getline(ss, value, '=')) {
                             float v1, v2, v3, v4;
@@ -90,23 +80,20 @@ struct Material : public IComponent<Material> {
                             this->diffuse = glm::vec4(v1, v2, v3, v4);
                         }
                     }
-                    else if (var == "specular") {
+                    else if (var == "specularPower") {
                         if(std::getline(ss, value, '=')) {
-                            float v1, v2, v3, v4;
-                            sscanf(value.c_str(), "%f,%f,%f,%f", &v1, &v2, &v3, &v4);
-                            this->specular = glm::vec4(v1, v2, v3, v4);
+                            this->specularPower = std::stof(value);
                         }
                     }
                     else if (var == "reflectance") {
                         if(std::getline(ss, value, '=')) {
-                            float reflectance = std::stof(value);
-                            this->reflectance = reflectance;
+                            this->reflectance = std::stof(value);
+
                         }
                     }
                     else if (var == "hasFakeLighting") {
                         if(std::getline(ss, value, '=')) {
-                            bool hasFakeLighting = std::stoi(value);
-                            this->hasFakeLighting = hasFakeLighting;
+                            this->hasFakeLighting = std::stoi(value);
                         }
                     }
                 }
@@ -120,9 +107,8 @@ struct Material : public IComponent<Material> {
     virtual void serialize(std::ofstream &) override {};
 
     std::string source;
-    glm::vec4 ambient;
     glm::vec4 diffuse;
-    glm::vec4 specular;
+    float specularPower;
     float reflectance;
     bool hasTexture;
     bool hasFakeLighting;

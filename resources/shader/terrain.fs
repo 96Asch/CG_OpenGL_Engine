@@ -3,9 +3,7 @@
 const int MAX_POINT_LIGHTS = 5;
 const int MAX_SPOT_LIGHTS = 5;
 const int MAX_TEXTURES = 5;
-const float specularPower = 10;
 const float tiling = 80;
-const vec4 blueTint = vec4(0,0,0.5,0);
 
 in vec2 tex0;
 in vec3 normal0;
@@ -13,7 +11,6 @@ in vec3 world0;
 in float vis0;
 
 out vec4 fragColor;
-
 
 struct BaseLight {
   vec3 color;
@@ -39,9 +36,8 @@ uniform struct SpotLight {
 } spotLight[MAX_SPOT_LIGHTS];
 
 uniform struct Material {
-  vec4 ambient;
   vec4 diffuse;
-  vec4 specular;
+  float specularPower;
   float hasTexture;
   float reflectance;
 } materials[MAX_TEXTURES];
@@ -58,37 +54,40 @@ uniform vec3 ambientLight;
 uniform sampler2D textures[MAX_TEXTURES];
 uniform vec3 camPosition;
 
-vec4 ambientC = vec4(0);
-vec4 diffuseC = vec4(0);
-vec4 speculrC = vec4(0);
 float reflectance = 0;
+float specularPower = 0;
 
 vec4 calcTextureColors(vec2 texCoords) {
-  vec4 ambient[MAX_TEXTURES - 1] = vec4[MAX_TEXTURES - 1](vec4(0),
+  vec4 diffuse[MAX_TEXTURES - 1] = vec4[MAX_TEXTURES - 1](vec4(0),
                                                          vec4(0),
                                                          vec4(0),
                                                          vec4(0));
   vec2 tiled = texCoords * tiling;
   for(int i = 0; i < numMaterials; i++) {
     if(materials[i].hasTexture == 1) {
-      ambient[i] = texture2D(textures[i+1], tiled);
+      diffuse[i] = texture2D(textures[i+1], tiled);
     }
     else {
-      ambient[i] = materials[i].ambient;
+      diffuse[i] = materials[i].diffuse;
     }
   }
 
   vec4 blendmapCol = texture2D(textures[0], texCoords);
   float blackFactor = 1 - (blendmapCol.r + blendmapCol.g + blendmapCol.b);
-  vec4 result = blackFactor * ambient[0]
-              + blendmapCol.r * ambient[1]
-              + blendmapCol.g * ambient[2]
-              + blendmapCol.b * ambient[3];
+  vec4 result = blackFactor * diffuse[0]
+              + blendmapCol.r * diffuse[1]
+              + blendmapCol.g * diffuse[2]
+              + blendmapCol.b * diffuse[3];
 
   reflectance = blackFactor * materials[0].reflectance
               + blendmapCol.r * materials[1].reflectance
               + blendmapCol.g * materials[2].reflectance
               + blendmapCol.b * materials[3].reflectance;
+
+  specularPower = blackFactor * materials[0].specularPower
+                + blendmapCol.r * materials[1].specularPower
+                + blendmapCol.g * materials[2].specularPower
+                + blendmapCol.b * materials[3].specularPower;
 
   return result;
 }
@@ -178,5 +177,5 @@ void main() {
   }
 
   fragColor = texColor * light;
-  // fragColor = setFog(fragColor, fog, vis0);
+  fragColor = setFog(fragColor, fog, vis0);
 }

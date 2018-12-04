@@ -29,6 +29,19 @@ namespace GLUtil {
         }
     }
 
+    void cullFrontFaces(const bool &enable) {
+        static bool isCulledFrontface = false;
+        if(enable && !isCulledFrontface) {
+            isCulledFrontface = true;
+            glEnable(GL_CULL_FACE);
+            glCullFace(GL_FRONT);
+        }
+        else if(!enable && isCulledFrontface) {
+            isCulledFrontface = false;
+            glDisable(GL_CULL_FACE);
+        }
+    }
+
     void enableDepthMask(const bool &enable) {
         static bool isDepthMasking = false;
         if (enable && !isDepthMasking) {

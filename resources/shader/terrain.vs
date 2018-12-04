@@ -20,8 +20,6 @@ uniform struct Fog {
 
 uniform mat4 model;
 uniform mat4 mvp;
-uniform mat4 mv;
-// uniform vec4 clipPlane;
 
 float calcFog(Fog f, vec4 positionRelativeToCam) {
 	float vis = 0;
@@ -32,14 +30,10 @@ float calcFog(Fog f, vec4 positionRelativeToCam) {
 }
 
 void main() {
-	// // gl_ClipDistance[0] = dot(world0ition, clipPlane);
-  // gl_ClipDistance[0] = dot(world0ition, vec4(0.0));
     gl_Position = mvp * vec4(position, 1.0);
     vec4 mvPos = model * vec4(position, 1.0);
     tex0 = texCoord;
 
-  //
-  //  	mvVertexPos = -mvPos.xyz;
     normal0 = normalize(model * vec4(vertexNormal, 0.0)).xyz;
    	world0 = (model * vec4(position, 1.0)).xyz;
 

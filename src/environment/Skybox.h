@@ -4,10 +4,10 @@
 #include "../util/Serializable.h"
 #include "../graphic/globjects/Vao.h"
 #include "../factory/VaoFactory.h"
-#include "../factory/ModelLoader.h"
+#include "../factory/ModelGenerator.h"
 #include "../factory/TextureFactory.h"
 
-#define CUBEMODEL "models/cube.obj"
+#define ID "Skybox"
 
 struct Skybox : public Serializable {
 
@@ -84,12 +84,12 @@ struct Skybox : public Serializable {
         else {
             std::cerr << "ERR: incorrect skybox texture specified!" << std::endl;
         }
-        Factory::loadOBJ(CUBEMODEL,size);
+        Factory::generateCube(ID, size);
         return true;
     };
 
     std::shared_ptr<Vao> getVao() {
-       return Factory::VAO->getVao(CUBEMODEL);
+       return Factory::VAO->getVao(ID);
     };
 
     const unsigned FACES;

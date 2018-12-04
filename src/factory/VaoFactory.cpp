@@ -67,7 +67,10 @@ namespace Factory {
 
 
     std::shared_ptr<Vao> VaoFactory::getVao(const std::string &source) {
-        return vaos[source];
+        if(isLoaded(source))
+            return vaos[source];
+        throw std::runtime_error("Error: cannot find vao for: " + source);
+        return nullptr;
     }
 
     bool VaoFactory::isLoaded(const std::string &source) const {

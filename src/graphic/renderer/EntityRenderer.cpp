@@ -16,70 +16,100 @@ EntityRenderer::~EntityRenderer() {}
 void EntityRenderer::init() {
     shader.init("shader/entity", "position", "texCoord", "vertexNormal", "tangent");
     shader.addUniform(new UniformMat4("model"));
-    shader.addUniform(new UniformMat4("mv"));
     shader.addUniform(new UniformMat4("mvp"));
+    shader.addUniform(new UniformVec3("ambientLight"));
+    shader.addUniform(new UniformVec3("camPosition"));
     shader.addUniform(new UniformMaterial("material"));
     shader.addUniform(new UniformSampler("texture"));
     shader.addUniform(new UniformPLights("pointLight"));
+    shader.addUniform(new UniformSLights("spotLight"));
     shader.addUniform(new UniformDLight("directionalLight"));
     shader.addUniform(new UniformFog("fog"));
     shader.storeUniformLocations();
 }
 
 void EntityRenderer::preRender(const float &,
-                               TransMat &mat,
-                               Scene* scene) {
-    GLUtil::cullBackFaces(true);
-    shader.start();
-    loadPointLights(mat.view, scene);
-    loadDirectionalLight(mat.view, scene);
-    shader.getUniform<UniformFog>("fog")->load(scene->getFog());
-    shader.getUniform<UniformSampler>("texture")->loadTexUnit(0);
+                               TransMat &,
+                               Scene* ) {
+
+
 }
 
 void EntityRenderer::render(const float &interpolation,
-                            TransMat &mat,
+                            TransMat &matrices,
                             Scene *scene) {
-    preRender(interpolation, mat, scene);
-
+    GLUtil::cullBackFaces(true);
+    shader.start();
+    loadSpotLights(scene);
+    loadPointLights(scene);
+    loadDirectionalLight(scene);
+    loadCamPosition(scene);
+    shader.getUniform<UniformFog>("fog")->load(scene->getFog());
+    shader.getUniform<UniformSampler>("texture")->loadTexUnit(0);
+    shader.getUniform<UniformVec3>("ambientLight")->load(scene->getAmbient());
     for(auto e : scene->getEntities().withComponents<Model, Material, Position, Rotation, Scale>()) {
-        Model* model = e.getComponent<Model>();
-        Material* material = e.getComponent<Material>();
-        Position* pos = e.getComponent<Position>();
-        Rotation* rot = e.getComponent<Rotation>();
-        Scale* sca = e.getComponent<Scale>();
+        Model* mod = e.getComponent<Model>();
+        const Material* mat = e.getComponent<Material>();
+        const Position* pos = e.getComponent<Position>();
+        const Rotation* rot = e.getComponent<Rotation>();
+        const Scale* sca = e.getComponent<Scale>();
 
-        buildModelMatrix(mat.model, pos, rot, sca, interpolation);
-        shader.getUniform<UniformMaterial>("material")->load(*material);
-        loadMatrices(mat);
-        model->getVao()->bind(0,1,2);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, material->id);
-        glDrawElements(GL_TRIANGLES, model->getVao()->getIndexCount(), GL_UNSIGNED_INT, 0);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        model->getVao()->unbind(0,1,2);
+        loadMaterial(mat);
+        loadMatrices(matrices, pos, rot, sca);
+
+        mod->getVao()->bind(0,1,2);
+        bindTexture(mat);
+        glDrawElements(GL_TRIANGLES, mod->getVao()->getIndexCount(), GL_UNSIGNED_INT, 0);
+        unbindTexture();
+        mod->getVao()->unbind(0,1,2);
     }
-    postRender(interpolation, scene);
+    shader.stop();
+    GLUtil::cullBackFaces(false);
 };
 
 void EntityRenderer::postRender(const float &, Scene*) {
-    shader.stop();
-    GLUtil::cullBackFaces(false);
+
 }
 
 void EntityRenderer::cleanup() {
     shader.cleanup();
 }
 
-void EntityRenderer::loadMatrices(TransMat &mat) {
+void EntityRenderer::loadCamPosition(Scene* scene) {
+    glm::vec3 position(glm::vec3(0.0f));
+    for(auto e : scene->getEntities().withComponents<Camera, Position>()) {
+        position = e.getComponent<Position>()->interpolated;
+    }
+    shader.getUniform<UniformVec3>("camPosition")->load(position);
+}
+
+
+void EntityRenderer::bindTexture(const Material* m) {
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m->id);
+}
+
+void EntityRenderer::unbindTexture() {
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void EntityRenderer::loadMaterial(const Material* m) {
+    shader.getUniform<UniformMaterial>("material")->load(*m);
+}
+
+void EntityRenderer::loadMatrices(TransMat &mat,
+                                  const Position* p,
+                                  const Rotation* r,
+                                  const Scale* s)
+{
+    buildModelMatrix(mat.model, p, r ,s);
     shader.getUniform<UniformMat4>("model")->load(mat.model);
     mat.mv = mat.view * mat.model;
-    shader.getUniform<UniformMat4>("mv")->load(mat.mv);
     mat.mvp = mat.projection * mat.mv;
     shader.getUniform<UniformMat4>("mvp")->load(mat.mvp);
 }
 
-void EntityRenderer::loadPointLights(const glm::mat4 &view, Scene *scene) {
+void EntityRenderer::loadPointLights(Scene *scene) {
     unsigned counter = 0;
     for(auto light : scene->getEntities().withComponents<PointLight, Position>()) {
         PointLight* pl = light.getComponent<PointLight>();
@@ -93,15 +123,31 @@ void EntityRenderer::loadPointLights(const glm::mat4 &view, Scene *scene) {
     }
 }
 
-void EntityRenderer::loadDirectionalLight(const glm::mat4 &view, Scene *scene) {
-    shader.getUniform<UniformDLight>("directionalLight")->load(scene->getDirectional());
+void EntityRenderer::loadSpotLights(Scene *scene) {
+    unsigned counter = 0;
+    for(auto light : scene->getEntities().withComponents<SpotLight, Position, LookAt>()) {
+        SpotLight* pl = light.getComponent<SpotLight>();
+        Position* pos = light.getComponent<Position>();
+        LookAt* look = light.getComponent<LookAt>();
+        shader.getUniform<UniformSLights>("spotLight")->load(*pl,
+                                                             pos->interpolated,
+                                                             look->interpolated,
+                                                             counter);
+        ++counter;
+    }
+    while(counter < Global::MAX_SPOT_LIGHTS) {
+        shader.getUniform<UniformSLights>("spotLight")->loadEmpty(counter);
+        ++counter;
+    }
 }
 
+void EntityRenderer::loadDirectionalLight(Scene *scene) {
+    shader.getUniform<UniformDLight>("directionalLight")->load(scene->getDirectional());
+}
 void EntityRenderer::buildModelMatrix(glm::mat4 &model,
                                       const Position* p,
                                       const Rotation* r,
-                                      const Scale* s,
-                                      const float &interpolation)
+                                      const Scale* s)
 {
     model = glm::mat4(1.0f);
     model = glm::translate(model, p->interpolated);

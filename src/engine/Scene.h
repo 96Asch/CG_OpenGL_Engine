@@ -30,6 +30,8 @@ public:
 
     glm::vec3 getUpDirection();
 
+    glm::vec3 getAmbient();
+
     virtual void serialize(std::ofstream &out) override;
 
     virtual bool deserialize(std::ifstream &stream) override;
@@ -39,6 +41,8 @@ private:
     EntityFactory ef;
 
     glm::vec3 upDirection;
+    glm::vec3 ambientLight;
+
     DirectionalLight light;
     Fog fog;
     Terrain terrain;

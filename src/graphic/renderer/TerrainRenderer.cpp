@@ -12,7 +12,6 @@ TerrainRenderer::~TerrainRenderer() {}
 void TerrainRenderer::init() {
     shader.init("shader/terrain", "position", "uv", "normal");
     shader.addUniform(new UniformMat4("model"));
-    shader.addUniform(new UniformMat4("mv"));
     shader.addUniform(new UniformMat4("mvp"));
     shader.addUniform(new UniformInt("numMaterials"));
     shader.addUniform(new UniformVec3("ambientLight"));
@@ -38,7 +37,7 @@ void TerrainRenderer::render(const float &interpolation,
     if(terrain.active) {
         preRender(interpolation, mat, scene);
 
-        shader.getUniform<UniformVec3>("ambientLight")->load(glm::vec3(0.0,0.0,0.0));
+        shader.getUniform<UniformVec3>("ambientLight")->load(scene->getAmbient());
 
         loadDirectionalLight(scene);
         loadPointLights(scene);
@@ -112,7 +111,6 @@ void TerrainRenderer::loadMatrices(const Terrain &terrain, TransMat &mat) {
     buildModelMatrix(mat.model, terrain.position);
     shader.getUniform<UniformMat4>("model")->load(mat.model);
     mat.mv = mat.view * mat.model;
-    shader.getUniform<UniformMat4>("mv")->load(mat.mv);
     mat.mvp = mat.projection * mat.mv;
     shader.getUniform<UniformMat4>("mvp")->load(mat.mvp);
 }
@@ -139,7 +137,7 @@ void TerrainRenderer::loadSpotLights(Scene *scene) {
         LookAt* look = light.getComponent<LookAt>();
         shader.getUniform<UniformSLights>("spotLight")->load(*pl,
                                                              pos->interpolated,
-                                                             look->interpolated, 
+                                                             look->interpolated,
                                                              counter);
         ++counter;
     }

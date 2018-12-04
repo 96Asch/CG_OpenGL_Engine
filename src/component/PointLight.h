@@ -37,7 +37,6 @@ struct PointLight : public IComponent<PointLight>{
                 else if (firstAcc && buffer == "}")
                     lastAcc = true;
                 else if(std::getline(ss, var, '=')) {
-                    std::cout << "plight: " << var << std::endl;
                     if (var == "position") {
                         if(std::getline(ss, value, '=')) {
                             float v1, v2, v3;
@@ -54,13 +53,11 @@ struct PointLight : public IComponent<PointLight>{
                             float v1, v2, v3;
                             sscanf(value.c_str(), "%f,%f,%f", &v1, &v2, &v3);
                             this->attenuation = glm::vec3(v1, v2, v3);
-                            std::cout << "attenuation" << std::endl;
                         }
                     }
                     else if (var == "range") {
                         if(std::getline(ss, value, '=')) {
                             this->range = std::stof(value);
-                            std::cout << "range" << std::endl;
                         }
                     }
                 }

@@ -7,6 +7,8 @@ namespace GLUtil {
 
     void cullBackFaces(const bool &enable);
 
+    void cullFrontFaces(const bool &enable);
+
     void enableDepthMask(const bool &enable);
 
 }

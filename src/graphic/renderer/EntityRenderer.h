@@ -6,6 +6,7 @@
 struct Position;
 struct Rotation;
 struct Scale;
+struct Material;
 
 class Scene;
 class EntityRenderer : public Renderer {
@@ -33,17 +34,29 @@ private:
 
     virtual void postRender(const float &interpolation, Scene *scene) override;
 
-    void loadMatrices(TransMat &mat);
+    void bindTexture(const Material* m);
 
-    void loadPointLights(const glm::mat4 &view, Scene* scene);
+    void unbindTexture();
 
-    void loadDirectionalLight(const glm::mat4 &view, Scene* scene);
+    void loadCamPosition(Scene* scene);
+
+    void loadMaterial(const Material* m);
+
+    void loadMatrices(TransMat &mat,
+                      const Position* p,
+                      const Rotation* r,
+                      const Scale* s);
+
+    void loadSpotLights(Scene *scene);
+
+    void loadPointLights(Scene* scene);
+
+    void loadDirectionalLight(Scene* scene);
 
     void buildModelMatrix(glm::mat4 &model,
                           const Position* p,
                           const Rotation* r,
-                          const Scale* s,
-                          const float &interpolation);
+                          const Scale* s);
 
 };
 

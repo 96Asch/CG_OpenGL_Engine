@@ -16,6 +16,11 @@ public:
     ~Shader();
 
     template <typename... Args>
+    void init(const std::string &vert,
+              const std::string &frag,
+              const Args... attribs);
+
+    template <typename... Args>
     void init(const std::string &shader,
               const Args... attribs);
 
@@ -46,10 +51,12 @@ private:
 };
 
 template <typename... Args>
-void Shader::init(const std::string &shader,
-                         const Args... attribs) {
-    GLuint vsId = loadShader(shader + ".vs", GL_VERTEX_SHADER),
-           fsId = loadShader(shader + ".fs", GL_FRAGMENT_SHADER);
+void Shader::init(const std::string &vert,
+                  const std::string &frag,
+                  const Args... attribs)
+{
+    GLuint vsId = loadShader(vert, GL_VERTEX_SHADER),
+           fsId = loadShader(frag, GL_FRAGMENT_SHADER);
     int isLinked, maxLength;
     char* infolog;
     id = glCreateProgram();
@@ -64,6 +71,7 @@ void Shader::init(const std::string &shader,
         infolog = new char[maxLength];
         glGetProgramInfoLog(id, maxLength, &maxLength, infolog);
         std::cerr << "SHADER LINK ERROR: " << infolog << std::endl;
+        delete[] infolog;
         throw std::runtime_error("Could not link shaders");
     }
 
@@ -71,6 +79,13 @@ void Shader::init(const std::string &shader,
     glDetachShader(id, fsId);
     glDeleteShader(vsId);
     glDeleteShader(fsId);
+}
+
+template <typename... Args>
+void Shader::init(const std::string &shader,
+                  const Args... attribs)
+{
+    init(shader + ".vs", shader + ".fs", attribs...);
 }
 
 template <typename T>
