@@ -5,6 +5,7 @@
 #include "../src/component/Position.h"
 #include "../src/component/Rotation.h"
 #include "../src/component/Scale.h"
+#include "../src/component/LookAt.h"
 #include "../src/component/Material.h"
 #include "../src/component/Motion.h"
 #include "../src/component/Action.h"

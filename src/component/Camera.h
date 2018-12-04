@@ -7,15 +7,11 @@
 
 struct Camera : public IComponent<Camera> {
 
-    Camera() : target(glm::vec3(0.0f, 0.0f, -1.0f)),
-               lastTarget(glm::vec3(0.0f)),
-               up(glm::vec3(0.0f, 1.0f, 0.0f)),
+    Camera() : up(glm::vec3(0.0f, 1.0f, 0.0f)),
                lastUp(glm::vec3(0.0f))
                {};
 
-    Camera(std::ifstream &stream) : target(glm::vec3(0.0f, 0.0f, -1.0f)),
-                                    lastTarget(glm::vec3(0.0f)),
-                                    up(glm::vec3(0.0f, 1.0f, 0.0f)),
+    Camera(std::ifstream &stream) : up(glm::vec3(0.0f, 1.0f, 0.0f)),
                                     lastUp(glm::vec3(0.0f))
     {
         if(!deserialize(stream))
@@ -28,7 +24,6 @@ struct Camera : public IComponent<Camera> {
 
     virtual void serialize(std::ofstream &) override {};
 
-    glm::vec3 target, lastTarget, interpolatedTarget;
     glm::vec3 up, lastUp, interpolatedUp;
     glm::vec3 right;
 };

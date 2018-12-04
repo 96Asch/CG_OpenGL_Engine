@@ -41,6 +41,8 @@ private:
 
     void interpolateScales(const float &interpolation, Scene *scene);
 
+    void interpolateLookAt(const float &interpolation, Scene *scene);
+
     void interpolateCamera(const float &interpolation, Scene* scene);
 };
 

@@ -30,6 +30,7 @@ void GraphicSystem::renderStep(const float &interpolation, Scene* scene) {
     interpolateRotations(interpolation, scene);
     interpolateScales(interpolation, scene);
     interpolateCamera(interpolation, scene);
+    interpolateLookAt(interpolation, scene);
 
     buildViewMatrix(scene);
 
@@ -46,12 +47,13 @@ void GraphicSystem::cleanup() {
 
 void GraphicSystem::buildViewMatrix(Scene *scene) {
     transform.view = glm::mat4(1.0f);
-    for (auto e : scene->getEntities().withComponents<Camera, Position>()) {
+    for (auto e : scene->getEntities().withComponents<Camera, Position, LookAt>()) {
         Camera* c = e.getComponent<Camera>();
-        Position* p =e.getComponent<Position>();
+        Position* p = e.getComponent<Position>();
+        LookAt* l = e.getComponent<LookAt>();
         transform.view = glm::lookAt(
                                      p->interpolated,
-                                     p->interpolated + c->interpolatedTarget,
+                                     p->interpolated + l->interpolated,
                                      c->interpolatedUp
                                     );
     }
@@ -94,12 +96,20 @@ void GraphicSystem::interpolateScales(const float &interpolation,
     }
 }
 
+void GraphicSystem::interpolateLookAt(const float &interpolation,
+                                      Scene *scene)
+{
+    for(auto e : scene->getEntities().withComponents<LookAt>()) {
+        LookAt* l = e.getComponent<LookAt>();
+        l->interpolated = Util::lerp(l->lastDirection, l->direction, interpolation);
+    }
+}
+
 void GraphicSystem::interpolateCamera(const float &interpolation,
                                       Scene* scene)
 {
     for(auto e : scene->getEntities().withComponents<Camera>()) {
         Camera* c = e.getComponent<Camera>();
-        c->interpolatedTarget = Util::lerp(c->lastTarget, c->target, interpolation);
         c->interpolatedUp = Util::lerp(c->lastUp, c->up, interpolation);
     }
 }

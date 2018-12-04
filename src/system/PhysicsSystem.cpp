@@ -28,16 +28,17 @@ void PhysicsSystem::applyRotation(const float &tps, Scene* scene) {
 }
 
 void PhysicsSystem::applyCameraRotation(const float &tps, Scene* scene) {
-    for(auto e : scene->getEntities().withComponents<Camera, Rotation, Mouse, Motion>()) {
+    for(auto e : scene->getEntities().withComponents<Camera, Rotation, Mouse, Motion, LookAt>()) {
         Camera* c = e.getComponent<Camera>();
         Mouse* m = e.getComponent<Mouse>();
         Motion* mov = e.getComponent<Motion>();
         Rotation* r = e.getComponent<Rotation>();
+        LookAt* l = e.getComponent<LookAt>();
 
         r->lastRotation = r->rotation;
         r->rotation.y -= m->dx * mov->rotSpeed * tps;
         r->rotation.x -= m->dy * mov->rotSpeed * tps;
-        c->lastTarget = c->target;
+        l->lastDirection = l->direction;
         c->lastUp = c->up;
 
         if(r->rotation.x > 89.0f)
@@ -49,9 +50,9 @@ void PhysicsSystem::applyCameraRotation(const float &tps, Scene* scene) {
         target.x = -cos(glm::radians(r->rotation.x)) * sin(glm::radians(r->rotation.y));
         target.y = -sin(glm::radians(r->rotation.x));
         target.z = -cos(glm::radians(r->rotation.y)) * cos(glm::radians(r->rotation.x));
-        c->target = glm::normalize(target);
-        c->right = glm::normalize(glm::cross(c->target, scene->getUpDirection()));
-        c->up = glm::normalize(glm::cross(c->right, c->target));
+        l->direction = glm::normalize(target);
+        c->right = glm::normalize(glm::cross(l->direction, scene->getUpDirection()));
+        c->up = glm::normalize(glm::cross(c->right, l->direction));
     }
 }
 
@@ -60,11 +61,12 @@ void PhysicsSystem::applyMovement(const float &tps, Scene *scene) {
 }
 
 void PhysicsSystem::applyCameraMovement(const float &tps, Scene* scene) {
-    for(auto e : scene->getEntities().withComponents<Camera, Position, Action, Motion>()) {
+    for(auto e : scene->getEntities().withComponents<Camera, Position, Action, Motion, LookAt>()) {
         Action* a = e.getComponent<Action>();
         Camera* c = e.getComponent<Camera>();
         Motion* m = e.getComponent<Motion>();
         Position* p = e.getComponent<Position>();
+        LookAt* l = e.getComponent<LookAt>();
 
         glm::vec3 x(0.0f), y(0.0f), z(0.0f);
         m->direction = glm::vec3(0.0f);
@@ -84,7 +86,7 @@ void PhysicsSystem::applyCameraMovement(const float &tps, Scene* scene) {
             }
             if(a->action.test(ActType::MOVE_FORWARD)
             || a->action.test(ActType::MOVE_BACKWARD)) {
-                z = c->target;
+                z = l->direction;
                 if(a->action.test(ActType::MOVE_BACKWARD))
                     z = -z;
             }

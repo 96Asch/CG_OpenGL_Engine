@@ -133,10 +133,14 @@ void TerrainRenderer::loadPointLights(Scene *scene) {
 
 void TerrainRenderer::loadSpotLights(Scene *scene) {
     unsigned counter = 0;
-    for(auto light : scene->getEntities().withComponents<SpotLight, Position>()) {
+    for(auto light : scene->getEntities().withComponents<SpotLight, Position, LookAt>()) {
         SpotLight* pl = light.getComponent<SpotLight>();
         Position* pos = light.getComponent<Position>();
-        shader.getUniform<UniformSLights>("spotLight")->load(*pl, pos->interpolated, counter);
+        LookAt* look = light.getComponent<LookAt>();
+        shader.getUniform<UniformSLights>("spotLight")->load(*pl,
+                                                             pos->interpolated,
+                                                             look->interpolated, 
+                                                             counter);
         ++counter;
     }
     while(counter < Global::MAX_SPOT_LIGHTS) {

@@ -14,7 +14,7 @@
     color=1.0,1.0,1.0
     intensity=0.8
   }
-
+  
   direction=1.0,1.0,1.0
 }
 
@@ -71,10 +71,15 @@
 [entity]
 {
   [camera]
+
+  [rotation]
   {
-    position=0.0,1.0,10.0
-    yaw=0.0
-    pitch=0.0
+    rotation=0.0,0.0,0.0
+  }
+
+  [position]
+  {
+    position=0.0,3.0,0.0
   }
 
   [action]
@@ -85,6 +90,25 @@
   {
     movSpeed=10
     rotSpeed=6
+  }
+
+  [spotlight]
+  {
+    [pointlight]
+    {
+      [baselight]
+      {
+        color=0.0,1.0,0.0
+        intensity=9.8
+      }
+      attenuation=0.0,0.0,1.0
+      range=30.0
+    }
+    cutoff=0.9
+  }
+  [lookat]
+  {
+    direction=0.0,0.0,1.0
   }
 }
 
@@ -97,33 +121,14 @@
       color=1.0,0.0,0.0
       intensity=3.8
     }
-
-    position=10.0,2.0,10.0
     attenuation=0.0,0.0,0.4
     range=10.0
   }
-
-}
-
-[entity]
-{
-  [spotlight]
+  [position]
   {
-    [pointlight]
-    {
-      [baselight]
-      {
-        color=0.0,1.0,0.0
-        intensity=9.8
-      }
-
-      position=20.0,2.0,20.0
-      attenuation=0.0,0.0,1.0
-      range=20.0
-    }
-    direction=0.0,-0.5,1.0
-    cutoff=0.9
+    position=10.0,2.0,10.0
   }
+
 }
 
 
@@ -133,7 +138,6 @@
   {
     source=models/cube.obj
   }
-
   [material]
   {
     source=texture/path.png
@@ -142,12 +146,16 @@
     specular=0.0,0.5,0.5,1.0
     reflectance=2.5
   }
-
-  [transform]
+  [position]
   {
     position=0.0,0.0,0.0
+  }
+  [rotation]
+  {
     rotation=0.0,0.0,45.0
+  }
+  [scale]
+  {
     scale=1.0,1.0,1.0
   }
-
 }
