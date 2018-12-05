@@ -13,7 +13,7 @@ SkyboxRenderer::~SkyboxRenderer() {
 }
 
 void SkyboxRenderer::init() {
-    shader.init("shader/skybox", "position");
+    shader.init("shader/skybox.vs", "shader/skybox.fs", {"position"});
     shader.addUniform(new UniformMat4("pv"));
     shader.addUniform(new UniformSampler("map1"));
     shader.addUniform(new UniformVec3("fogColor"));

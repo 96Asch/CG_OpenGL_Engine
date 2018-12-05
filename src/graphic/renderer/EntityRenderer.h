@@ -7,6 +7,7 @@ struct Position;
 struct Rotation;
 struct Scale;
 struct Material;
+struct Entity;
 
 class Scene;
 class EntityRenderer : public Renderer {
@@ -43,7 +44,9 @@ private:
                       const Rotation* r,
                       const Scale* s);
 
-    void loadSpotLights(Scene *scene);
+    void loadExposion(Entity &e);
+
+    void loadSpotLights(Scene* scene);
 
     void loadPointLights(Scene* scene);
 

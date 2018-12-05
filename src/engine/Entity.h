@@ -15,9 +15,14 @@ struct Entity{
 
     EntityId id;
     EntityFactory* ef;
-    
+
     template <typename T>
     T* getComponent();
+
+    template <typename T>
+    bool hasComponent();
+
+    void destroy();
 
 };
 
@@ -26,6 +31,15 @@ struct Entity{
 template <typename T>
 T* Entity::getComponent() {
     return ef->getComponent<T>(id);
+}
+
+template <typename T>
+bool Entity::hasComponent() {
+    return ef->hasComponent<T>(id);
+}
+
+void Entity::destroy() {
+    ef->destroyEntity(id);
 }
 
 inline std::ostream& operator<<(std::ostream &stream, const Entity &e) {

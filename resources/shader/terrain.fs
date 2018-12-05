@@ -5,10 +5,12 @@ const int MAX_SPOT_LIGHTS = 5;
 const int MAX_TEXTURES = 5;
 const float tiling = 80;
 
-in vec2 tex0;
-in vec3 normal0;
-in vec3 world0;
-in float vis0;
+in VSOut {
+  in vec2 tex0;
+  in vec3 normal0;
+  in vec3 world0;
+  in float vis0;
+} vsOut;
 
 out vec4 fragColor;
 
@@ -58,6 +60,14 @@ uniform vec3 camPosition;
 float reflectance = 0;
 float specularPower = 0;
 
+vec4 when_gt(vec4 x, vec4 y) {
+  return max(sign(x - y), 0.0);
+}
+
+float when_gt(float x, float y) {
+  return max(sign(x - y), 0.0);
+}
+
 vec4 calcTextureColors(vec2 texCoords) {
   vec4 diffuse[MAX_TEXTURES - 1] = vec4[MAX_TEXTURES - 1](vec4(0),
                                                          vec4(0),
@@ -100,11 +110,12 @@ vec4 calcLight(BaseLight light, vec3 direction, vec3 normal) {
   float dFactor = max(dot(normal, -direction), 0.0);
   diffuseColor = vec4(light.color, 1.0) * light.intensity * dFactor;
 
-  vec3 camDirection = normalize(camPosition - world0);
+  vec3 camDirection = normalize(camPosition - vsOut.world0);
+  vec3 halfwayDir = normalize(direction + camDirection);
   vec3 reflectDirection = normalize(reflect(direction, normal));
 
   float specularFactor = max(dot(camDirection, reflectDirection), 0.0);
-  specularFactor = pow(specularFactor, specularPower);
+  specularFactor = pow(specularFactor, specularPower) * when_gt(dFactor, 0.0f);
 
   specularColor = vec4(light.color, 1.0) * reflectance * specularFactor;
 
@@ -116,7 +127,7 @@ vec4 calcDLight(DirectionalLight dLight, vec3 normal) {
 }
 
 vec4 calcPLight(PointLight pLight, vec3 normal) {
-  vec3 lightDirection = world0 - pLight.position;
+  vec3 lightDirection = vsOut.world0 - pLight.position;
   float distance = length(lightDirection);
 
   if(distance > pLight.range) {
@@ -136,7 +147,7 @@ vec4 calcPLight(PointLight pLight, vec3 normal) {
 }
 
 vec4 calcSLight(SpotLight light, vec3 normal) {
-    vec3 lightDirection = normalize(world0 - light.point.position);
+    vec3 lightDirection = normalize(vsOut.world0 - light.point.position);
     float spotFactor = dot(lightDirection, light.direction);
     vec4 color = vec4(0);
     if(spotFactor > light.cutoff) {
@@ -159,8 +170,8 @@ vec4 setFog(vec4 currColor, Fog f, float vis) {
 
 
 void main() {
-  vec4 texColor = calcTextureColors(tex0);
-  vec3 normal = normalize(normal0);
+  vec4 texColor = calcTextureColors(vsOut.tex0);
+  vec3 normal = normalize(vsOut.normal0);
   vec4 light = vec4(ambientLight, 1.0);
 
   light += calcDLight(directionalLight, normal);
@@ -178,5 +189,5 @@ void main() {
   }
 
   fragColor = texColor * light;
-  fragColor = setFog(fragColor, fog, vis0);
+  fragColor = setFog(fragColor, fog, vsOut.vis0);
 }

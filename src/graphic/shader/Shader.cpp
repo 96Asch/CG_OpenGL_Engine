@@ -8,6 +8,53 @@ Shader::~Shader() {
     uniforms.clear();
 }
 
+void Shader::init(const std::string &vs,
+                  const std::string &fs,
+                  std::initializer_list<std::string> &&attribs)
+{
+    init(vs, fs, "", std::move(attribs));
+}
+
+void Shader::init(const std::string &vs,
+                  const std::string &fs,
+                  const std::string &gs,
+                  std::initializer_list<std::string> &&attribs)
+{
+    GLuint vsId = loadShader(vs, GL_VERTEX_SHADER),
+           fsId = loadShader(fs, GL_FRAGMENT_SHADER),
+           gsId;
+    if(!gs.empty())
+        gsId = loadShader(gs, GL_GEOMETRY_SHADER);
+
+    int isLinked, maxLength;
+    char* infolog;
+    id = glCreateProgram();
+    glAttachShader(id, vsId);
+    glAttachShader(id, fsId);
+    if(!gs.empty())
+        glAttachShader(id, gsId);
+    bindAttributes(std::move(attribs));
+    glLinkProgram(id);
+    glValidateProgram(id);
+    glGetProgramiv(id, GL_LINK_STATUS, (int *)&isLinked);
+    if(isLinked == GL_FALSE) {
+        glGetProgramiv(id, GL_INFO_LOG_LENGTH, &maxLength);
+        infolog = new char[maxLength];
+        glGetProgramInfoLog(id, maxLength, &maxLength, infolog);
+        std::cerr << "SHADER LINK ERROR: " << infolog << std::endl;
+        delete[] infolog;
+        throw std::runtime_error("Could not link shaders");
+    }
+
+    glDetachShader(id, vsId);
+    glDetachShader(id, fsId);
+    glDeleteShader(vsId);
+    glDeleteShader(fsId);
+    if(!gs.empty()) {
+        glDetachShader(id, gsId);
+        glDeleteShader(gsId);
+    }
+}
 
 void Shader::start() {
     glUseProgram(id);
@@ -30,6 +77,15 @@ void Shader::storeUniformLocations() {
     for(auto pair : uniforms)
         pair.second->storeUniformLocation(id);
     glValidateProgram(id);
+}
+
+
+void Shader::bindAttributes(std::initializer_list<std::string> &&attribs) {
+    GLuint location = 0;
+    for(auto a : attribs) {
+        glBindAttribLocation(id, location, a.c_str());
+        ++location;
+    }
 }
 
 GLuint Shader::loadShader(const std::string &file, const GLenum &type) {

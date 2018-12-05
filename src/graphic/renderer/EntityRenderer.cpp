@@ -11,14 +11,16 @@ EntityRenderer::EntityRenderer() {}
 EntityRenderer::~EntityRenderer() {}
 
 void EntityRenderer::init() {
-    shader.init("shader/entity", "position", "texCoord", "vertexNormal", "tangent");
+    shader.init("shader/entity.vs", "shader/entity.fs", "shader/entity.gs",
+                {"position", "uv", "normal"});
     shader.addUniform(new UniformMat4("model"));
     shader.addUniform(new UniformMat4("mvp"));
     shader.addUniform(new UniformVec3("ambientLight"));
+    shader.addUniform(new UniformFloat("explodeDistance"));
+    shader.addUniform(new UniformFloat("explodeActive"));
     shader.addUniform(new UniformVec3("camPosition"));
     shader.addUniform(new UniformMaterial("material"));
     shader.addUniform(new UniformSampler("texture"));
-    shader.addUniform(new UniformSampler("shadowMap"));
     shader.addUniform(new UniformPLights("pointLight"));
     shader.addUniform(new UniformSLights("spotLight"));
     shader.addUniform(new UniformDLight("directionalLight"));
@@ -32,7 +34,6 @@ void EntityRenderer::preRender(TransMat &, Scene* ) {
 }
 
 void EntityRenderer::render(TransMat &matrices, Scene *scene) {
-    // GLUtil::cullBackFaces(true);
     GLUtil::enableDepthTesting(true);
     shader.start();
     loadSpotLights(scene);
@@ -40,7 +41,6 @@ void EntityRenderer::render(TransMat &matrices, Scene *scene) {
     loadDirectionalLight(scene);
     loadCamPosition(scene);
     shader.getUniform<UniformFog>("fog")->load(scene->getFog());
-    shader.getUniform<UniformSampler>("shadowMap")->loadTexUnit(0);
     shader.getUniform<UniformSampler>("texture")->loadTexUnit(1);
     shader.getUniform<UniformVec3>("ambientLight")->load(scene->getAmbient());
     for(auto e : scene->getEntities().withComponents<Model, Material, Position, Rotation, Scale>()) {
@@ -52,7 +52,7 @@ void EntityRenderer::render(TransMat &matrices, Scene *scene) {
 
         loadMaterial(mat);
         loadMatrices(matrices, pos, rot, sca);
-
+        loadExposion(e);
         mod->getVao()->bind(0,1,2);
         bindTexture(mat);
         glDrawElements(GL_TRIANGLES, mod->getVao()->getIndexCount(), GL_UNSIGNED_INT, 0);
@@ -60,7 +60,6 @@ void EntityRenderer::render(TransMat &matrices, Scene *scene) {
         mod->getVao()->unbind(0,1,2);
     }
     shader.stop();
-    // GLUtil::cullBackFaces(false);
     GLUtil::enableDepthTesting(false);
 };
 
@@ -104,6 +103,18 @@ void EntityRenderer::loadMatrices(TransMat &mat,
     mat.mv = mat.view * mat.model;
     mat.mvp = mat.projection * mat.mv;
     shader.getUniform<UniformMat4>("mvp")->load(mat.mvp);
+}
+
+void EntityRenderer::loadExposion(Entity &e) {
+    if(e.hasComponent<Explode>()) {
+        Explode* ex = e.getComponent<Explode>();
+        shader.getUniform<UniformFloat>("explodeDistance")->load(ex->interpolated);
+        shader.getUniform<UniformFloat>("explodeActive")->load(ex->active);
+    }
+    else {
+        shader.getUniform<UniformFloat>("explodeDistance")->load(0.0f);
+        shader.getUniform<UniformFloat>("explodeActive")->load(0.0f);
+    }
 }
 
 void EntityRenderer::loadPointLights(Scene *scene) {

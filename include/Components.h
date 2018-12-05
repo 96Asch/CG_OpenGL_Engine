@@ -13,5 +13,6 @@
 #include "../src/component/Camera.h"
 #include "../src/component/PointLight.h"
 #include "../src/component/SpotLight.h"
+#include "../src/component/Explode.h"
 
 #endif

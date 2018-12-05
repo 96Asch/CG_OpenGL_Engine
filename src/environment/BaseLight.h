@@ -8,7 +8,9 @@
 struct BaseLight : public Serializable{
 
 
-    BaseLight() {};
+    BaseLight() : color(glm::vec3(0.0f)),
+                  intensity(0.0f)
+                  {};
 
     BaseLight(std::ifstream &stream) : color(glm::vec3(0)),
                                        intensity(0.0f)

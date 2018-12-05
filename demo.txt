@@ -31,7 +31,7 @@
     source=texture/ice.png
     diffuse=0.0,0.0,0.0,1.0
     specularPower=10.0
-    reflectance=1.0
+    reflectance=10.0
   }
   [material]
   {
@@ -206,7 +206,7 @@
 {
   [model]
   {
-    source=models/grass.obj
+    source=models/dragon.obj
   }
   [material]
   {
@@ -214,6 +214,11 @@
     diffuse=0.0,0.0,0.0,1.0
     specularPower=10.0
     reflectance=5.5
+  }
+  [explode]
+  {
+    speed=0.5
+    active=1
   }
   [position]
   {

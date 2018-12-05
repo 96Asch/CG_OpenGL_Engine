@@ -93,7 +93,7 @@ public:
 	virtual bool deserialize(std::ifstream &stream) override;
 
 	Entity createEntity();
-	
+
 	void destroyEntity(const EntityId &id);
 
 
@@ -125,7 +125,7 @@ public:
 	}
 
 	template<typename T>
-	bool hasComponent(const EntityId &id){
+	bool hasComponent(const EntityId &id) {
 		const size_t bit = T::bit();
 		if (bit >= components.size())
 			return false;

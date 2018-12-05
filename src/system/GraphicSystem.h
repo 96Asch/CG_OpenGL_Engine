@@ -27,7 +27,6 @@ public:
 
 private:
 
-    std::vector<Renderer*> fboRenderers;
     std::vector<Renderer*> screenRenderers;
 
     TransMat transform;
@@ -43,6 +42,8 @@ private:
     void interpolateRotations(const float &interpolation, Scene *scene);
 
     void interpolateScales(const float &interpolation, Scene *scene);
+
+    void interpolateExplosions(const float &interpolation, Scene *scene);
 
     void interpolateLookAt(const float &interpolation, Scene *scene);
 

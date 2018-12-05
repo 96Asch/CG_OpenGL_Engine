@@ -3,13 +3,15 @@
 const int MAX_POINT_LIGHTS = 5;
 
 layout (location=0) in vec3 position;
-layout (location=1) in vec2 texCoord;
-layout (location=2) in vec3 vertexNormal;
+layout (location=1) in vec2 uv;
+layout (location=2) in vec3 normal;
 
-out vec2 tex0;
-out vec3 normal0;
-out vec3 world0;
-out float vis0;
+out VSOut {
+	out vec2 tex0;
+	out vec3 normal0;
+	out vec3 world0;
+	out float vis0;
+} vsOut;
 
 uniform struct Fog {
 	float isActive;
@@ -32,10 +34,8 @@ float calcFog(Fog f, vec4 positionRelativeToCam) {
 void main() {
     gl_Position = mvp * vec4(position, 1.0);
     vec4 mvPos = model * vec4(position, 1.0);
-    tex0 = texCoord;
-
-    normal0 = normalize(model * vec4(vertexNormal, 0.0)).xyz;
-   	world0 = (model * vec4(position, 1.0)).xyz;
-
-    vis0 = calcFog(fog, mvPos);
+    vsOut.tex0 = uv;
+    vsOut.normal0 = normalize(model * vec4(normal, 0.0)).xyz;
+   	vsOut.world0 = (model * vec4(position, 1.0)).xyz;
+    vsOut.vis0 = calcFog(fog, mvPos);
 }

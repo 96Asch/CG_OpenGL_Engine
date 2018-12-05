@@ -18,27 +18,20 @@ char* Util::resourceToChar(const std::string &resource) {
 }
 
 std::string Util::resourceToString(const std::string &resource) {
-    std::string shader = "";
-    try {
-		std::streamoff size;
-		std::ifstream file(resource.c_str());
-		if (!file.is_open())
-		{
-			throw(std::runtime_error("Unable to open the file."));
-		}
-		file.seekg(0, std::ios::end);
-		size = file.tellg();
-		file.seekg(0, std::ios::beg);
-		size -= file.tellg();
-		shader.resize((size_t)size, '\0');
-		file.read(&shader[0], size);
-		file.close();
+    std::string str = "";
+	std::streamoff size;
+	std::ifstream file(resource.c_str());
+	if (!file.is_open()) {
+		throw(std::runtime_error("Unable to open the file: " + resource));
 	}
-	catch(std::exception & e) {
-		fprintf(stderr, "ERROR READING FILE: %s ,%s\n",resource.c_str(), e.what());
-        exit(-1);
-    }
-    return shader;
+	file.seekg(0, std::ios::end);
+	size = file.tellg();
+	file.seekg(0, std::ios::beg);
+	size -= file.tellg();
+	str.resize((size_t)size, '\0');
+	file.read(&str[0], size);
+	file.close();
+    return str;
 }
 
 size_t Util::split(const std::string &string,

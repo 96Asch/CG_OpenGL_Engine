@@ -13,23 +13,14 @@ GraphicSystem::~GraphicSystem(){}
 
 void GraphicSystem::init() {
     buildProjectionMatrix();
-
-    fboRenderers.push_back(new ShadowRenderer());
-
     screenRenderers.push_back(new SkyboxRenderer());
     screenRenderers.push_back(new TerrainRenderer());
     screenRenderers.push_back(new EntityRenderer());
 
-    for(auto renderer : fboRenderers)
-        renderer->init();
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    auto shadowFbo = std::static_pointer_cast<ShadowFbo>(Factory::FBO->getFbo("shadow"));
-    shadowFbo->bindForReading(GL_TEXTURE0);
     for(auto renderer : screenRenderers)
         renderer->init();
-    shadowFbo->unbindTexture();
 }
 
 void GraphicSystem::renderStep(const float &interpolation, Scene* scene) {
@@ -38,21 +29,11 @@ void GraphicSystem::renderStep(const float &interpolation, Scene* scene) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     interpolationStep(interpolation, scene);
     buildViewMatrix(scene);
-
-    for(auto renderer : fboRenderers) {
-        renderer->render(transform, scene);
-    }
-
     for(auto renderer : screenRenderers)
         renderer->render(transform, scene);
 }
 
 void GraphicSystem::cleanup() {
-    for(auto renderer : fboRenderers) {
-        renderer->cleanup();
-        delete renderer;
-    }
-
     for(auto renderer : screenRenderers) {
         renderer->cleanup();
         delete renderer;
@@ -88,6 +69,7 @@ void GraphicSystem::interpolationStep(const float &interpolation, Scene *scene) 
     interpolateScales(interpolation, scene);
     interpolateCamera(interpolation, scene);
     interpolateLookAt(interpolation, scene);
+    interpolateExplosions(interpolation, scene);
 }
 
 void GraphicSystem::interpolatePositions(const float &interpolation,
@@ -115,6 +97,15 @@ void GraphicSystem::interpolateScales(const float &interpolation,
     for(auto e : scene->getEntities().withComponents<Scale>()) {
         Scale* s = e.getComponent<Scale>();
         s->interpolated = Util::lerp(s->lastScale, s->scale, interpolation);
+    }
+}
+
+void GraphicSystem::interpolateExplosions(const float &interpolation,
+                                          Scene *scene)
+{
+    for(auto e : scene->getEntities().withComponents<Explode>()) {
+        Explode* ex = e.getComponent<Explode>();
+        ex->interpolated = Util::lerp(ex->lastDistance, ex->distance, interpolation);
     }
 }
 

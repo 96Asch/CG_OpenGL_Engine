@@ -10,7 +10,7 @@ TerrainRenderer::TerrainRenderer() {}
 TerrainRenderer::~TerrainRenderer() {}
 
 void TerrainRenderer::init() {
-    shader.init("shader/terrain", "position", "uv", "normal");
+    shader.init("shader/terrain.vs", "shader/terrain.fs", {"position", "uv", "normal"});
     shader.addUniform(new UniformMat4("model"));
     shader.addUniform(new UniformMat4("mvp"));
     shader.addUniform(new UniformInt("numMaterials"));
@@ -18,7 +18,6 @@ void TerrainRenderer::init() {
     shader.addUniform(new UniformVec3("camPosition"));
     shader.addUniform(new UniformTerrainMaterials("materials"));
     shader.addUniform(new UniformSamplers("textures"));
-    shader.addUniform(new UniformSampler("shadowMap"));
     shader.addUniform(new UniformPLights("pointLight"));
     shader.addUniform(new UniformSLights("spotLight"));
     shader.addUniform(new UniformDLight("directionalLight"));
@@ -45,7 +44,6 @@ void TerrainRenderer::render(TransMat &mat, Scene *scene) {
 
         loadMatrices(terrain, mat);
         shader.getUniform<UniformFog>("fog")->load(scene->getFog());
-        shader.getUniform<UniformSampler>("shadowMap")->loadTexUnit(0);
         terrain.getVao()->bind(0,1,2);
         bindTextures(terrain);
         loadMaterials(terrain);

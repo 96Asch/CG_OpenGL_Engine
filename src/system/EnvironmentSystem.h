@@ -28,6 +28,8 @@ private:
                                 DirectionalLight &light,
                                 const float &angle);
 
+    void updateExplosions(const float &tps, Scene* scene);
+
 };
 
 #endif
