@@ -14,5 +14,6 @@
 #include "../src/component/PointLight.h"
 #include "../src/component/SpotLight.h"
 #include "../src/component/Explode.h"
+#include "../src/component/Destruct.h"
 
 #endif

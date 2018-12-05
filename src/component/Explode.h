@@ -7,19 +7,21 @@
 
 struct Explode : public IComponent<Explode> {
 
-    Explode(const bool &active, const float &speed)
+    Explode(const bool &active, const float &speed, const float &maxDistance)
             : active(active),
               speed(speed),
               distance(0.0f),
               lastDistance(0.0f),
-              interpolated(0.0f)
+              interpolated(0.0f),
+              maxDistance(maxDistance)
               {};
     Explode()
             : active(0),
               speed(0.0f),
               distance(0.0f),
               lastDistance(0.0f),
-              interpolated(0.0f)
+              interpolated(0.0f),
+              maxDistance(0.0f)
               {};
 
     Explode(std::ifstream &stream)
@@ -27,7 +29,8 @@ struct Explode : public IComponent<Explode> {
                  speed(0.0f),
                  distance(0.0f),
                  lastDistance(0.0f),
-                 interpolated(0.0f)
+                 interpolated(0.0f),
+                 maxDistance(0.0f)
     {
         if(!deserialize(stream))
              std::cerr << "ERR: Deserializing Explode Component" << std::endl;
@@ -57,6 +60,11 @@ struct Explode : public IComponent<Explode> {
                             this->active = std::stoi(value);
                         }
                     }
+                    else if (var == "maxDistance") {
+                        if(std::getline(ss, value, '=')) {
+                            this->maxDistance = std::stof(value);
+                        }
+                    }
                 }
             }
             else return false;
@@ -69,6 +77,7 @@ struct Explode : public IComponent<Explode> {
     bool active;
     float speed;
     float distance, lastDistance, interpolated;
+    float maxDistance;
 };
 
 #endif

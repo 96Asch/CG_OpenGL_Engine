@@ -30,6 +30,8 @@ private:
 
     void updateExplosions(const float &tps, Scene* scene);
 
+    void updateDestruct(const float &tps, Scene* scene);
+
 };
 
 #endif

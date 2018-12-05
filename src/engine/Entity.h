@@ -16,17 +16,25 @@ struct Entity{
     EntityId id;
     EntityFactory* ef;
 
+    template <typename T, typename... Args>
+    void addComponent(Args... args);
+
     template <typename T>
     T* getComponent();
 
     template <typename T>
     bool hasComponent();
 
-    void destroy();
+    inline void destroy();
 
 };
 
 #include "../factory/EntityFactory.h"
+
+template <typename T, typename... Args>
+void Entity::addComponent(Args... args) {
+    ef->addComponent(id, T(args...));
+}
 
 template <typename T>
 T* Entity::getComponent() {

@@ -20,6 +20,7 @@ void EnvironmentSystem::init() {
 void EnvironmentSystem::updateStep(const float &tps, Scene* scene) {
     updateDirectionalLight(tps, scene->getDirectional(), scene->getSky().rotation);
     updateSky(tps, scene->getSky());
+    updateDestruct(tps, scene);
     updateExplosions(tps, scene);
 }
 
@@ -49,9 +50,20 @@ void EnvironmentSystem::updateExplosions(const float &tps, Scene* scene) {
         if(ex->active) {
             ex->lastDistance = ex->distance;
             ex->distance += ex->speed * tps;
+            if(ex->distance > ex->maxDistance &&
+                !e.hasComponent<Destruct>()) {
+                std::cout << "destruct" << std::endl;
+                e.addComponent<Destruct>(5.0f);
+            }
         }
-        if(ex->distance > 20.0f) {
-            std::cout << "destroyed: " << e  << std::endl;
+    }
+}
+
+void EnvironmentSystem::updateDestruct(const float &tps, Scene* scene) {
+    for(auto e : scene->getEntities().withComponents<Destruct>()) {
+        Destruct* d = e.getComponent<Destruct>();
+        d->aliveTime -= tps;
+        if(d->aliveTime < 0.0f) {
             e.destroy();
         }
     }

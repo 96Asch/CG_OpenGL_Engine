@@ -210,7 +210,7 @@
   }
   [material]
   {
-    source=texture/ice.png
+    source=texture/grassy3.png
     diffuse=0.0,0.0,0.0,1.0
     specularPower=10.0
     reflectance=5.5
@@ -219,6 +219,7 @@
   {
     speed=0.5
     active=1
+    maxDistance=20.0
   }
   [position]
   {

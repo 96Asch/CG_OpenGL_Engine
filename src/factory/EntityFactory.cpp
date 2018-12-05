@@ -59,6 +59,8 @@ bool EntityFactory::deserialize(std::ifstream &stream) {
                 addComponent(newEnt.id, Motion(stream));
             else if (comp == "[explode]")
                 addComponent(newEnt.id, Explode(stream));
+            else if (comp == "[destruct]")
+                addComponent(newEnt.id, Destruct(stream));
             else if (comp == "[lookat]")
                 addComponent(newEnt.id, LookAt(stream));
             else if (comp == "[pointlight]")
