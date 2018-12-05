@@ -6,6 +6,7 @@
 #include "Window.h"
 #include "../factory/TextureFactory.h"
 #include "../factory/VaoFactory.h"
+#include "../factory/FboFactory.h"
 
 class System;
 class Scene;
@@ -40,6 +41,7 @@ private:
 
     Factory::TextureFactory t;
     Factory::VaoFactory v;
+    Factory::FboFactory f;
 
     Input::InputHandler input;
 };

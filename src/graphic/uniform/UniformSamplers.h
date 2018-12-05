@@ -23,9 +23,9 @@ struct UniformSamplers : public Uniform {
             sampler->storeUniformLocation(id);
     };
 
-    void loadTexUnits() {
-        for(unsigned i = 0; i < MAX_SAMPLERS; ++i) {
-            samplers[i]->loadTexUnit(i);
+    void loadTexUnits(const unsigned &unitStart) {
+        for(unsigned i = unitStart; i < unitStart + MAX_SAMPLERS; ++i) {
+            samplers[i - unitStart]->loadTexUnit(i);
         }
     };
 

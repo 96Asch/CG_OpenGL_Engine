@@ -1,54 +1,24 @@
 #ifndef FBO_H_
 #define FBO_H_
 
-#include <memory>
-
 #include "Global.h"
 
 class Fbo {
 
 public:
 
-    Fbo(const GLuint &id,
-        const unsigned &colorUnit,
-        const unsigned &width,
-        const unsigned &height);
+    Fbo() {};
 
-    ~Fbo();
+    virtual ~Fbo() {};
 
-    static std::shared_ptr<Fbo> create(const unsigned &colorUnit,
-                                       const unsigned &width,
-                                       const unsigned &height);
+    virtual bool init(const unsigned &width, const unsigned &height) = 0;
 
-    void bind(const unsigned &width, const unsigned &height);
+    virtual void remove() = 0;
 
-    void unbind();
-
-    void remove();
-
-    GLuint getColorTexture();
-
-    GLuint getDepthTexture();
-
-private:
+protected:
 
     GLuint id;
-    GLuint depthBuffer;
-
-    GLuint depthTexture;
-    GLuint colorTexture;
-
-    void initTexture(const unsigned &colorUnit,
-                     const unsigned &width,
-                     const unsigned &height);
-
-    void initDepthTexture(const unsigned &width,
-                          const unsigned &height);
-
-    void initDepthBuffer(const unsigned &width,
-                         const unsigned &height);
 
 };
-
 
 #endif

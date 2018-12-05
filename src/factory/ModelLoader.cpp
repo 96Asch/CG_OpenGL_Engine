@@ -38,6 +38,7 @@ namespace Factory {
         else {
             std::cerr << "Loading object has failed!" << std::endl;
         }
+        std::cout << "succes" << std::endl;
         VAO->createVao(file, data.indices, data.vertices, data.textures, data.normals);
     }
 

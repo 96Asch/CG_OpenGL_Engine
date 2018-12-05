@@ -1,7 +1,4 @@
 #include <glm/mat4x4.hpp>
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
-#include <vector>
 
 #include "EntityRenderer.h"
 #include "Uniforms.h"
@@ -21,6 +18,7 @@ void EntityRenderer::init() {
     shader.addUniform(new UniformVec3("camPosition"));
     shader.addUniform(new UniformMaterial("material"));
     shader.addUniform(new UniformSampler("texture"));
+    shader.addUniform(new UniformSampler("shadowMap"));
     shader.addUniform(new UniformPLights("pointLight"));
     shader.addUniform(new UniformSLights("spotLight"));
     shader.addUniform(new UniformDLight("directionalLight"));
@@ -28,24 +26,22 @@ void EntityRenderer::init() {
     shader.storeUniformLocations();
 }
 
-void EntityRenderer::preRender(const float &,
-                               TransMat &,
-                               Scene* ) {
+void EntityRenderer::preRender(TransMat &, Scene* ) {
 
 
 }
 
-void EntityRenderer::render(const float &interpolation,
-                            TransMat &matrices,
-                            Scene *scene) {
-    GLUtil::cullBackFaces(true);
+void EntityRenderer::render(TransMat &matrices, Scene *scene) {
+    // GLUtil::cullBackFaces(true);
+    GLUtil::enableDepthTesting(true);
     shader.start();
     loadSpotLights(scene);
     loadPointLights(scene);
     loadDirectionalLight(scene);
     loadCamPosition(scene);
     shader.getUniform<UniformFog>("fog")->load(scene->getFog());
-    shader.getUniform<UniformSampler>("texture")->loadTexUnit(0);
+    shader.getUniform<UniformSampler>("shadowMap")->loadTexUnit(0);
+    shader.getUniform<UniformSampler>("texture")->loadTexUnit(1);
     shader.getUniform<UniformVec3>("ambientLight")->load(scene->getAmbient());
     for(auto e : scene->getEntities().withComponents<Model, Material, Position, Rotation, Scale>()) {
         Model* mod = e.getComponent<Model>();
@@ -64,10 +60,11 @@ void EntityRenderer::render(const float &interpolation,
         mod->getVao()->unbind(0,1,2);
     }
     shader.stop();
-    GLUtil::cullBackFaces(false);
+    // GLUtil::cullBackFaces(false);
+    GLUtil::enableDepthTesting(false);
 };
 
-void EntityRenderer::postRender(const float &, Scene*) {
+void EntityRenderer::postRender(Scene*) {
 
 }
 
@@ -85,7 +82,7 @@ void EntityRenderer::loadCamPosition(Scene* scene) {
 
 
 void EntityRenderer::bindTexture(const Material* m) {
-    glActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, m->id);
 }
 

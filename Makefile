@@ -7,10 +7,10 @@ SOURCES = $(wildcard $(SRC)/*.cpp) $(wildcard $(SRC)/*/*.cpp) $(wildcard $(SRC)/
 OBJS =	$(addprefix $(OBJDIR)/, $(patsubst $(SRC)/%.cpp, %.o, $(SOURCES)))
 SRC = src
 INC = -Iinclude/ -I$(SRC)/global/ -Ideps/glfw/include
-STATIC = -lglfw
 DEP = $(wildcard dep/*.c)
 DEPOBJS = $(addprefix $(OBJDIR)/, $(DEP:.c=.o))
-LDFLAGS = -lGL -ldl
+LIBS = -Ldep
+LDFLAGS = -lGL -ldl -lglfw
 PRECOMPILE = include/Global.h include/Uniforms.h include/Components.h \
   					 include/Systems.h
 PRECOMPILED = $(PRECOMPILE:.h=.h.gch)
@@ -39,7 +39,7 @@ $(DEPOBJS): $(DEP)
 
 $(OBJDIR)/%.o:	$(SRC)/%.cpp
 	@echo Building $@
-	@$(CXX) $(CFLAGS) -c $(INC) $< -o $@ $(LDFLAGS)
+	@$(CXX) $(CFLAGS) -c $(INC) $(LIBS) $< -o $@ $(LDFLAGS)
 
 
 $(TARGET):	$(DEPOBJS) $(OBJS)

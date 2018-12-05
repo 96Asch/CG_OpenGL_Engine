@@ -18,9 +18,7 @@ public:
 
     virtual void init() override;
 
-    virtual void render(const float &interpolation,
-                        TransMat &transform,
-                        Scene *scene) override;
+    virtual void render(TransMat &transform, Scene *scene) override;
 
     virtual void cleanup() override;
 
@@ -28,11 +26,9 @@ private:
 
     void setShader();
 
-    virtual void preRender(const float &interpolation,
-                           TransMat &transform,
-                           Scene *scene) override;
+    virtual void preRender(TransMat &transform, Scene *scene) override;
 
-    virtual void postRender(const float &interpolation, Scene *scene) override;
+    virtual void postRender(Scene *scene) override;
 
     void bindTexture(const Material* m);
 

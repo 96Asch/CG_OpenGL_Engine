@@ -3,6 +3,8 @@
 #include "Renderers.h"
 #include "Global.h"
 #include "../engine/Scene.h"
+#include "../factory/FboFactory.h"
+#include "../graphic/globjects/ShadowFbo.h"
 #include "Components.h"
 
 GraphicSystem::GraphicSystem() : System() {}
@@ -10,36 +12,48 @@ GraphicSystem::GraphicSystem() : System() {}
 GraphicSystem::~GraphicSystem(){}
 
 void GraphicSystem::init() {
-    renderers.push_back(new TerrainRenderer());
-    renderers.push_back(new SkyboxRenderer());
-    renderers.push_back(new EntityRenderer());
     buildProjectionMatrix();
 
-    for(auto renderer : renderers)
+    fboRenderers.push_back(new ShadowRenderer());
+
+    screenRenderers.push_back(new SkyboxRenderer());
+    screenRenderers.push_back(new TerrainRenderer());
+    screenRenderers.push_back(new EntityRenderer());
+
+    for(auto renderer : fboRenderers)
         renderer->init();
 
-    GLUtil::enableDepthTesting(true);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    auto shadowFbo = std::static_pointer_cast<ShadowFbo>(Factory::FBO->getFbo("shadow"));
+    shadowFbo->bindForReading(GL_TEXTURE0);
+    for(auto renderer : screenRenderers)
+        renderer->init();
+    shadowFbo->unbindTexture();
 }
 
 void GraphicSystem::renderStep(const float &interpolation, Scene* scene) {
     const glm::vec3& color = scene->getFog().color;
     glClearColor(color.x, color.y, color.z, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    interpolatePositions(interpolation, scene);
-    interpolateRotations(interpolation, scene);
-    interpolateScales(interpolation, scene);
-    interpolateCamera(interpolation, scene);
-    interpolateLookAt(interpolation, scene);
-
+    interpolationStep(interpolation, scene);
     buildViewMatrix(scene);
 
-    for(auto renderer : renderers)
-        renderer->render(interpolation, transform, scene);
+    for(auto renderer : fboRenderers) {
+        renderer->render(transform, scene);
+    }
+
+    for(auto renderer : screenRenderers)
+        renderer->render(transform, scene);
 }
 
 void GraphicSystem::cleanup() {
-    for(auto renderer : renderers) {
+    for(auto renderer : fboRenderers) {
+        renderer->cleanup();
+        delete renderer;
+    }
+
+    for(auto renderer : screenRenderers) {
         renderer->cleanup();
         delete renderer;
     }
@@ -66,6 +80,14 @@ void GraphicSystem::buildProjectionMatrix() {
                                             Global::nearPlane,
                                             Global::farPlane
                                            );
+}
+
+void GraphicSystem::interpolationStep(const float &interpolation, Scene *scene) {
+    interpolatePositions(interpolation, scene);
+    interpolateRotations(interpolation, scene);
+    interpolateScales(interpolation, scene);
+    interpolateCamera(interpolation, scene);
+    interpolateLookAt(interpolation, scene);
 }
 
 void GraphicSystem::interpolatePositions(const float &interpolation,

@@ -27,13 +27,16 @@ public:
 
 private:
 
-    std::vector<Renderer*> renderers;
+    std::vector<Renderer*> fboRenderers;
+    std::vector<Renderer*> screenRenderers;
 
     TransMat transform;
 
     void buildViewMatrix(Scene* scene);
 
     void buildProjectionMatrix();
+
+    void interpolationStep(const float &interpolation, Scene *scene);
 
     void interpolatePositions(const float &interpolation, Scene *scene);
 

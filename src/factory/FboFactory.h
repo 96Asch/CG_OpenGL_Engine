@@ -1,5 +1,5 @@
-#ifndef FBOLOADER_H_
-#define FBOLOADER_H_
+#ifndef FBOFACTORY_H_
+#define FBOFACTORY_H_
 
 #include <map>
 #include <memory>
@@ -21,21 +21,28 @@ namespace Factory {
 
         ~FboFactory();
 
-        void createFbo(const std::string &id,
-                       const unsigned &colorUnit,
-                       const unsigned &width,
-                       const unsigned &height);
+        template <typename T, typename... Args>
+        std::shared_ptr<Fbo> createFbo(const std::string &id, Args... args);
 
         void removeFbo(const std::string &id);
 
-        std::shared_ptr<Fbo> getFbo(const std::string &id);
+        std::shared_ptr<Fbo> getFbo(const std::string &source);
 
-        bool isLoaded(const std::string &id) const;
+        bool isLoaded(const std::string &source) const;
 
     private:
 
         std::map<std::string, std::shared_ptr<Fbo>> fbos;
 
+    };
+
+    template <typename T, typename... Args>
+    std::shared_ptr<Fbo> FboFactory::createFbo(const std::string &id,
+                                               Args... args)
+    {
+        if(!isLoaded(id))
+            fbos.insert({id, std::make_shared<T>(args...)});
+        return fbos[id];
     };
 
 };

@@ -18,6 +18,7 @@ void TerrainRenderer::init() {
     shader.addUniform(new UniformVec3("camPosition"));
     shader.addUniform(new UniformTerrainMaterials("materials"));
     shader.addUniform(new UniformSamplers("textures"));
+    shader.addUniform(new UniformSampler("shadowMap"));
     shader.addUniform(new UniformPLights("pointLight"));
     shader.addUniform(new UniformSLights("spotLight"));
     shader.addUniform(new UniformDLight("directionalLight"));
@@ -25,18 +26,16 @@ void TerrainRenderer::init() {
     shader.storeUniformLocations();
 
     shader.start();
-    shader.getUniform<UniformSamplers>("textures")->loadTexUnits();
+    shader.getUniform<UniformSamplers>("textures")->loadTexUnits(1);
     shader.stop();
 }
 
-void TerrainRenderer::render(const float &interpolation,
-                             TransMat &mat,
-                             Scene *scene)
-{
+void TerrainRenderer::render(TransMat &mat, Scene *scene) {
     Terrain &terrain = scene->getTerrain();
     if(terrain.active) {
-        preRender(interpolation, mat, scene);
-
+        GLUtil::cullBackFaces(true);
+        GLUtil::enableDepthTesting(true);
+        shader.start();
         shader.getUniform<UniformVec3>("ambientLight")->load(scene->getAmbient());
 
         loadDirectionalLight(scene);
@@ -46,15 +45,16 @@ void TerrainRenderer::render(const float &interpolation,
 
         loadMatrices(terrain, mat);
         shader.getUniform<UniformFog>("fog")->load(scene->getFog());
-
+        shader.getUniform<UniformSampler>("shadowMap")->loadTexUnit(0);
         terrain.getVao()->bind(0,1,2);
         bindTextures(terrain);
         loadMaterials(terrain);
         glDrawElements(GL_TRIANGLES, terrain.getVao()->getIndexCount(), GL_UNSIGNED_INT, 0);
         unbindTextures(terrain);
         terrain.getVao()->unbind(0,1,2);
-
-        postRender(interpolation, scene);
+        shader.stop();
+        GLUtil::cullBackFaces(false);
+        GLUtil::enableDepthTesting(false);
     }
 }
 
@@ -63,16 +63,13 @@ void TerrainRenderer::cleanup() {
 }
 
 
-void TerrainRenderer::preRender(const float &,
-                                TransMat &mat,
-                                Scene *scene)
-{
-    shader.start();
+void TerrainRenderer::preRender(TransMat &, Scene *) {
+
 
 }
 
-void TerrainRenderer::postRender(const float &, Scene *) {
-    shader.stop();
+void TerrainRenderer::postRender(Scene *) {
+
 }
 
 void TerrainRenderer::loadCamPosition(Scene* scene) {
@@ -85,17 +82,19 @@ void TerrainRenderer::loadCamPosition(Scene* scene) {
 
 
 void TerrainRenderer::bindTextures(const Terrain &terrain) {
-    glActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, terrain.blendMap);
     for(unsigned i = 0; i < terrain.numMaterials; ++i) {
-        glActiveTexture(GL_TEXTURE1 + i);
+        glActiveTexture(GL_TEXTURE2 + i);
         glBindTexture(GL_TEXTURE_2D, terrain.materials[i].id);
     }
 }
 
 void TerrainRenderer::unbindTextures(const Terrain &terrain) {
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, 0);
     for(unsigned i = 0; i < terrain.numMaterials; ++i) {
-        glActiveTexture(GL_TEXTURE0 + i);
+        glActiveTexture(GL_TEXTURE1 + i);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 }

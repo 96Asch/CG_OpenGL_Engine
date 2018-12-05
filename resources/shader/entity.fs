@@ -50,6 +50,7 @@ uniform struct Fog {
 
 uniform vec3 ambientLight;
 uniform sampler2D texture;
+uniform sampler2D shadowMap;
 uniform vec3 camPosition;
 
 float specularPower = 0;

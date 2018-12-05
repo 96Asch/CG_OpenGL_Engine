@@ -52,6 +52,7 @@ uniform struct Fog {
 uniform int numMaterials;
 uniform vec3 ambientLight;
 uniform sampler2D textures[MAX_TEXTURES];
+uniform sampler2D shadowMap;
 uniform vec3 camPosition;
 
 float reflectance = 0;

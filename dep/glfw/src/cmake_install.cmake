@@ -1,4 +1,4 @@
-# Install script for directory: /home/asch/Documents/School/Year3/CG/CG_Project/dep/glfw-3.2.1/src
+# Install script for directory: /home/asch/Downloads/glfw-3.2.1/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -38,6 +38,6 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "/home/asch/Documents/School/Year3/CG/CG_Project/dep/glfw-3.2.1/src/libglfw3.a")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "/home/asch/Downloads/glfw-3.2.1/src/libglfw3.a")
 endif()
 

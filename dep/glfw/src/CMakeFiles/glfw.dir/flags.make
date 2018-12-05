@@ -6,5 +6,5 @@ C_FLAGS = -fPIC   -Wall
 
 C_DEFINES = -D_GLFW_USE_CONFIG_H
 
-C_INCLUDES = -I/home/asch/Documents/School/Year3/CG/CG_Project/dep/glfw-3.2.1/include -I/home/asch/Documents/School/Year3/CG/CG_Project/dep/glfw-3.2.1/src 
+C_INCLUDES = -I/home/asch/Downloads/glfw-3.2.1/include -I/home/asch/Downloads/glfw-3.2.1/src 
 

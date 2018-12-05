@@ -20,17 +20,11 @@ void SkyboxRenderer::init() {
     shader.storeUniformLocations();
 }
 
-void SkyboxRenderer::preRender(const float &,
-                               TransMat &,
-                               Scene *)
-{
+void SkyboxRenderer::preRender(TransMat &, Scene *) {
 
 }
 
-void SkyboxRenderer::render(const float &interpolation,
-                            TransMat &mat,
-                            Scene* scene)
-{
+void SkyboxRenderer::render(TransMat &mat, Scene* scene) {
     Skybox &box = scene->getSky();
     if(box.active) {
         GLUtil::cullFrontFaces(true);
@@ -55,7 +49,7 @@ void SkyboxRenderer::render(const float &interpolation,
     }
 }
 
-void SkyboxRenderer::postRender(const float &, Scene *) {
+void SkyboxRenderer::postRender(Scene *) {
 
 }
 

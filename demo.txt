@@ -2,7 +2,7 @@
 [skybox]
 {
   size=400
-  rotationSpeed=0.5
+  rotationSpeed=0.05
   source=texture/skybox/sky
   ext=.png
 }
@@ -11,11 +11,11 @@
 {
   [baselight]
   {
-    color=1.0,1.0,1.0
+    color=0.0,1.0,1.0
     intensity=0.8
   }
-  
-  direction=1.0,1.0,1.0
+
+  direction=1.0,1.0,0.0
 }
 
 [terrain]
@@ -29,33 +29,29 @@
   [material]
   {
     source=texture/ice.png
-    ambient=0.0,0.0,0.0,1.0
     diffuse=0.0,0.0,0.0,1.0
-    specular=0.0,0.5,0.5,1.0
+    specularPower=10.0
     reflectance=1.0
   }
   [material]
   {
     source=texture/mud.png
-    ambient=0.0,0.0,0.0,1.0
     diffuse=0.0,0.0,0.0,1.0
-    specular=0.0,0.5,0.5,1.0
+    specularPower=10.0
     reflectance=0.5
   }
   [material]
   {
     source=texture/ice.png
-    ambient=0.0,0.0,0.0,1.0
     diffuse=0.0,0.0,0.0,1.0
-    specular=0.0,0.5,0.5,1.0
+    specularPower=10.0
     reflectance=1.5
   }
   [material]
   {
     source=texture/path.png
-    ambient=0.0,0.0,0.0,1.0
     diffuse=0.0,0.0,0.0,1.0
-    specular=0.0,0.5,0.5,1.0
+    specularPower=10.0
     reflectance=1.5
   }
 }
@@ -64,7 +60,7 @@
 [fog]
 {
   color=0.15,0.14,0.25
-  density=0.01
+  density=0.4
   gradient=0.2
 }
 
@@ -98,6 +94,33 @@
     {
       [baselight]
       {
+        color=5.0,5.0,5.0
+        intensity=6.8
+      }
+      attenuation=0.0,0.4,1.0
+      range=30.0
+    }
+    cutoff=0.9
+  }
+  [lookat]
+  {
+    direction=0.0,0.0,1.0
+  }
+}
+
+[entity]
+{
+  [position]
+  {
+    position=0.0,3.0,0.0
+  }
+
+  [spotlight]
+  {
+    [pointlight]
+    {
+      [baselight]
+      {
         color=0.0,1.0,0.0
         intensity=9.8
       }
@@ -108,7 +131,7 @@
   }
   [lookat]
   {
-    direction=0.0,0.0,1.0
+    direction=0.0,-1.0,1.0
   }
 }
 
@@ -122,11 +145,30 @@
       intensity=3.8
     }
     attenuation=0.0,0.0,0.4
-    range=10.0
+    range=20.0
   }
   [position]
   {
     position=10.0,2.0,10.0
+  }
+
+}
+
+[entity]
+{
+  [pointlight]
+  {
+    [baselight]
+    {
+      color=1.0,1.0,0.0
+      intensity=3.8
+    }
+    attenuation=0.0,0.0,0.4
+    range=10.0
+  }
+  [position]
+  {
+    position=-10.0,2.0,-10.0
   }
 
 }
@@ -141,9 +183,8 @@
   [material]
   {
     source=texture/path.png
-    ambient=0.0,0.0,0.0,1.0
     diffuse=0.0,0.0,0.0,1.0
-    specular=0.0,0.5,0.5,1.0
+    specularPower=10.0
     reflectance=2.5
   }
   [position]
@@ -153,6 +194,34 @@
   [rotation]
   {
     rotation=0.0,0.0,45.0
+  }
+  [scale]
+  {
+    scale=1.0,1.0,1.0
+  }
+}
+
+
+[entity]
+{
+  [model]
+  {
+    source=models/grass.obj
+  }
+  [material]
+  {
+    source=texture/ice.png
+    diffuse=0.0,0.0,0.0,1.0
+    specularPower=10.0
+    reflectance=5.5
+  }
+  [position]
+  {
+    position=10.0,0.10,0.0
+  }
+  [rotation]
+  {
+    rotation=0.0,0.0,0.0
   }
   [scale]
   {

@@ -17,8 +17,7 @@ public:
 
     virtual void init() = 0;
 
-    virtual void render(const float &interpolation,
-                        TransMat &transform,
+    virtual void render(TransMat &transform,
                         Scene *scene) = 0;
 
     virtual void cleanup() = 0;
@@ -27,11 +26,9 @@ protected:
 
     Shader shader;
 
-    virtual void preRender(const float &interpolation,
-                           TransMat &transform,
-                           Scene *scene) = 0;
+    virtual void preRender(TransMat &transform, Scene *scene) = 0;
 
-    virtual void postRender(const float &interpolation, Scene *scene) = 0;
+    virtual void postRender(Scene *scene) = 0;
 
 };
 
