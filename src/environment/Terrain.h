@@ -10,11 +10,54 @@
 
 #define MAX_TEXTURES 4
 
+struct TerrainTexture {
+    std::string texture = "texture/ice.png";
+    float specularPower = 0.0f, reflectance = 0.0f;
+
+    void deserialize(std::ifstream &stream) {
+        bool firstAcc(false), lastAcc(false), textureFound(false);
+        do {
+            std::string buffer;
+            std::string var;
+            std::string value;
+            stream >> std::ws;
+            if(std::getline(stream, buffer)) {
+                std::istringstream ss(buffer);
+                if(!firstAcc && buffer == "{")
+                    firstAcc = true;
+                else if (firstAcc && buffer == "}")
+                    lastAcc = true;
+                else if(std::getline(ss, var, '=')) {
+                    if (var == "texture") {
+                        if(std::getline(ss, value, '=')) {
+                            this->texture = value;
+                            Factory::TEXTURE->createTexture(value);
+                            textureFound = true;
+                        }
+                    }
+                    else if (var == "specularPower") {
+                        if(std::getline(ss, value, '=')) {
+                            this->specularPower = std::stof(value);
+                        }
+                    }
+                    else if (var == "reflectance") {
+                        if(std::getline(ss, value, '=')) {
+                            this->reflectance = std::stof(value);
+
+                        }
+                    }
+                }
+            }
+        } while(stream && firstAcc && !lastAcc);
+        if(!textureFound)
+            Factory::TEXTURE->createTexture(texture);
+    };
+};
+
 struct Terrain : public Serializable{
 
     Terrain()
-            : active(false),
-              numMaterials(0),
+            : numMaterials(0),
               hMapSource(""),
               bMapSource(""),
               size(0.0f),
@@ -22,30 +65,8 @@ struct Terrain : public Serializable{
               position(glm::vec2(0.0f))
     {};
 
-    Terrain(const std::string &hMapSource,
-            const std::string &blendMap,
-            const std::vector<std::string> &textures,
-            const glm::vec2 &position,
-            const float &size,
-            const float &maxHeight)
-            : active(false),
-              numMaterials(textures.size()),
-              hMapSource(hMapSource),
-              bMapSource(blendMap),
-              size(size),
-              position(position * size)
-    {
-        if(size > 0) {
-            Factory::generateTerrain(hMapSource, size, maxHeight);
-            active = true;
-        }
-        for(unsigned i = 0; i < numMaterials; ++i)
-            materials[i] = Material(textures.at(i));
-    };
-
     Terrain(std::ifstream &stream)
-            : active(false),
-              numMaterials(0),
+            : numMaterials(0),
               hMapSource(""),
               bMapSource(""),
               size(100.0f),
@@ -59,7 +80,7 @@ struct Terrain : public Serializable{
     virtual void serialize(std::ofstream &) override {};
 
     virtual bool deserialize(std::ifstream &stream) override {
-        bool firstAcc(false), lastAcc(false), ret(true);
+        bool firstAcc(false), lastAcc(false);
         unsigned counter(0);
         do {
             std::string buffer;
@@ -88,7 +109,6 @@ struct Terrain : public Serializable{
                     else if (var == "size") {
                         if(std::getline(ss, value, '=')) {
                             this->size = std::stof(value);
-                            counter++;
                         }
                     }
                     else if (var == "maxHeight") {
@@ -102,12 +122,11 @@ struct Terrain : public Serializable{
                             sscanf(value.c_str(), "%f,%f", &v1, &v2);
                             this->position = glm::vec2(v1, v2);
                             this->position *= size;
-                            counter++;
                         }
                     }
-                    else if (var == "[material]") {
+                    else if (var == "[texture]") {
                         if(numMaterials < MAX_TEXTURES) {
-                            ret &= materials[numMaterials].deserialize(stream);
+                            textures[numMaterials].deserialize(stream);
                             numMaterials++;
                         }
                     }
@@ -115,23 +134,25 @@ struct Terrain : public Serializable{
             }
             else return false;
         } while(stream && firstAcc && !lastAcc);
-        if(counter == 3) {
-            active = true;
-            Factory::generateTerrain(hMapSource, size, maxHeight);
-        }
-        return true & ret;
+        Factory::generateTerrain(hMapSource, size, maxHeight);
+        return true;
     };
+
+    GLuint getTexture(const unsigned &index) const {
+        if(index < numMaterials)
+            return Factory::TEXTURE->getTexture(textures[index].texture);
+        return 0;
+    }
 
 
     std::shared_ptr<Vao> getVao() {
        return Factory::VAO->getVao(hMapSource);
     };
 
-    bool active;
     GLuint blendMap;
     unsigned numMaterials;
 
-    Material materials[4];
+    TerrainTexture textures[MAX_TEXTURES];
     std::string hMapSource;
     std::string bMapSource;
     float size;

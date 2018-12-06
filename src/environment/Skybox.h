@@ -17,7 +17,7 @@ struct Skybox : public Serializable {
               active(false),
               size(400.0f),
               rotationSpeed(0.5f),
-              source("")
+              texture("")
     { };
 
     Skybox(std::ifstream &stream)
@@ -26,7 +26,7 @@ struct Skybox : public Serializable {
               active(false),
               size(400.0f),
               rotationSpeed(0.5f),
-              source("")
+              texture("skybox/sky")
     {
 
         if(!deserialize(stream))
@@ -59,9 +59,9 @@ struct Skybox : public Serializable {
                             this->rotationSpeed = std::stof(value);
                         }
                     }
-                    else if (var == "source") {
+                    else if (var == "texture") {
                         if(std::getline(ss, value, '=')) {
-                            this->source = value;
+                            this->texture = value;
                         }
                     }
                     else if (var == "ext") {
@@ -73,12 +73,12 @@ struct Skybox : public Serializable {
             }
             else return false;
         } while(stream && firstAcc && !lastAcc);
-        if(!source.empty() && !ext.empty()) {
+        if(!texture.empty() && !ext.empty()) {
             std::vector<std::string> files;
             for(unsigned i = 1; i <= FACES; i++) {
-                files.push_back(source + '_' + std::to_string(i) + ext);
+                files.push_back(texture + '_' + std::to_string(i) + ext);
             }
-            texture = Factory::TEXTURE->createCubeMapTexture(files);
+            Factory::TEXTURE->createCubeMapTexture(files);
             this->active = true;
         }
         else {
@@ -88,6 +88,10 @@ struct Skybox : public Serializable {
         return true;
     };
 
+    GLuint getTexture() {
+        return Factory::TEXTURE->getTexture(texture + "_1" + ext);
+    }
+
     std::shared_ptr<Vao> getVao() {
        return Factory::VAO->getVao(ID);
     };
@@ -95,11 +99,10 @@ struct Skybox : public Serializable {
     const unsigned FACES;
     float rotation;
     float active;
-    GLuint texture;
 
     float size;
     float rotationSpeed;
-    std::string source;
+    std::string texture;
     std::string ext;
 
 };

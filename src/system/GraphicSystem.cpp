@@ -4,7 +4,6 @@
 #include "Global.h"
 #include "../engine/Scene.h"
 #include "../factory/FboFactory.h"
-#include "../graphic/globjects/ShadowFbo.h"
 #include "Components.h"
 
 GraphicSystem::GraphicSystem() : System() {}

@@ -16,7 +16,7 @@ void TerrainRenderer::init() {
     shader.addUniform(new UniformInt("numMaterials"));
     shader.addUniform(new UniformVec3("ambientLight"));
     shader.addUniform(new UniformVec3("camPosition"));
-    shader.addUniform(new UniformTerrainMaterials("materials"));
+    shader.addUniform(new UniformSpeculars("specular", 4));
     shader.addUniform(new UniformSamplers("textures"));
     shader.addUniform(new UniformPLights("pointLight"));
     shader.addUniform(new UniformSLights("spotLight"));
@@ -31,29 +31,27 @@ void TerrainRenderer::init() {
 
 void TerrainRenderer::render(TransMat &mat, Scene *scene) {
     Terrain &terrain = scene->getTerrain();
-    if(terrain.active) {
-        GLUtil::cullBackFaces(true);
-        GLUtil::enableDepthTesting(true);
-        shader.start();
-        shader.getUniform<UniformVec3>("ambientLight")->load(scene->getAmbient());
+    GLUtil::cullBackFaces(true);
+    GLUtil::enableDepthTesting(true);
+    shader.start();
+    shader.getUniform<UniformVec3>("ambientLight")->load(scene->getAmbient());
 
-        loadDirectionalLight(scene);
-        loadPointLights(scene);
-        loadSpotLights(scene);
-        loadCamPosition(scene);
+    loadDirectionalLight(scene);
+    loadPointLights(scene);
+    loadSpotLights(scene);
+    loadCamPosition(scene);
 
-        loadMatrices(terrain, mat);
-        shader.getUniform<UniformFog>("fog")->load(scene->getFog());
-        terrain.getVao()->bind(0,1,2);
-        bindTextures(terrain);
-        loadMaterials(terrain);
-        glDrawElements(GL_TRIANGLES, terrain.getVao()->getIndexCount(), GL_UNSIGNED_INT, 0);
-        unbindTextures(terrain);
-        terrain.getVao()->unbind(0,1,2);
-        shader.stop();
-        GLUtil::cullBackFaces(false);
-        GLUtil::enableDepthTesting(false);
-    }
+    loadMatrices(terrain, mat);
+    shader.getUniform<UniformFog>("fog")->load(scene->getFog());
+    terrain.getVao()->bind(0,1,2);
+    bindTextures(terrain);
+    loadMaterials(terrain);
+    glDrawElements(GL_TRIANGLES, terrain.getVao()->getIndexCount(), GL_UNSIGNED_INT, 0);
+    unbindTextures(terrain);
+    terrain.getVao()->unbind(0,1,2);
+    shader.stop();
+    GLUtil::cullBackFaces(false);
+    GLUtil::enableDepthTesting(false);
 }
 
 void TerrainRenderer::cleanup() {
@@ -84,7 +82,7 @@ void TerrainRenderer::bindTextures(const Terrain &terrain) {
     glBindTexture(GL_TEXTURE_2D, terrain.blendMap);
     for(unsigned i = 0; i < terrain.numMaterials; ++i) {
         glActiveTexture(GL_TEXTURE2 + i);
-        glBindTexture(GL_TEXTURE_2D, terrain.materials[i].id);
+        glBindTexture(GL_TEXTURE_2D, terrain.getTexture(i));
     }
 }
 
@@ -100,7 +98,9 @@ void TerrainRenderer::unbindTextures(const Terrain &terrain) {
 void TerrainRenderer::loadMaterials(const Terrain &terrain) {
     shader.getUniform<UniformInt>("numMaterials")->load(terrain.numMaterials);
     for(unsigned i = 0; i < terrain.numMaterials; ++i) {
-        shader.getUniform<UniformTerrainMaterials>("materials")->load(terrain.materials[i], i);
+        shader.getUniform<UniformSpeculars>("specular")
+                ->load(terrain.textures[i].specularPower,
+                        terrain.textures[i].reflectance, i);
     }
 }
 

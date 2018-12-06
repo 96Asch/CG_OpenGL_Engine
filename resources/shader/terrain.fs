@@ -37,12 +37,10 @@ uniform struct SpotLight {
   float cutoff;
 } spotLight[MAX_SPOT_LIGHTS];
 
-uniform struct Material {
-  vec4 diffuse;
+uniform struct Specular {
   float specularPower;
-  float hasTexture;
   float reflectance;
-} materials[MAX_TEXTURES];
+} specular[MAX_TEXTURES-1];
 
 uniform struct Fog {
 	float isActive;
@@ -75,12 +73,7 @@ vec4 calcTextureColors(vec2 texCoords) {
                                                          vec4(0));
   vec2 tiled = texCoords * tiling;
   for(int i = 0; i < numMaterials; i++) {
-    if(materials[i].hasTexture == 1) {
       diffuse[i] = texture2D(textures[i+1], tiled);
-    }
-    else {
-      diffuse[i] = materials[i].diffuse;
-    }
   }
 
   vec4 blendmapCol = texture2D(textures[0], texCoords);
@@ -90,15 +83,16 @@ vec4 calcTextureColors(vec2 texCoords) {
               + blendmapCol.g * diffuse[2]
               + blendmapCol.b * diffuse[3];
 
-  reflectance = blackFactor * materials[0].reflectance
-              + blendmapCol.r * materials[1].reflectance
-              + blendmapCol.g * materials[2].reflectance
-              + blendmapCol.b * materials[3].reflectance;
+  reflectance = blackFactor * specular[0].reflectance
+              + blendmapCol.r * specular[1].reflectance
+              + blendmapCol.g * specular[2].reflectance
+              + blendmapCol.b * specular[3].reflectance;
 
-  specularPower = blackFactor * materials[0].specularPower
-                + blendmapCol.r * materials[1].specularPower
-                + blendmapCol.g * materials[2].specularPower
-                + blendmapCol.b * materials[3].specularPower;
+  specularPower = blackFactor * specular[0].specularPower
+                + blendmapCol.r * specular[1].specularPower
+                + blendmapCol.g * specular[2].specularPower
+                + blendmapCol.b * specular[3].specularPower;
+
 
   return result;
 }

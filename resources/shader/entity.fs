@@ -10,8 +10,6 @@ in TD_DATA {
   float vis0;
 } inData;
 
-in vec2 tex0;
-
 out vec4 fragColor;
 
 
@@ -38,12 +36,10 @@ uniform struct SpotLight {
   float cutoff;
 } spotLight[MAX_SPOT_LIGHTS];
 
-uniform struct Material {
-  vec4 diffuse;
+uniform struct Specular {
   float specularPower;
-  float hasTexture;
   float reflectance;
-} material;
+} specular;
 
 uniform struct Fog {
 	float isActive;
@@ -61,15 +57,9 @@ float specularPower = 0;
 float reflectance = 0;
 
 vec4 calcTextureColors(vec2 texCoords) {
-  vec4 color = vec4(0);
-  if(material.hasTexture == 1) {
-    color = texture2D(texture, texCoords);
-  }
-  else {
-    color = material.diffuse;
-  }
-  specularPower = material.specularPower;
-  reflectance = material.reflectance;
+  vec4 color = texture2D(texture, texCoords);
+  specularPower = specular.specularPower;
+  reflectance = specular.reflectance;
   return color;
 }
 

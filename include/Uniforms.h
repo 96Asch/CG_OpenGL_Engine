@@ -8,6 +8,8 @@
 #include "../src/graphic/uniform/UniformFloat.h"
 #include "../src/graphic/uniform/UniformInt.h"
 #include "../src/graphic/uniform/UniformMaterial.h"
+#include "../src/graphic/uniform/UniformSpecular.h"
+#include "../src/graphic/uniform/UniformSpeculars.h"
 #include "../src/graphic/uniform/UniformDLight.h"
 #include "../src/graphic/uniform/UniformPLight.h"
 #include "../src/graphic/uniform/UniformPLights.h"

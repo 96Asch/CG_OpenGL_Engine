@@ -38,7 +38,7 @@ void SkyboxRenderer::render(TransMat &mat, Scene* scene) {
 
         box.getVao()->bind(0);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, box.texture);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, box.getTexture());
         glDrawElements(GL_TRIANGLES, box.getVao()->getIndexCount(), GL_UNSIGNED_INT, 0);
         glBindTexture(GL_TEXTURE_2D, 0);
         box.getVao()->unbind(0);

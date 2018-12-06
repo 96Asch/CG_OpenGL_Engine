@@ -3,7 +3,7 @@
 {
   size=400
   rotationSpeed=0.05
-  source=texture/skybox/sky
+  texture=texture/skybox/sky
   ext=.png
 }
 
@@ -11,8 +11,8 @@
 {
   [baselight]
   {
-    color=0.0,1.0,1.0
-    intensity=0.8
+    color=1.0,1.0,1.0
+    intensity=0.2
   }
 
   direction=1.0,1.0,0.0
@@ -26,31 +26,27 @@
   position=-0.5,-0.5
   maxHeight=0
 
-  [material]
+  [texture]
   {
-    source=texture/ice.png
-    diffuse=0.0,0.0,0.0,1.0
+    texture=texture/grassy3.png
     specularPower=10.0
-    reflectance=10.0
+    reflectance=0.0
   }
-  [material]
+  [texture]
   {
-    source=texture/mud.png
-    diffuse=0.0,0.0,0.0,1.0
+    texture=texture/mud.png
     specularPower=10.0
     reflectance=0.5
   }
-  [material]
+  [texture]
   {
-    source=texture/ice.png
-    diffuse=0.0,0.0,0.0,1.0
+    texture=texture/ice.png
     specularPower=10.0
     reflectance=1.5
   }
-  [material]
+  [texture]
   {
-    source=texture/path.png
-    diffuse=0.0,0.0,0.0,1.0
+    texture=texture/path.png
     specularPower=10.0
     reflectance=1.5
   }
@@ -178,12 +174,8 @@
 {
   [model]
   {
-    source=models/cube.obj
-  }
-  [material]
-  {
-    source=texture/path.png
-    diffuse=0.0,0.0,0.0,1.0
+    mesh=models/cube.obj
+    texture=texture/path.png
     specularPower=10.0
     reflectance=2.5
   }
@@ -206,12 +198,8 @@
 {
   [model]
   {
-    source=models/dragon.obj
-  }
-  [material]
-  {
-    source=texture/grassy3.png
-    diffuse=0.0,0.0,0.0,1.0
+    mesh=models/dragon.obj
+    texture=texture/grassy3.png
     specularPower=10.0
     reflectance=5.5
   }

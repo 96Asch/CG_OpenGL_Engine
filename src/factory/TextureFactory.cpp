@@ -19,9 +19,8 @@ namespace Factory {
     }
 
     GLuint TextureFactory::createTexture(const std::string &file) {
-        auto it = textures.find(file);
-        if(it != textures.end())
-            return it->second;
+        if(isLoaded(file))
+            return textures[file];
 
         int w, h, components;
         GLuint id;
@@ -49,9 +48,8 @@ namespace Factory {
     }
 
     GLuint TextureFactory::createCubeMapTexture(const std::vector<std::string> &files) {
-        auto it = textures.find(files.front());
-        if(it != textures.end())
-            return it->second;
+        if(isLoaded(files.front()))
+            return textures[files.front()];
 
         GLuint id;
 
@@ -73,13 +71,22 @@ namespace Factory {
     }
 
     void TextureFactory::removeTexture(const std::string &file) {
-        auto it = textures.find(file);
-        GLuint texture;
-        if(it != textures.end()) {
-            texture = it->second;
-            textures.erase(it);
+        if(isLoaded(file)) {
+            GLuint texture = textures[file];
             glDeleteTextures(1, &texture);
+            textures.erase(file);
         }
+    }
+
+    GLuint TextureFactory::getTexture(const std::string &file) {
+        if(isLoaded(file))
+            return textures[file];
+        std::cerr << "WARNING: Texture " << file << "not loaded" << std::endl;
+        return 0;
+    }
+
+    bool TextureFactory::isLoaded(const std::string &id) {
+        return textures.find(id) != textures.end();
     }
 
     bool TextureFactory::loadCubeMapSide(GLuint texture, GLenum side_target,

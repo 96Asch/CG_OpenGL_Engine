@@ -19,7 +19,7 @@ void EntityRenderer::init() {
     shader.addUniform(new UniformFloat("explodeDistance"));
     shader.addUniform(new UniformFloat("explodeActive"));
     shader.addUniform(new UniformVec3("camPosition"));
-    shader.addUniform(new UniformMaterial("material"));
+    shader.addUniform(new UniformSpecular("specular"));
     shader.addUniform(new UniformSampler("texture"));
     shader.addUniform(new UniformPLights("pointLight"));
     shader.addUniform(new UniformSLights("spotLight"));
@@ -43,21 +43,19 @@ void EntityRenderer::render(TransMat &matrices, Scene *scene) {
     shader.getUniform<UniformFog>("fog")->load(scene->getFog());
     shader.getUniform<UniformSampler>("texture")->loadTexUnit(1);
     shader.getUniform<UniformVec3>("ambientLight")->load(scene->getAmbient());
-    for(auto e : scene->getEntities().withComponents<Model, Material, Position, Rotation, Scale>()) {
-        Model* mod = e.getComponent<Model>();
-        const Material* mat = e.getComponent<Material>();
-        const Position* pos = e.getComponent<Position>();
-        const Rotation* rot = e.getComponent<Rotation>();
-        const Scale* sca = e.getComponent<Scale>();
+    for(auto e : scene->getEntities().withComponents<Model, Position, Rotation, Scale>()) {
+        Model* m = e.getComponent<Model>();
+        const Position* p = e.getComponent<Position>();
+        const Rotation* r = e.getComponent<Rotation>();
+        const Scale* s = e.getComponent<Scale>();
 
-        loadMaterial(mat);
-        loadMatrices(matrices, pos, rot, sca);
+        loadMatrices(matrices, p, r, s);
         loadExposion(e);
-        mod->getVao()->bind(0,1,2);
-        bindTexture(mat);
-        glDrawElements(GL_TRIANGLES, mod->getVao()->getIndexCount(), GL_UNSIGNED_INT, 0);
+        m->getVao()->bind(0,1,2);
+        bindTexture(m);
+        glDrawElements(GL_TRIANGLES, m->getVao()->getIndexCount(), GL_UNSIGNED_INT, 0);
         unbindTexture();
-        mod->getVao()->unbind(0,1,2);
+        m->getVao()->unbind(0,1,2);
     }
     shader.stop();
     GLUtil::enableDepthTesting(false);
@@ -80,17 +78,14 @@ void EntityRenderer::loadCamPosition(Scene* scene) {
 }
 
 
-void EntityRenderer::bindTexture(const Material* m) {
+void EntityRenderer::bindTexture(const Model* m) {
+    shader.getUniform<UniformSpecular>("specular")->load(m->specularPower, m->reflectance);
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, m->id);
+    glBindTexture(GL_TEXTURE_2D, m->getTexture());
 }
 
 void EntityRenderer::unbindTexture() {
     glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-void EntityRenderer::loadMaterial(const Material* m) {
-    shader.getUniform<UniformMaterial>("material")->load(*m);
 }
 
 void EntityRenderer::loadMatrices(TransMat &mat,
@@ -121,8 +116,8 @@ void EntityRenderer::loadPointLights(Scene *scene) {
     unsigned counter = 0;
     for(auto light : scene->getEntities().withComponents<PointLight, Position>()) {
         PointLight* pl = light.getComponent<PointLight>();
-        Position* pos = light.getComponent<Position>();
-        shader.getUniform<UniformPLights>("pointLight")->load(*pl, pos->interpolated, counter);
+        Position* p = light.getComponent<Position>();
+        shader.getUniform<UniformPLights>("pointLight")->load(*pl, p->interpolated, counter);
         ++counter;
     }
     while(counter < Global::MAX_POINT_LIGHTS) {
@@ -135,10 +130,10 @@ void EntityRenderer::loadSpotLights(Scene *scene) {
     unsigned counter = 0;
     for(auto light : scene->getEntities().withComponents<SpotLight, Position, LookAt>()) {
         SpotLight* pl = light.getComponent<SpotLight>();
-        Position* pos = light.getComponent<Position>();
+        Position* p = light.getComponent<Position>();
         LookAt* look = light.getComponent<LookAt>();
         shader.getUniform<UniformSLights>("spotLight")->load(*pl,
-                                                             pos->interpolated,
+                                                             p->interpolated,
                                                              look->interpolated,
                                                              counter);
         ++counter;

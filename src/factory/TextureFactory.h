@@ -26,6 +26,10 @@ namespace Factory {
 
         GLuint createCubeMapTexture(const std::vector<std::string> &files);
 
+        GLuint getTexture(const std::string &file);
+
+        bool isLoaded(const std::string &id);
+
         void removeTexture(const std::string &file);
 
     private:

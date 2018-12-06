@@ -11,7 +11,11 @@ public:
 
     virtual ~Fbo() {};
 
-    virtual bool init(const unsigned &width, const unsigned &height) = 0;
+    virtual void bind() = 0;
+
+    void unbind() {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
 
     virtual void remove() = 0;
 
