@@ -15,7 +15,7 @@ SkyboxRenderer::~SkyboxRenderer() {
 void SkyboxRenderer::init() {
     shader.init("shader/skybox.vs", "shader/skybox.fs", {"position"});
     shader.addUniform(new UniformMat4("pv"));
-    shader.addUniform(new UniformSampler("map1"));
+    shader.addUniform(new UniformInt("map1"));
     shader.addUniform(new UniformVec3("fogColor"));
     shader.storeUniformLocations();
 }
@@ -33,7 +33,7 @@ void SkyboxRenderer::render(TransMat &mat, Scene* scene) {
 
         buildProjectionViewMatrix(mat, box);
         shader.getUniform<UniformMat4>("pv")->load(mat.pv);
-        shader.getUniform<UniformSampler>("map1")->loadTexUnit(0);
+        shader.getUniform<UniformInt>("map1")->load(0);
         shader.getUniform<UniformVec3>("fogColor")->load(scene->getFog().color);
 
         box.getVao()->bind(0);

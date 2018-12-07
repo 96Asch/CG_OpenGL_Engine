@@ -9,7 +9,6 @@ in VSOut {
   in vec2 tex0;
   in vec3 normal0;
   in vec3 world0;
-  in float vis0;
 } vsOut;
 
 out vec4 fragColor;
@@ -41,13 +40,6 @@ uniform struct Specular {
   float specularPower;
   float reflectance;
 } specular[MAX_TEXTURES-1];
-
-uniform struct Fog {
-	float isActive;
-	vec3 color;
-	float density;
-	float gradient;
-} fog;
 
 uniform int numMaterials;
 uniform vec3 ambientLight;
@@ -151,18 +143,6 @@ vec4 calcSLight(SpotLight light, vec3 normal) {
     return color;
 }
 
-vec4 setFog(vec4 currColor, Fog f, float vis) {
-	vec4 outColor = vec4(0);
-	if (f.isActive == 1) {
-		outColor = mix(vec4(f.color, 1.0), currColor, vis);
-	}
-	else {
-		outColor = currColor;
-	}
-	return outColor;
-}
-
-
 void main() {
   vec4 texColor = calcTextureColors(vsOut.tex0);
   vec3 normal = normalize(vsOut.normal0);
@@ -183,5 +163,4 @@ void main() {
   }
 
   fragColor = texColor * light;
-  fragColor = setFog(fragColor, fog, vsOut.vis0);
 }

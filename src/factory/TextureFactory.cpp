@@ -8,6 +8,8 @@
 namespace Factory {
 
     TextureFactory* TEXTURE = nullptr;
+    const std::string DEFAULT_DIFFUSE = "texture/diffuse/white.png";
+    const std::string DEFAULT_SPECULAR = "texture/specular/no_spec.png"; 
 
     const float bias = -0.04f;
 

@@ -12,7 +12,10 @@ struct Texture;
 namespace Factory {
 
     class TextureFactory;
+
     extern TextureFactory* TEXTURE;
+    extern const std::string DEFAULT_DIFFUSE;
+    extern const std::string DEFAULT_SPECULAR;
 
     class TextureFactory {
 

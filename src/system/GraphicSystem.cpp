@@ -20,8 +20,7 @@ void GraphicSystem::init() {
 
     for(auto renderer : screenRenderers)
         renderer->init();
-        glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_DEPTH_TEST);
 }
 
 void GraphicSystem::renderStep(const float &interpolation, Scene* scene) {

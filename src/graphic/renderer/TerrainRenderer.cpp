@@ -21,7 +21,6 @@ void TerrainRenderer::init() {
     shader.addUniform(new UniformPLights("pointLight"));
     shader.addUniform(new UniformSLights("spotLight"));
     shader.addUniform(new UniformDLight("directionalLight"));
-    shader.addUniform(new UniformFog("fog"));
     shader.storeUniformLocations();
 
     shader.start();
@@ -32,7 +31,6 @@ void TerrainRenderer::init() {
 void TerrainRenderer::render(TransMat &mat, Scene *scene) {
     Terrain &terrain = scene->getTerrain();
     GLUtil::cullBackFaces(true);
-    GLUtil::enableDepthTesting(true);
     shader.start();
     shader.getUniform<UniformVec3>("ambientLight")->load(scene->getAmbient());
 
@@ -42,7 +40,6 @@ void TerrainRenderer::render(TransMat &mat, Scene *scene) {
     loadCamPosition(scene);
 
     loadMatrices(terrain, mat);
-    shader.getUniform<UniformFog>("fog")->load(scene->getFog());
     terrain.getVao()->bind(0,1,2);
     bindTextures(terrain);
     loadMaterials(terrain);
@@ -51,7 +48,6 @@ void TerrainRenderer::render(TransMat &mat, Scene *scene) {
     terrain.getVao()->unbind(0,1,2);
     shader.stop();
     GLUtil::cullBackFaces(false);
-    GLUtil::enableDepthTesting(false);
 }
 
 void TerrainRenderer::cleanup() {

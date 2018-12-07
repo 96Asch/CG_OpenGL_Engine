@@ -6,21 +6,19 @@
 #include "Component.h"
 #include "../graphic/globjects/Vao.h"
 #include "../factory/VaoFactory.h"
+#include "../factory/Texture.h"
 #include "../factory/TextureFactory.h"
 #include "../factory/ModelLoader.h"
 
 struct Model : public IComponent<Model> {
 
     Model(const std::string &mesh,
-          const std::string &texture,
-          const float &specularPower,
-          const float &reflectance)
+          const Texture &texture)
                    : mesh(mesh),
-                     texture(texture),
-                     specularPower(specularPower),
-                     reflectance(reflectance)
+                     texture(texture)
     {
         Factory::loadOBJ(mesh);
+        this->texture.loadCurrent();
     };
 
     Model(std::ifstream &stream) {
@@ -49,22 +47,8 @@ struct Model : public IComponent<Model> {
                             Factory::loadOBJ(mesh);
                         }
                     }
-                    else if (var == "texture") {
-                        if(std::getline(ss, value, '=')) {
-                            this->texture = value;
-                            Factory::TEXTURE->createTexture(value);
-                        }
-                    }
-                    else if (var == "specularPower") {
-                        if(std::getline(ss, value, '=')) {
-                            this->specularPower = std::stof(value);
-                        }
-                    }
-                    else if (var == "reflectance") {
-                        if(std::getline(ss, value, '=')) {
-                            this->reflectance = std::stof(value);
-
-                        }
+                    else if (var == "[texture]") {
+                        texture.deserialize(stream);
                     }
                 }
             }
@@ -79,13 +63,8 @@ struct Model : public IComponent<Model> {
         return Factory::VAO->getVao(mesh);
     };
 
-    GLuint getTexture() const {
-        return Factory::TEXTURE->getTexture(texture);
-    }
-
     std::string mesh;
-    std::string texture;
-    float specularPower, reflectance;
+    Texture texture;
 
 };
 

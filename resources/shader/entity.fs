@@ -2,12 +2,13 @@
 
 const int MAX_POINT_LIGHTS = 5;
 const int MAX_SPOT_LIGHTS = 5;
+const float specularPower = 10;
+
 
 in TD_DATA {
   vec2 tex0;
   vec3 normal0;
   vec3 world0;
-  float vis0;
 } inData;
 
 out vec4 fragColor;
@@ -36,30 +37,16 @@ uniform struct SpotLight {
   float cutoff;
 } spotLight[MAX_SPOT_LIGHTS];
 
-uniform struct Specular {
-  float specularPower;
-  float reflectance;
-} specular;
-
-uniform struct Fog {
-	float isActive;
-	vec3 color;
-	float density;
-	float gradient;
-} fog;
-
 uniform vec3 ambientLight;
 uniform sampler2D texture;
-uniform sampler2D shadowMap;
+uniform sampler2D specular;
 uniform vec3 camPosition;
 
-float specularPower = 0;
 float reflectance = 0;
 
 vec4 calcTextureColors(vec2 texCoords) {
   vec4 color = texture2D(texture, texCoords);
-  specularPower = specular.specularPower;
-  reflectance = specular.reflectance;
+  reflectance = texture2D(specular, texCoords).r;
   return color;
 }
 
@@ -116,17 +103,6 @@ vec4 calcSLight(SpotLight light, vec3 normal) {
     return color;
 }
 
-vec4 setFog(vec4 currColor, Fog f, float vis) {
-	vec4 outColor = vec4(0);
-	if (f.isActive == 1) {
-		outColor = mix(vec4(f.color, 1.0), currColor, vis);
-	}
-	else {
-		outColor = currColor;
-	}
-	return outColor;
-}
-
 
 void main() {
   vec4 texColor = calcTextureColors(inData.tex0);
@@ -148,5 +124,5 @@ void main() {
   }
 
   fragColor = texColor * light;
-  fragColor = setFog(fragColor, fog, inData.vis0);
+  // fragColor = vec4(vec3(gl_FragCoord.z), 1.0);
 }

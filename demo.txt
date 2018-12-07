@@ -83,21 +83,21 @@
     movSpeed=10
     rotSpeed=6
   }
-
   [spotlight]
   {
     [pointlight]
     {
       [baselight]
       {
-        color=5.0,5.0,5.0
-        intensity=6.8
+        color=1.0,1.0,1.0
+        intensity=3.0
       }
-      attenuation=0.0,0.4,1.0
+      attenuation=0.0,0.0,1.0
       range=30.0
     }
     cutoff=0.9
   }
+
   [lookat]
   {
     direction=0.0,0.0,1.0
@@ -175,9 +175,36 @@
   [model]
   {
     mesh=models/cube.obj
-    texture=texture/path.png
-    specularPower=10.0
-    reflectance=2.5
+    [texture]
+    {
+      diffuse=texture/diffuse/stone_wall.png
+      specular=texture/specular/stone_wall.png
+    }
+  }
+  [position]
+  {
+    position=-10.0,0.0,0.0
+  }
+  [rotation]
+  {
+    rotation=0.0,0.0,45.0
+  }
+  [scale]
+  {
+    scale=1.0,1.0,1.0
+  }
+}
+
+[entity]
+{
+  [model]
+  {
+    mesh=models/cube.obj
+    [texture]
+    {
+      diffuse=texture/diffuse/stone_wall.png
+      specular=texture/specular/stone_wall.png
+    }
   }
   [position]
   {
@@ -199,9 +226,11 @@
   [model]
   {
     mesh=models/dragon.obj
-    texture=texture/grassy3.png
-    specularPower=10.0
-    reflectance=5.5
+    [texture]
+    {
+      diffuse=texture/diffuse/grassy3.png
+      specular=texture/specular/no_spec.png
+    }
   }
   [explode]
   {

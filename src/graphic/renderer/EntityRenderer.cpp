@@ -14,18 +14,24 @@ void EntityRenderer::init() {
     shader.init("shader/entity.vs", "shader/entity.fs", "shader/entity.gs",
                 {"position", "uv", "normal"});
     shader.addUniform(new UniformMat4("model"));
+    shader.addUniform(new UniformMat4("view"));
+    shader.addUniform(new UniformMat4("projection"));
     shader.addUniform(new UniformMat4("mvp"));
     shader.addUniform(new UniformVec3("ambientLight"));
     shader.addUniform(new UniformFloat("explodeDistance"));
     shader.addUniform(new UniformFloat("explodeActive"));
     shader.addUniform(new UniformVec3("camPosition"));
-    shader.addUniform(new UniformSpecular("specular"));
-    shader.addUniform(new UniformSampler("texture"));
+    shader.addUniform(new UniformInt("specular"));
+    shader.addUniform(new UniformInt("texture"));
     shader.addUniform(new UniformPLights("pointLight"));
     shader.addUniform(new UniformSLights("spotLight"));
     shader.addUniform(new UniformDLight("directionalLight"));
-    shader.addUniform(new UniformFog("fog"));
     shader.storeUniformLocations();
+
+    shader.start();
+    shader.getUniform<UniformInt>("texture")->load(0);
+    shader.getUniform<UniformInt>("specular")->load(1);
+    shader.stop();
 }
 
 void EntityRenderer::preRender(TransMat &, Scene* ) {
@@ -34,14 +40,11 @@ void EntityRenderer::preRender(TransMat &, Scene* ) {
 }
 
 void EntityRenderer::render(TransMat &matrices, Scene *scene) {
-    GLUtil::enableDepthTesting(true);
     shader.start();
     loadSpotLights(scene);
     loadPointLights(scene);
     loadDirectionalLight(scene);
     loadCamPosition(scene);
-    shader.getUniform<UniformFog>("fog")->load(scene->getFog());
-    shader.getUniform<UniformSampler>("texture")->loadTexUnit(1);
     shader.getUniform<UniformVec3>("ambientLight")->load(scene->getAmbient());
     for(auto e : scene->getEntities().withComponents<Model, Position, Rotation, Scale>()) {
         Model* m = e.getComponent<Model>();
@@ -58,7 +61,6 @@ void EntityRenderer::render(TransMat &matrices, Scene *scene) {
         m->getVao()->unbind(0,1,2);
     }
     shader.stop();
-    GLUtil::enableDepthTesting(false);
 };
 
 void EntityRenderer::postRender(Scene*) {
@@ -79,9 +81,10 @@ void EntityRenderer::loadCamPosition(Scene* scene) {
 
 
 void EntityRenderer::bindTexture(const Model* m) {
-    shader.getUniform<UniformSpecular>("specular")->load(m->specularPower, m->reflectance);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m->texture.getDiffuse());
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, m->getTexture());
+    glBindTexture(GL_TEXTURE_2D, m->texture.getSpecular());
 }
 
 void EntityRenderer::unbindTexture() {
@@ -95,6 +98,8 @@ void EntityRenderer::loadMatrices(TransMat &mat,
 {
     buildModelMatrix(mat.model, p, r ,s);
     shader.getUniform<UniformMat4>("model")->load(mat.model);
+    shader.getUniform<UniformMat4>("projection")->load(mat.projection);
+    shader.getUniform<UniformMat4>("view")->load(mat.view);
     mat.mv = mat.view * mat.model;
     mat.mvp = mat.projection * mat.mv;
     shader.getUniform<UniformMat4>("mvp")->load(mat.mvp);
