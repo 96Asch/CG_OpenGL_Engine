@@ -16,19 +16,19 @@ void TerrainRenderer::init() {
     shader.addUniform(new UniformInt("numMaterials"));
     shader.addUniform(new UniformVec3("ambientLight"));
     shader.addUniform(new UniformVec3("camPosition"));
-    shader.addUniform(new UniformSpeculars("specular", 4));
-    shader.addUniform(new UniformSamplers("textures"));
+    // shader.addUniform(new UniformSamplers("textures"));
+    // shader.addUniform(new UniformSpeculars("specular", 4));
     shader.addUniform(new UniformPLights("pointLight"));
     shader.addUniform(new UniformSLights("spotLight"));
     shader.addUniform(new UniformDLight("directionalLight"));
     shader.storeUniformLocations();
 
     shader.start();
-    shader.getUniform<UniformSamplers>("textures")->loadTexUnits(1);
+    // shader.getUniform<UniformSamplers>("textures")->loadTexUnits(1);
     shader.stop();
 }
 
-void TerrainRenderer::render(TransMat &mat, Scene *scene) {
+void TerrainRenderer::render(TransMat &mat, std::shared_ptr<Scene> scene) {
     Terrain &terrain = scene->getTerrain();
     GLUtil::cullBackFaces(true);
     shader.start();
@@ -54,17 +54,7 @@ void TerrainRenderer::cleanup() {
     shader.cleanup();
 }
 
-
-void TerrainRenderer::preRender(TransMat &, Scene *) {
-
-
-}
-
-void TerrainRenderer::postRender(Scene *) {
-
-}
-
-void TerrainRenderer::loadCamPosition(Scene* scene) {
+void TerrainRenderer::loadCamPosition(std::shared_ptr<Scene> scene) {
     glm::vec3 position(glm::vec3(0.0f));
     for(auto e : scene->getEntities().withComponents<Camera, Position>()) {
         position = e.getComponent<Position>()->interpolated;
@@ -93,11 +83,11 @@ void TerrainRenderer::unbindTextures(const Terrain &terrain) {
 
 void TerrainRenderer::loadMaterials(const Terrain &terrain) {
     shader.getUniform<UniformInt>("numMaterials")->load(terrain.numMaterials);
-    for(unsigned i = 0; i < terrain.numMaterials; ++i) {
-        shader.getUniform<UniformSpeculars>("specular")
-                ->load(terrain.textures[i].specularPower,
-                        terrain.textures[i].reflectance, i);
-    }
+    // for(unsigned i = 0; i < terrain.numMaterials; ++i) {
+    //     shader.getUniform<UniformSpeculars>("specular")
+    //             ->load(terrain.textures[i].specularPower,
+    //                     terrain.textures[i].reflectance, i);
+    // }
 }
 
 void TerrainRenderer::loadMatrices(const Terrain &terrain, TransMat &mat) {
@@ -108,7 +98,7 @@ void TerrainRenderer::loadMatrices(const Terrain &terrain, TransMat &mat) {
     shader.getUniform<UniformMat4>("mvp")->load(mat.mvp);
 }
 
-void TerrainRenderer::loadPointLights(Scene *scene) {
+void TerrainRenderer::loadPointLights(std::shared_ptr<Scene> scene) {
     unsigned counter = 0;
     for(auto light : scene->getEntities().withComponents<PointLight, Position>()) {
         PointLight* pl = light.getComponent<PointLight>();
@@ -122,7 +112,7 @@ void TerrainRenderer::loadPointLights(Scene *scene) {
     }
 }
 
-void TerrainRenderer::loadSpotLights(Scene *scene) {
+void TerrainRenderer::loadSpotLights(std::shared_ptr<Scene> scene) {
     unsigned counter = 0;
     for(auto light : scene->getEntities().withComponents<SpotLight, Position, LookAt>()) {
         SpotLight* pl = light.getComponent<SpotLight>();
@@ -140,7 +130,7 @@ void TerrainRenderer::loadSpotLights(Scene *scene) {
     }
 }
 
-void TerrainRenderer::loadDirectionalLight(Scene *scene) {
+void TerrainRenderer::loadDirectionalLight(std::shared_ptr<Scene> scene) {
     shader.getUniform<UniformDLight>("directionalLight")->load(scene->getDirectional());
 }
 

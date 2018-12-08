@@ -121,8 +121,26 @@ namespace Factory {
                                          3, 7, 5,
                                          6, 0, 4,
                                          4, 0, 2};
-        std::cout << id << std::endl;
+
         VAO->createVao(id, cubeInd, cubePos);
+    }
+
+    void generateQuad(const std::string &id, const float &size) {
+        std::vector<float> positions = {
+            -size,  size, 0.0f,
+            -size, -size, 0.0f,
+            size,  size, 0.0f,
+            size, -size, 0.0f,
+        };
+
+        std::vector<float> uvs = {
+                0.0f, size,
+                0.0f, 0.0f,
+                size, size,
+                size, 0.0f
+        };
+
+        VAO->createVao(id, positions, uvs);
     }
 
 }

@@ -60,3 +60,7 @@ void GBuffer::bindTextures() {
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, colorSpecBuff);
 }
+
+void GBuffer::unbindTextures() {
+    glBindTexture(GL_TEXTURE_2D, 0);
+}

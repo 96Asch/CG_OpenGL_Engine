@@ -26,7 +26,8 @@ namespace Factory {
 
         void removeFbo(const std::string &id);
 
-        std::shared_ptr<Fbo> getFbo(const std::string &source);
+        template <typename T>
+        std::shared_ptr<T> getFbo(const std::string &source);
 
         bool isLoaded(const std::string &source) const;
 
@@ -44,6 +45,15 @@ namespace Factory {
             fbos.insert({id, std::make_shared<T>(args...)});
         return fbos[id];
     };
+
+    template <typename T>
+    std::shared_ptr<T> FboFactory::getFbo(const std::string &source) {
+        if(isLoaded(source))
+            return std::static_pointer_cast<T>(fbos[source]);
+        throw std::runtime_error("Error: cannot find FBO for: " + source);
+        return nullptr;
+    }
+
 
 };
 

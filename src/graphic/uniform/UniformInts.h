@@ -6,6 +6,7 @@
 #include <initializer_list>
 
 #include "Uniform.h"
+#include "UniformInt.h"
 
 struct UniformInts : public Uniform {
 

@@ -34,12 +34,7 @@ void EntityRenderer::init() {
     shader.stop();
 }
 
-void EntityRenderer::preRender(TransMat &, Scene* ) {
-
-
-}
-
-void EntityRenderer::render(TransMat &matrices, Scene *scene) {
+void EntityRenderer::render(TransMat &matrices, std::shared_ptr<Scene> scene) {
     shader.start();
     loadSpotLights(scene);
     loadPointLights(scene);
@@ -54,24 +49,20 @@ void EntityRenderer::render(TransMat &matrices, Scene *scene) {
 
         loadMatrices(matrices, p, r, s);
         loadExposion(e);
-        m->getVao()->bind(0,1,2);
+        m->getVao()->bind();
         bindTexture(m);
         glDrawElements(GL_TRIANGLES, m->getVao()->getIndexCount(), GL_UNSIGNED_INT, 0);
         unbindTexture();
-        m->getVao()->unbind(0,1,2);
+        m->getVao()->unbind();
     }
     shader.stop();
 };
-
-void EntityRenderer::postRender(Scene*) {
-
-}
 
 void EntityRenderer::cleanup() {
     shader.cleanup();
 }
 
-void EntityRenderer::loadCamPosition(Scene* scene) {
+void EntityRenderer::loadCamPosition(std::shared_ptr<Scene> scene) {
     glm::vec3 position(glm::vec3(0.0f));
     for(auto e : scene->getEntities().withComponents<Camera, Position>()) {
         position = e.getComponent<Position>()->interpolated;
@@ -117,7 +108,7 @@ void EntityRenderer::loadExposion(Entity &e) {
     }
 }
 
-void EntityRenderer::loadPointLights(Scene *scene) {
+void EntityRenderer::loadPointLights(std::shared_ptr<Scene> scene) {
     unsigned counter = 0;
     for(auto light : scene->getEntities().withComponents<PointLight, Position>()) {
         PointLight* pl = light.getComponent<PointLight>();
@@ -131,7 +122,7 @@ void EntityRenderer::loadPointLights(Scene *scene) {
     }
 }
 
-void EntityRenderer::loadSpotLights(Scene *scene) {
+void EntityRenderer::loadSpotLights(std::shared_ptr<Scene> scene) {
     unsigned counter = 0;
     for(auto light : scene->getEntities().withComponents<SpotLight, Position, LookAt>()) {
         SpotLight* pl = light.getComponent<SpotLight>();
@@ -149,7 +140,7 @@ void EntityRenderer::loadSpotLights(Scene *scene) {
     }
 }
 
-void EntityRenderer::loadDirectionalLight(Scene *scene) {
+void EntityRenderer::loadDirectionalLight(std::shared_ptr<Scene> scene) {
     shader.getUniform<UniformDLight>("directionalLight")->load(scene->getDirectional());
 }
 void EntityRenderer::buildModelMatrix(glm::mat4 &model,

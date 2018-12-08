@@ -2,6 +2,7 @@
 #define RENDERER_H_
 
 #include <glm/mat4x4.hpp>
+#include <memory>
 
 #include "../shader/Shader.h"
 #include "../../util/TransMat.h"
@@ -18,17 +19,13 @@ public:
     virtual void init() = 0;
 
     virtual void render(TransMat &transform,
-                        Scene *scene) = 0;
+                        std::shared_ptr<Scene> scene) = 0;
 
     virtual void cleanup() = 0;
 
 protected:
 
     Shader shader;
-
-    virtual void preRender(TransMat &transform, Scene *scene) = 0;
-
-    virtual void postRender(Scene *scene) = 0;
 
 };
 

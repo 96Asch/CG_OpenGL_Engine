@@ -13,6 +13,9 @@ namespace Factory {
 
     void generateCube(const std::string &id, const float &size);
 
+
+    void generateQuad(const std::string &id, const float &size);
+
 }
 
 #endif

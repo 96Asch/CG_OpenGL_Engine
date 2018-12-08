@@ -15,15 +15,11 @@ public:
 
     virtual void init() override;
 
-    virtual void render(TransMat &mat, Scene *scene) override;
+    virtual void render(TransMat &mat, std::shared_ptr<Scene> scene) override;
 
     virtual void cleanup() override;
 
 protected:
-
-    virtual void preRender(TransMat &mat, Scene *scene) override;
-
-    virtual void postRender(Scene *scene) override;
 
     void buildProjectionViewMatrix(TransMat &mat, Skybox &box);
 };

@@ -15,7 +15,7 @@ InputSystem::~InputSystem() {}
 
 void InputSystem::init() {}
 
-void InputSystem::updateStep(const float &, Scene* scene) {
+void InputSystem::updateStep(const float &, std::shared_ptr<Scene> scene) {
     handleMouse(scene);
     handleKeys(scene);
 }
@@ -23,7 +23,7 @@ void InputSystem::updateStep(const float &, Scene* scene) {
 void InputSystem::cleanup() {
 }
 
-void InputSystem::handleMouse(Scene* scene) {
+    void InputSystem::handleMouse(std::shared_ptr<Scene> scene) {
     for(auto e : scene->getEntities().withComponents<Mouse>()) {
         Mouse* m = e.getComponent<Mouse>();
         m->dx = m->dy = 0.0f;
@@ -34,7 +34,7 @@ void InputSystem::handleMouse(Scene* scene) {
     }
 }
 
-void InputSystem::handleKeys(Scene* scene) {
+void InputSystem::handleKeys(std::shared_ptr<Scene> scene) {
     for(auto e : scene->getEntities().withComponents<Action>()) {
         Action* a = e.getComponent<Action>();
         a->action.reset();

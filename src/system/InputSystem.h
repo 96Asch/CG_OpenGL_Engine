@@ -19,15 +19,15 @@ public:
 
     virtual void init() override;
 
-    virtual void updateStep(const float &tps, Scene* scene) override;
+    virtual void updateStep(const float &tps, std::shared_ptr<Scene> scene) override;
 
     virtual void cleanup() override;
 
 private:
 
-    void handleMouse(Scene* scene);
+    void handleMouse(std::shared_ptr<Scene> scene);
 
-    void handleKeys(Scene* scene);
+    void handleKeys(std::shared_ptr<Scene> scene);
 
 };
 

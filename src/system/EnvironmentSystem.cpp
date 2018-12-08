@@ -17,7 +17,7 @@ void EnvironmentSystem::init() {
 
 }
 
-void EnvironmentSystem::updateStep(const float &tps, Scene* scene) {
+void EnvironmentSystem::updateStep(const float &tps, std::shared_ptr<Scene> scene) {
     updateDirectionalLight(tps, scene->getDirectional(), scene->getSky().rotation);
     updateSky(tps, scene->getSky());
     updateDestruct(tps, scene);
@@ -44,7 +44,7 @@ void EnvironmentSystem::updateDirectionalLight(const float &tps,
 }
 
 
-void EnvironmentSystem::updateExplosions(const float &tps, Scene* scene) {
+void EnvironmentSystem::updateExplosions(const float &tps, std::shared_ptr<Scene> scene) {
     for(auto e : scene->getEntities().withComponents<Explode>()) {
         Explode* ex = e.getComponent<Explode>();
         if(ex->active) {
@@ -59,7 +59,7 @@ void EnvironmentSystem::updateExplosions(const float &tps, Scene* scene) {
     }
 }
 
-void EnvironmentSystem::updateDestruct(const float &tps, Scene* scene) {
+void EnvironmentSystem::updateDestruct(const float &tps, std::shared_ptr<Scene> scene) {
     for(auto e : scene->getEntities().withComponents<Destruct>()) {
         Destruct* d = e.getComponent<Destruct>();
         d->aliveTime -= tps;

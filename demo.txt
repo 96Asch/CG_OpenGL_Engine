@@ -28,26 +28,22 @@
 
   [texture]
   {
-    texture=texture/grassy3.png
-    specularPower=10.0
-    reflectance=0.0
+    texture=texture/mud.png
+    reflectance=1.0
   }
   [texture]
   {
     texture=texture/mud.png
-    specularPower=10.0
     reflectance=0.5
   }
   [texture]
   {
     texture=texture/ice.png
-    specularPower=10.0
     reflectance=1.5
   }
   [texture]
   {
     texture=texture/path.png
-    specularPower=10.0
     reflectance=1.5
   }
 }
@@ -199,10 +195,10 @@
 {
   [model]
   {
-    mesh=models/cube.obj
+    mesh=models/barrel.obj
     [texture]
     {
-      diffuse=texture/diffuse/stone_wall.png
+      diffuse=texture/diffuse/ice.png
       specular=texture/specular/stone_wall.png
     }
   }
@@ -229,15 +225,15 @@
     [texture]
     {
       diffuse=texture/diffuse/grassy3.png
-      specular=texture/specular/no_spec.png
+      specular=texture/specular/stone_wall.png
     }
   }
-  [explode]
-  {
-    speed=0.5
-    active=1
-    maxDistance=20.0
-  }
+  //[explode]
+//  {
+//    speed=0.5
+  //  active=1
+    //maxDistance=20.0
+  //}
   [position]
   {
     position=10.0,0.10,0.0

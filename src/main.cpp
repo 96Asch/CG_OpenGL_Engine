@@ -59,10 +59,10 @@ int main(int argc, char** argv) {
     initGlobals();
     Engine engine(Global::width, Global::height, "First screen!");
 
-    engine.add(new InputSystem());
-    engine.add(new EnvironmentSystem());
-    engine.add(new PhysicsSystem());
-    engine.add(new GraphicSystem());
+    engine.add<InputSystem>();
+    engine.add<EnvironmentSystem>();
+    engine.add<PhysicsSystem>();
+    engine.add<GraphicSystem>();
 
     if(argc == 2)
         engine.loadSetup(std::string(argv[1]));
@@ -71,6 +71,6 @@ int main(int argc, char** argv) {
 
     engine.init();
     engine.run();
-    engine.cleanup();
+    // engine.cleanup();
     return 0;
 }

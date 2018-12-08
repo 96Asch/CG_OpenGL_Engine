@@ -7,7 +7,7 @@
 Engine::Engine(const int &width,
                const int &height,
                const std::string &title)
-               : scene(nullptr)
+               : scene(std::make_shared<Scene>())
 {
     if(!window.init(width, height, title)) {
         fprintf(stderr, "%s\n", "Windows failed to initialize!");
@@ -16,12 +16,10 @@ Engine::Engine(const int &width,
 }
 
 Engine::~Engine(){
-    for(auto system : systems)
-        delete system;
+    cleanup();
 }
 
 void Engine::loadSetup(const std::string &file) {
-    scene = new Scene();
     std::ifstream in(file);
     if(in) {
         if(scene->deserialize(in)) {
@@ -38,10 +36,7 @@ void Engine::loadSetup(const std::string &file) {
 }
 
 void Engine::init() {
-    if(!scene) {
-        scene = new Scene();
-    }
-    for(auto system : systems)
+    for(auto &system : systems)
         system->init();
 }
 
@@ -83,22 +78,17 @@ void Engine::run() {
 }
 
 void Engine::update(const float &TPS) {
-    for(auto system : systems)
+    for(auto &system : systems)
         system->updateStep(TPS, scene);
 }
 
 void Engine::render(const float &interpolation) {
-    for(auto system : systems)
+    for(auto &system : systems)
         system->renderStep(interpolation, scene);
 }
 
 void Engine::cleanup() {
-    for(auto system : systems)
+    for(auto &system : systems)
         system->cleanup();
     window.cleanup();
-    delete scene;
-}
-
-void Engine::add(System *system) {
-    systems.push_back(system);
 }

@@ -1,5 +1,5 @@
-#ifndef ENTITYRENDERER_H_
-#define ENTITYRENDERER_H_
+#ifndef GBUFFERENTITYRENDERER_H_
+#define GBUFFERENTITYRENDERER_H_
 
 #include "Renderer.h"
 
@@ -10,12 +10,12 @@ struct Model;
 struct Entity;
 
 class Scene;
-class EntityRenderer : public Renderer {
+class GBufferEntityRenderer : public Renderer {
 
 public:
 
-    EntityRenderer();
-    ~EntityRenderer();
+    GBufferEntityRenderer();
+    ~GBufferEntityRenderer();
 
     virtual void init() override;
 
@@ -31,20 +31,12 @@ private:
 
     void unbindTexture();
 
-    void loadCamPosition(std::shared_ptr<Scene> scene);
-
     void loadMatrices(TransMat &mat,
                       const Position* p,
                       const Rotation* r,
                       const Scale* s);
 
     void loadExposion(Entity &e);
-
-    void loadSpotLights(std::shared_ptr<Scene> scene);
-
-    void loadPointLights(std::shared_ptr<Scene> scene);
-
-    void loadDirectionalLight(std::shared_ptr<Scene> scene);
 
     void buildModelMatrix(glm::mat4 &model,
                           const Position* p,

@@ -18,6 +18,20 @@ namespace Factory {
     }
 
     void VaoFactory::createVao(const std::string &source,
+                               const std::vector<GLfloat> &position,
+                               const std::vector<GLfloat> &texture)
+    {
+        if(!isLoaded(source)) {
+            auto vao = Vao::create();
+            vao->bind();
+            vao->createAttribute(0, SIZE_3D, &position[0], position.size());
+            vao->createAttribute(1, SIZE_2D, &texture[0], texture.size());
+            vao->unbind();
+            vaos[source] = std::move(vao);
+        }
+    }
+
+    void VaoFactory::createVao(const std::string &source,
                                const std::vector<GLuint> &indices,
                                const std::vector<GLfloat> &position)
     {

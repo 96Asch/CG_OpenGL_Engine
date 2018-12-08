@@ -21,6 +21,10 @@ namespace Factory {
         ~VaoFactory();
 
         void createVao(const std::string &source,
+                       const std::vector<GLfloat> &position,
+                       const std::vector<GLfloat> &texture);
+
+        void createVao(const std::string &source,
                        const std::vector<GLuint> &indices,
                        const std::vector<GLfloat> &position);
 

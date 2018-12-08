@@ -13,9 +13,9 @@ public:
 
     virtual void init() = 0;
 
-    virtual void updateStep(const float &, Scene*) {};
+    virtual void updateStep(const float &, std::shared_ptr<Scene>) {};
 
-    virtual void renderStep(const float &, Scene*) {};
+    virtual void renderStep(const float &, std::shared_ptr<Scene>) {};
 
     virtual void cleanup() = 0;
 

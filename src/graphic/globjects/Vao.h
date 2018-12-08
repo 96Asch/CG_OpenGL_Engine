@@ -18,7 +18,9 @@ public:
 
     static std::shared_ptr<Vao> create();
 
-    int getIndexCount();
+    size_t getIndexCount();
+
+    size_t getVertexCount();
 
     template <typename... Args>
     void bind(Args... args);
@@ -53,7 +55,8 @@ private:
     GLuint id;
     std::vector<std::shared_ptr<Vbo>> vbos;
 	std::shared_ptr<Vbo> indexVbo;
-	int indexCount;
+	size_t indexCount;
+    size_t vertexCount;
 };
 
 template <typename... Args>

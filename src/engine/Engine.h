@@ -2,6 +2,7 @@
 #define ENGINE_H_
 
 #include <vector>
+#include <memory>
 
 #include "Window.h"
 #include "../factory/TextureFactory.h"
@@ -30,20 +31,26 @@ public:
 
     void render(const float &interpolation);
 
-    void cleanup();
-
-    void add(System* system);
+    template <typename T, typename... Args>
+    void add(Args... args);
 
 private:
-    std::vector<System*> systems;
+    std::vector<std::unique_ptr<System>> systems;
     Window window;
-    Scene* scene;
+    std::shared_ptr<Scene> scene;
 
     Factory::TextureFactory t;
     Factory::VaoFactory v;
     Factory::FboFactory f;
 
     Input::InputHandler input;
+
+    void cleanup();
 };
+
+template <typename T, typename... Args>
+void Engine::add(Args... args) {
+    systems.push_back(std::make_unique<T>(args...));
+}
 
 #endif

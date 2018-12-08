@@ -13,7 +13,7 @@ void PhysicsSystem::init() {
 
 }
 
-void PhysicsSystem::updateStep(const float &tps, Scene* scene) {
+void PhysicsSystem::updateStep(const float &tps, std::shared_ptr<Scene> scene) {
     applyRotation(tps, scene);
     applyMovement(tps, scene);
 
@@ -23,11 +23,11 @@ void PhysicsSystem::cleanup() {
 
 }
 
-void PhysicsSystem::applyRotation(const float &tps, Scene* scene) {
+void PhysicsSystem::applyRotation(const float &tps, std::shared_ptr<Scene> scene) {
     applyCameraRotation(tps, scene);
 }
 
-void PhysicsSystem::applyCameraRotation(const float &tps, Scene* scene) {
+void PhysicsSystem::applyCameraRotation(const float &tps, std::shared_ptr<Scene> scene) {
     for(auto e : scene->getEntities().withComponents<Camera, Rotation, Mouse, Motion, LookAt>()) {
         Camera* c = e.getComponent<Camera>();
         Mouse* m = e.getComponent<Mouse>();
@@ -56,11 +56,11 @@ void PhysicsSystem::applyCameraRotation(const float &tps, Scene* scene) {
     }
 }
 
-void PhysicsSystem::applyMovement(const float &tps, Scene *scene) {
+void PhysicsSystem::applyMovement(const float &tps, std::shared_ptr<Scene> scene) {
     applyCameraMovement(tps, scene);
 }
 
-void PhysicsSystem::applyCameraMovement(const float &tps, Scene* scene) {
+void PhysicsSystem::applyCameraMovement(const float &tps, std::shared_ptr<Scene> scene) {
     for(auto e : scene->getEntities().withComponents<Camera, Position, Action, Motion, LookAt>()) {
         Action* a = e.getComponent<Action>();
         Camera* c = e.getComponent<Camera>();

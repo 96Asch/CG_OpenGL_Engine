@@ -17,6 +17,8 @@ public:
 
     void bindTextures();
 
+    void unbindTextures();
+
 private:
 
     GLuint positionBuff;

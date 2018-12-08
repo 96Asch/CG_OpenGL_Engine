@@ -15,8 +15,12 @@ std::shared_ptr<Vao> Vao::create() {
     return std::make_shared<Vao>(id);
 }
 
-int Vao::getIndexCount() {
+size_t Vao::getIndexCount() {
     return indexCount;
+}
+
+size_t Vao::getVertexCount() {
+    return vertexCount;
 }
 
 void Vao::createIndexBuffer(const GLuint* indices, const GLsizei &size) {
@@ -29,6 +33,9 @@ void Vao::createIndexBuffer(const GLuint* indices, const GLsizei &size) {
 void Vao::createAttribute(const int &attribute,
                           const GLsizei &dimension,
                           const GLfloat* data, const GLsizeiptr & dataSize) {
+    if(dimension == 3)
+        vertexCount = dataSize;
+    glEnableVertexAttribArray(attribute);   
     auto vbo = Vbo::create(GL_ARRAY_BUFFER);
     vbo->bind();
     vbo->storeData(data, dataSize);
@@ -41,6 +48,9 @@ void Vao::createAttribute(const int &attribute,
 void Vao::createAttribute(const int &attribute,
                           const GLsizei &dimension,
                           const GLuint* data, const GLsizeiptr & dataSize) {
+    if(dimension == 3)
+        vertexCount = dataSize;
+    glEnableVertexAttribArray(attribute);
     auto vbo = Vbo::create(GL_ARRAY_BUFFER);
     vbo->bind();
     vbo->storeData(data, dataSize);

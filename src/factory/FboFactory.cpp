@@ -10,13 +10,6 @@ namespace Factory {
         fbos.clear();
     }
 
-    std::shared_ptr<Fbo> FboFactory::getFbo(const std::string &source) {
-        if(isLoaded(source))
-            return fbos[source];
-        throw std::runtime_error("Error: cannot find FBO for: " + source);
-        return nullptr;
-    }
-
     void FboFactory::removeFbo(const std::string &id) {
         if(isLoaded(id))
             fbos.erase(id);

@@ -20,19 +20,19 @@ public:
 
     virtual void init() override;
 
-    virtual void updateStep(const float &tps, Scene* scene) override;
+    virtual void updateStep(const float &tps, std::shared_ptr<Scene> scene) override;
 
     virtual void cleanup() override;
 
 private:
 
-    void applyRotation(const float &tps, Scene* scene);
+    void applyRotation(const float &tps, std::shared_ptr<Scene> scene);
 
-    void applyCameraRotation(const float &tps, Scene* scene);
+    void applyCameraRotation(const float &tps, std::shared_ptr<Scene> scene);
 
-    void applyMovement(const float &tps, Scene* scene);
+    void applyMovement(const float &tps, std::shared_ptr<Scene> scene);
 
-    void applyCameraMovement(const float &tps, Scene* scene);
+    void applyCameraMovement(const float &tps, std::shared_ptr<Scene> scene);
 
 };
 

@@ -3,15 +3,15 @@ layout (triangles) in;
 layout (triangle_strip, max_vertices = 3) out;
 
 in TD_DATA {
+  vec3 world0;
   vec2 tex0;
   vec3 normal0;
-  vec3 world0;
 } inData[];
 
 out TD_DATA {
+  vec3 world0;
   vec2 tex0;
   vec3 normal0;
-  vec3 world0;
 } outData;
 
 uniform float explodeDistance;

@@ -20,11 +20,7 @@ void SkyboxRenderer::init() {
     shader.storeUniformLocations();
 }
 
-void SkyboxRenderer::preRender(TransMat &, Scene *) {
-
-}
-
-void SkyboxRenderer::render(TransMat &mat, Scene* scene) {
+void SkyboxRenderer::render(TransMat &mat, std::shared_ptr<Scene> scene) {
     Skybox &box = scene->getSky();
     if(box.active) {
         GLUtil::cullFrontFaces(true);
@@ -36,21 +32,17 @@ void SkyboxRenderer::render(TransMat &mat, Scene* scene) {
         shader.getUniform<UniformInt>("map1")->load(0);
         shader.getUniform<UniformVec3>("fogColor")->load(scene->getFog().color);
 
-        box.getVao()->bind(0);
+        box.getVao()->bind();
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, box.getTexture());
         glDrawElements(GL_TRIANGLES, box.getVao()->getIndexCount(), GL_UNSIGNED_INT, 0);
         glBindTexture(GL_TEXTURE_2D, 0);
-        box.getVao()->unbind(0);
+        box.getVao()->unbind();
 
         shader.stop();
         GLUtil::cullFrontFaces(false);
         GLUtil::enableDepthMask(true);
     }
-}
-
-void SkyboxRenderer::postRender(Scene *) {
-
 }
 
 void SkyboxRenderer::cleanup() {
