@@ -1,5 +1,5 @@
-#ifndef ENTITYLIGHTRENDERER_H_
-#define ENTITYLIGHTRENDERER_H_
+#ifndef LIGHTRENDERER_H_
+#define LIGHTRENDERER_H_
 
 #include "Renderer.h"
 
@@ -10,16 +10,17 @@ struct Model;
 struct Entity;
 
 class Scene;
-class EntityLightRenderer : public Renderer {
+class LightRenderer : public Renderer {
 
 public:
 
-    EntityLightRenderer();
-    ~EntityLightRenderer();
+    LightRenderer();
+    ~LightRenderer();
 
     virtual void init() override;
 
-    virtual void render(TransMat &transform, std::shared_ptr<Scene> scene) override;
+    virtual void render(TransMat &transform,
+                        const std::shared_ptr<Scene> &scene) override;
 
     virtual void cleanup() override;
 

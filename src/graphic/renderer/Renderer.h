@@ -19,7 +19,7 @@ public:
     virtual void init() = 0;
 
     virtual void render(TransMat &transform,
-                        std::shared_ptr<Scene> scene) = 0;
+                        const std::shared_ptr<Scene> &scene) = 0;
 
     virtual void cleanup() = 0;
 

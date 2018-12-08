@@ -29,7 +29,9 @@ void GBufferEntityRenderer::init() {
     shader.stop();
 }
 
-void GBufferEntityRenderer::render(TransMat &matrices, std::shared_ptr<Scene> scene) {
+void GBufferEntityRenderer::render(TransMat &matrices,
+                                   const std::shared_ptr<Scene> &scene)
+{
     shader.start();
     for(auto e : scene->getEntities().withComponents<Model, Position, Rotation, Scale>()) {
         Model* m = e.getComponent<Model>();

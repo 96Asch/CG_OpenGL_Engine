@@ -20,7 +20,9 @@ void SkyboxRenderer::init() {
     shader.storeUniformLocations();
 }
 
-void SkyboxRenderer::render(TransMat &mat, std::shared_ptr<Scene> scene) {
+void SkyboxRenderer::render(TransMat &mat,
+                            const std::shared_ptr<Scene> &scene)
+{
     Skybox &box = scene->getSky();
     if(box.active) {
         GLUtil::cullFrontFaces(true);

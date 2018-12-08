@@ -7,6 +7,8 @@ namespace Factory {
     FboFactory::FboFactory() { FBO = this; }
 
     FboFactory::~FboFactory() {
+        for(auto fbo : fbos)
+            fbo.second->remove();
         fbos.clear();
     }
 

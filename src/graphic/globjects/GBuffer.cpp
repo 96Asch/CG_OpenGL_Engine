@@ -49,8 +49,20 @@ void GBuffer::bind() {
 }
 
 void GBuffer::remove() {
-
+    glDeleteFramebuffers(1, &id);
+    glDeleteTextures(1, &positionBuff);
+    glDeleteTextures(1, &normalBuff);
+    glDeleteTextures(1, &colorSpecBuff);
 }
+
+void GBuffer::blitToDefault(const unsigned &width, const unsigned &height) {
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, id);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    glBlitFramebuffer(0, 0, width, height, 0, 0, width, height,
+                      GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 
 void GBuffer::bindTextures() {
     glActiveTexture(GL_TEXTURE0);

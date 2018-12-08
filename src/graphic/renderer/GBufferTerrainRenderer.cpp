@@ -24,7 +24,9 @@ void GBufferTerrainRenderer::init() {
     shader.stop();
 }
 
-void GBufferTerrainRenderer::render(TransMat &mat, std::shared_ptr<Scene> scene) {
+void GBufferTerrainRenderer::render(TransMat &mat,
+                                    const std::shared_ptr<Scene> &scene)
+{
     Terrain &terrain = scene->getTerrain();
     GLUtil::cullBackFaces(true);
     shader.start();

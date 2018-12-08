@@ -15,7 +15,7 @@ void GraphicSystem::init() {
     buildProjectionMatrix();
     bufferRenderers.push_back(std::make_unique<GBufferTerrainRenderer>());
     bufferRenderers.push_back(std::make_unique<GBufferEntityRenderer>());
-    screenRenderers.push_back(std::make_unique<EntityLightRenderer>());
+    screenRenderers.push_back(std::make_unique<LightRenderer>());
     forwardRenderers.push_back(std::make_unique<SkyboxRenderer>());
 
     Factory::FBO->createFbo<GBuffer>("GBuffer", Global::width, Global::height);
@@ -37,23 +37,14 @@ void GraphicSystem::renderStep(const float &interpolation, std::shared_ptr<Scene
     interpolationStep(interpolation, scene);
     buildViewMatrix(scene);
 
-    Factory::FBO->getFbo<GBuffer>("GBuffer")->bind();
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    for(auto &renderer : bufferRenderers)
-        renderer->render(transform, scene);
-    Factory::FBO->getFbo<GBuffer>("GBuffer")->unbind();
+
+    geometryPass(scene);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    Factory::FBO->getFbo<GBuffer>("GBuffer")->bindTextures();
-    for(auto &renderer : screenRenderers)
-        renderer->render(transform, scene);
-    Factory::FBO->getFbo<GBuffer>("GBuffer")->unbindTextures();
-
-    // for(auto &renderer : forwardRenderers)
-        // renderer->render(transform, scene);
-
+    lightingPass(scene);
     glClearColor(color.x, color.y, color.z, 1.0);
+    forwardPass(scene);
 }
 
 void GraphicSystem::cleanup() {
@@ -66,6 +57,34 @@ void GraphicSystem::cleanup() {
     for(auto &renderer : forwardRenderers) {
         renderer->cleanup();
     }
+}
+
+void GraphicSystem::geometryPass(const std::shared_ptr<Scene> &scene) {
+    Factory::FBO->getFbo<GBuffer>("GBuffer")->bind();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    for(auto &renderer : bufferRenderers)
+        renderer->render(transform, scene);
+    Factory::FBO->getFbo<GBuffer>("GBuffer")->unbind();
+}
+
+void GraphicSystem::lightingPass(const std::shared_ptr<Scene> &scene) {
+    // glEnable(GL_BLEND);
+   	// glBlendFunc(GL_ONE, GL_ONE);
+    // glDepthMask(false);
+    // glDepthFunc(GL_EQUAL);
+    Factory::FBO->getFbo<GBuffer>("GBuffer")->bindTextures();
+    for(auto &renderer : screenRenderers)
+        renderer->render(transform, scene);
+    Factory::FBO->getFbo<GBuffer>("GBuffer")->unbindTextures();
+    // glDepthFunc(GL_LESS);
+    // glDepthMask(true);
+    // glDisable(GL_BLEND);
+}
+
+void GraphicSystem::forwardPass(const std::shared_ptr<Scene> &scene) {
+    Factory::FBO->getFbo<GBuffer>("GBuffer")->blitToDefault(Global::width, Global::height);
+    for(auto &renderer : forwardRenderers)
+        renderer->render(transform, scene);
 }
 
 void GraphicSystem::buildViewMatrix(std::shared_ptr<Scene> scene) {

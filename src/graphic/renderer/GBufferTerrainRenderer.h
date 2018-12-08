@@ -15,7 +15,8 @@ public:
 
     virtual void init() override;
 
-    virtual void render(TransMat &transform, std::shared_ptr<Scene> scene) override;
+    virtual void render(TransMat &transform,
+                        const std::shared_ptr<Scene> &scene) override;
 
     virtual void cleanup() override;
 

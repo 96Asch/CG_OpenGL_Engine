@@ -34,6 +34,12 @@ private:
 
     TransMat transform;
 
+    void geometryPass(const std::shared_ptr<Scene> &scene);
+
+    void lightingPass(const std::shared_ptr<Scene> &scene);
+
+    void forwardPass(const std::shared_ptr<Scene> &scene);
+
     void buildViewMatrix(std::shared_ptr<Scene> scene);
 
     void buildProjectionMatrix();

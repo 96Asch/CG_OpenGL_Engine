@@ -1,6 +1,6 @@
 #include <glm/mat4x4.hpp>
 
-#include "EntityLightRenderer.h"
+#include "LightRenderer.h"
 #include "../../factory/FboFactory.h"
 #include "../globjects/GBuffer.h"
 #include "Uniforms.h"
@@ -8,12 +8,12 @@
 #include "Components.h"
 #include "../../engine/Scene.h"
 
-EntityLightRenderer::EntityLightRenderer() {}
+LightRenderer::LightRenderer() {}
 
-EntityLightRenderer::~EntityLightRenderer() {}
+LightRenderer::~LightRenderer() {}
 
-void EntityLightRenderer::init() {
-    shader.init("shader/entity-light.vs", "shader/entity-light.fs",
+void LightRenderer::init() {
+    shader.init("shader/light.vs", "shader/light.fs",
                 {"position", "uv"});
     shader.addUniform(new UniformVec3("ambientLight"));
     shader.addUniform(new UniformVec3("camPosition"));
@@ -33,7 +33,9 @@ void EntityLightRenderer::init() {
     Factory::generateQuad("screenQuad", 1.0f);
 }
 
-void EntityLightRenderer::render(TransMat &matrices, std::shared_ptr<Scene> scene) {
+void LightRenderer::render(TransMat &matrices,
+                                 const std::shared_ptr<Scene> &scene)
+{
     shader.start();
     loadSpotLights(scene);
     loadPointLights(scene);
@@ -47,11 +49,11 @@ void EntityLightRenderer::render(TransMat &matrices, std::shared_ptr<Scene> scen
     shader.stop();
 };
 
-void EntityLightRenderer::cleanup() {
+void LightRenderer::cleanup() {
     shader.cleanup();
 }
 
-void EntityLightRenderer::loadCamPosition(std::shared_ptr<Scene> scene) {
+void LightRenderer::loadCamPosition(std::shared_ptr<Scene> scene) {
     glm::vec3 position(glm::vec3(0.0f));
     for(auto e : scene->getEntities().withComponents<Camera, Position>()) {
         position = e.getComponent<Position>()->interpolated;
@@ -59,7 +61,7 @@ void EntityLightRenderer::loadCamPosition(std::shared_ptr<Scene> scene) {
     shader.getUniform<UniformVec3>("camPosition")->load(position);
 }
 
-void EntityLightRenderer::loadPointLights(std::shared_ptr<Scene> scene) {
+void LightRenderer::loadPointLights(std::shared_ptr<Scene> scene) {
     unsigned counter = 0;
     for(auto light : scene->getEntities().withComponents<PointLight, Position>()) {
         PointLight* pl = light.getComponent<PointLight>();
@@ -73,7 +75,7 @@ void EntityLightRenderer::loadPointLights(std::shared_ptr<Scene> scene) {
     }
 }
 
-void EntityLightRenderer::loadSpotLights(std::shared_ptr<Scene> scene) {
+void LightRenderer::loadSpotLights(std::shared_ptr<Scene> scene) {
     unsigned counter = 0;
     for(auto light : scene->getEntities().withComponents<SpotLight, Position, LookAt>()) {
         SpotLight* pl = light.getComponent<SpotLight>();
@@ -91,6 +93,6 @@ void EntityLightRenderer::loadSpotLights(std::shared_ptr<Scene> scene) {
     }
 }
 
-void EntityLightRenderer::loadDirectionalLight(std::shared_ptr<Scene> scene) {
+void LightRenderer::loadDirectionalLight(std::shared_ptr<Scene> scene) {
     shader.getUniform<UniformDLight>("directionalLight")->load(scene->getDirectional());
 }

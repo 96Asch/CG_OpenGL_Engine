@@ -15,6 +15,8 @@ public:
 
     virtual void remove() override;
 
+    void blitToDefault(const unsigned &width, const unsigned &height);
+
     void bindTextures();
 
     void unbindTextures();
