@@ -11,8 +11,6 @@ public:
 
     virtual ~GBuffer();
 
-    virtual void bind() override;
-
     virtual void remove() override;
 
     void blitToDefault(const unsigned &width, const unsigned &height);

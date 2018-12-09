@@ -9,7 +9,9 @@ struct UniformVec3 : public Uniform {
 
 
     UniformVec3(const std::string &name) : Uniform(name),
-                                           first(true){};
+                                           first(true),
+                                           current(glm::vec3(0.0f))
+                                           {};
 
     void load(const glm::vec3 &vector) {
         if(first || current != vector) {
@@ -23,8 +25,8 @@ struct UniformVec3 : public Uniform {
         load(glm::vec3(v1,v2,v3));
     };
 
-    glm::vec3 current;
     bool first;
+    glm::vec3 current;
 
 };
 

@@ -43,11 +43,6 @@ GBuffer::GBuffer(const unsigned &width, const unsigned &height) {
 
 GBuffer::~GBuffer() {}
 
-
-void GBuffer::bind() {
-    glBindFramebuffer(GL_FRAMEBUFFER, id);
-}
-
 void GBuffer::remove() {
     glDeleteFramebuffers(1, &id);
     glDeleteTextures(1, &positionBuff);

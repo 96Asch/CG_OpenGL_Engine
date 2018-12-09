@@ -7,7 +7,9 @@ struct UniformInt : public Uniform {
 
 
     UniformInt(const std::string &name) : Uniform(name),
-                                            first(true)  {};
+                                            first(true),
+                                            current(0)
+                                            {};
 
     void load(const int &value) {
         if(first || current != value) {
@@ -17,8 +19,8 @@ struct UniformInt : public Uniform {
         }
     };
 
-    int current;
     bool first;
+    int current;
 };
 
 #endif

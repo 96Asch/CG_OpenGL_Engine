@@ -7,7 +7,9 @@ struct UniformFloat : public Uniform {
 
 
     UniformFloat(const std::string &name) : Uniform(name),
-                                            first(true)  {};
+                                            first(true),
+                                            current(0.0f)
+                                            {};
 
     void load(const float &value) {
         if(first || current != value) {
@@ -17,8 +19,8 @@ struct UniformFloat : public Uniform {
         }
     };
 
-    float current;
     bool first;
+    float current;
 };
 
 #endif

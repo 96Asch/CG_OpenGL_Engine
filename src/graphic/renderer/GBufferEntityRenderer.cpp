@@ -32,6 +32,7 @@ void GBufferEntityRenderer::init() {
 void GBufferEntityRenderer::render(TransMat &matrices,
                                    const std::shared_ptr<Scene> &scene)
 {
+    // GLUtil::cullBackFaces(true);
     shader.start();
     for(auto e : scene->getEntities().withComponents<Model, Position, Rotation, Scale>()) {
         Model* m = e.getComponent<Model>();
@@ -47,6 +48,7 @@ void GBufferEntityRenderer::render(TransMat &matrices,
         m->getVao()->unbind();
     }
     shader.stop();
+    // GLUtil::cullBackFaces(false);
 };
 
 void GBufferEntityRenderer::cleanup() {

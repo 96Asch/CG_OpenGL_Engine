@@ -11,7 +11,9 @@ public:
 
     virtual ~Fbo() {};
 
-    virtual void bind() = 0;
+    void bind() {
+        glBindFramebuffer(GL_FRAMEBUFFER, id);
+    }
 
     void unbind() {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);

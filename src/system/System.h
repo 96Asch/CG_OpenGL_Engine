@@ -21,7 +21,6 @@ public:
 
 protected:
 
-    Engine* owner = nullptr;
 };
 
 #endif
