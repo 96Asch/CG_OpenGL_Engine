@@ -68,17 +68,10 @@ void GraphicSystem::geometryPass(const std::shared_ptr<Scene> &scene) {
 }
 
 void GraphicSystem::lightingPass(const std::shared_ptr<Scene> &scene) {
-    // glEnable(GL_BLEND);
-   	// glBlendFunc(GL_ONE, GL_ONE);
-    // glDepthMask(false);
-    // glDepthFunc(GL_EQUAL);
     Factory::FBO->getFbo<GBuffer>("GBuffer")->bindTextures();
     for(auto &renderer : screenRenderers)
         renderer->render(transform, scene);
     Factory::FBO->getFbo<GBuffer>("GBuffer")->unbindTextures();
-    // glDepthFunc(GL_LESS);
-    // glDepthMask(true);
-    // glDisable(GL_BLEND);
 }
 
 void GraphicSystem::forwardPass(const std::shared_ptr<Scene> &scene) {

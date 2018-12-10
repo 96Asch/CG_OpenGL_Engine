@@ -16,8 +16,11 @@ void SkyboxRenderer::init() {
     shader.init("shader/skybox.vs", "shader/skybox.fs", {"position"});
     shader.addUniform(new UniformMat4("pv"));
     shader.addUniform(new UniformInt("map1"));
-    shader.addUniform(new UniformVec3("fogColor"));
     shader.storeUniformLocations();
+
+    shader.start();
+    shader.getUniform<UniformInt>("map1")->load(0);
+    shader.stop();
 }
 
 void SkyboxRenderer::render(TransMat &mat,
@@ -29,10 +32,7 @@ void SkyboxRenderer::render(TransMat &mat,
         GLUtil::enableDepthMask(false);
         shader.start();
 
-        buildProjectionViewMatrix(mat, box);
-        shader.getUniform<UniformMat4>("pv")->load(mat.pv);
-        shader.getUniform<UniformInt>("map1")->load(0);
-        shader.getUniform<UniformVec3>("fogColor")->load(scene->getFog().color);
+        loadMatrix(mat, box);
 
         box.getVao()->bind();
         glActiveTexture(GL_TEXTURE0);
@@ -51,11 +51,11 @@ void SkyboxRenderer::cleanup() {
     shader.cleanup();
 };
 
-void SkyboxRenderer::buildProjectionViewMatrix(TransMat &mat, Skybox &box) {
+void SkyboxRenderer::loadMatrix(TransMat &mat, Skybox &box) {
     glm::mat4 v = glm::mat4(mat.view);
     v[3][0] = 0.0f;
     v[3][1] = 0.0f;
     v[3][2] = 0.0f;
     v = glm::rotate(v, glm::radians(box.rotation), glm::vec3(0.0f, 1.0f, 0.0f));
-    mat.pv = glm::mat4(mat.projection * v);
+    shader.getUniform<UniformMat4>("pv")->load(glm::mat4(mat.projection * v));
 }

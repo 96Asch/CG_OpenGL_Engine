@@ -21,7 +21,7 @@ public:
 
 protected:
 
-    void buildProjectionViewMatrix(TransMat &mat, Skybox &box);
+    void loadMatrix(TransMat &mat, Skybox &box);
 };
 
 #endif
