@@ -7,6 +7,7 @@
 
 #include "System.h"
 #include "../util/TransMat.h"
+#include "../graphic/renderer/HdrRenderer.h"
 
 class Scene;
 class Renderer;
@@ -30,6 +31,7 @@ private:
 
     std::vector<std::unique_ptr<Renderer>> bufferRenderers;
     std::vector<std::unique_ptr<Renderer>> screenRenderers;
+    HdrRenderer hRenderer;
     std::vector<std::unique_ptr<Renderer>> forwardRenderers;
 
     TransMat transform;
@@ -37,6 +39,8 @@ private:
     void geometryPass(const std::shared_ptr<Scene> &scene);
 
     void lightingPass(const std::shared_ptr<Scene> &scene);
+
+    void postProcessPass(const std::shared_ptr<Scene> &scene);
 
     void forwardPass(const std::shared_ptr<Scene> &scene);
 

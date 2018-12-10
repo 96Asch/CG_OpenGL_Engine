@@ -6,7 +6,8 @@ const float specularPower = 10;
 
 in vec2 tex0;
 
-out vec4 fragColor;
+layout (location = 0) out vec4 fragColor;
+layout (location = 1) out vec4 brightColor;
 
 
 struct BaseLight {
@@ -122,4 +123,8 @@ void main() {
   }
 
   fragColor = texColor * light;
+  float brightFactor = (fragColor.r * 0.2126) +
+                          (fragColor.g * 0.7152) +
+                              (fragColor.b * 0.0722);
+  brightColor = fragColor * brightFactor * 0.5;
 }

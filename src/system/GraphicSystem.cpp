@@ -5,6 +5,7 @@
 #include "../engine/Scene.h"
 #include "../factory/FboFactory.h"
 #include "../graphic/globjects/GBuffer.h"
+#include "../graphic/globjects/PostProcess.h"
 #include "Components.h"
 
 GraphicSystem::GraphicSystem() : System() {}
@@ -19,6 +20,8 @@ void GraphicSystem::init() {
     forwardRenderers.push_back(std::make_unique<SkyboxRenderer>());
 
     Factory::FBO->createFbo<GBuffer>("GBuffer", Global::width, Global::height);
+    Factory::FBO->createFbo<PostProcess>("PostProcess", Global::width, Global::height);
+
     for(auto &renderer : bufferRenderers)
         renderer->init();
 
@@ -27,11 +30,12 @@ void GraphicSystem::init() {
 
     for(auto &renderer : forwardRenderers)
         renderer->init();
+
+    hRenderer.init();
     glEnable(GL_DEPTH_TEST);
 }
 
 void GraphicSystem::renderStep(const float &interpolation, std::shared_ptr<Scene> scene) {
-    const glm::vec3& color = scene->getFog().color;
     glClearColor(0.0,0.0,0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     interpolationStep(interpolation, scene);
@@ -43,7 +47,9 @@ void GraphicSystem::renderStep(const float &interpolation, std::shared_ptr<Scene
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     lightingPass(scene);
-    glClearColor(color.x, color.y, color.z, 1.0);
+
+    postProcessPass(scene);
+
     forwardPass(scene);
 }
 
@@ -57,6 +63,7 @@ void GraphicSystem::cleanup() {
     for(auto &renderer : forwardRenderers) {
         renderer->cleanup();
     }
+    hRenderer.cleanup();
 }
 
 void GraphicSystem::geometryPass(const std::shared_ptr<Scene> &scene) {
@@ -68,10 +75,18 @@ void GraphicSystem::geometryPass(const std::shared_ptr<Scene> &scene) {
 }
 
 void GraphicSystem::lightingPass(const std::shared_ptr<Scene> &scene) {
+    Factory::FBO->getFbo<PostProcess>("PostProcess")->bind();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     Factory::FBO->getFbo<GBuffer>("GBuffer")->bindTextures();
     for(auto &renderer : screenRenderers)
         renderer->render(transform, scene);
     Factory::FBO->getFbo<GBuffer>("GBuffer")->unbindTextures();
+    Factory::FBO->getFbo<PostProcess>("PostProcess")->unbind();
+}
+
+void GraphicSystem::postProcessPass(const std::shared_ptr<Scene> &scene) {
+    Factory::FBO->getFbo<PostProcess>("PostProcess")->bindTextures();
+    hRenderer.render(transform, scene);
 }
 
 void GraphicSystem::forwardPass(const std::shared_ptr<Scene> &scene) {

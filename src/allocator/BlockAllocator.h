@@ -4,12 +4,13 @@
 
 #include <vector>
 #include <cassert>
+
 class BlockAllocator {
 
 public:
 
-	explicit BlockAllocator(std::size_t elementSize,
-                            std::size_t chunckSize = 8192)
+	explicit BlockAllocator(size_t elementSize,
+                            size_t chunckSize = 8192)
                             : elementSize(elementSize),
                               chunckSize(chunckSize),
                               size(0),

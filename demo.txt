@@ -29,7 +29,7 @@
   [texture]
   {
     texture=texture/diffuse/mud.png
-    reflectance=1.0
+    reflectance=0.0
   }
   [texture]
   {
@@ -39,12 +39,12 @@
   [texture]
   {
     texture=texture/diffuse/ice.png
-    reflectance=1.5
+    reflectance=0.5
   }
   [texture]
   {
     texture=texture/diffuse/path.png
-    reflectance=1.5
+    reflectance=1.0
   }
 }
 
