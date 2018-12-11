@@ -68,11 +68,8 @@
 
   [interact]
   {
-  }
-
-  [model]
-  {
-    mesh=models/cube.obj
+    minExtents=-1.0,-1.0,-1.0
+    maxExtents=1.0,1.0,1.0
   }
 
   [motion]
