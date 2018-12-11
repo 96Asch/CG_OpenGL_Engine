@@ -1,43 +1,45 @@
 #ifndef VAO_H_
 #define VAO_H_
+
 #include <vector>
+#include <memory>
 #include "Global.h"
 #include "Vbo.h"
+
+namespace Factory {
+    class VaoFactory;
+};
 
 class Vao {
 
 public:
 
+    Vao(const GLuint &id);
+
     ~Vao();
 
-    static Vao* create();
+    static std::shared_ptr<Vao> create();
 
-    int getIndexCount();
+    size_t getIndexCount();
 
-    void bind(int attribs...);
+    size_t getVertexCount();
 
-    void unbind(int attribs...);
+    template <typename... Args>
+    void bind(Args... args);
 
-    void createIndexBuffer(int* indices, const GLsizei &size);
+    template <typename... Args>
+    void unbind(Args ...args);
 
-    template <typename T>
-    void createAttribute(const int &attribute, const GLsizei &attribSize,
-                              T* data, const GLsizei &size) {
-        Vbo* vbo = Vbo::create(GL_ARRAY_BUFFER);
-    	vbo->bind();
-    	vbo->storeData<T>(data, size);
-    	glVertexAttribPointer(attribute, attribSize, GL_FLOAT,
-                              false, attribSize * BYTES_PER_FLOAT, 0);
-    	vbo->unbind();
-    	vbos.push_back(vbo);
-    }
+    void createIndexBuffer(const GLuint* indices, const GLsizei &size);
 
-    void createAttribute(const int &attribute,
-                         const GLsizei &attribSize,
-                         int* data,
-                         const GLsizei &size);
 
-    void addInstancedAttribute(Vbo* vbo,
+    void createAttribute(const int &attribute, const GLsizei &dimension,
+                         const GLfloat* data, const GLsizeiptr &dataSize);
+
+    void createAttribute(const int &attribute, const GLsizei &dimension,
+                         const GLuint* data, const GLsizeiptr &dataSize);
+
+    void addInstancedAttribute(std::shared_ptr<Vbo> vbo,
                                const int &attribute,
                                const GLsizei &datasize,
                                const GLsizei &instancedLength,
@@ -46,17 +48,38 @@ public:
     void remove();
 
     void bind();
+
     void unbind();
 
+    glm::vec3 getMinExtents();
+
+    glm::vec3 getMaxExtents();
+
 private:
+    friend class Factory::VaoFactory;
+
     GLuint id;
-    std::vector<Vbo*> vbos;
-	Vbo* indexVbo;
-	int indexCount;
-
-    Vao(const GLuint &id);
-
-
+    std::vector<std::shared_ptr<Vbo>> vbos;
+	std::shared_ptr<Vbo> indexVbo;
+	size_t indexCount;
+    size_t vertexCount;
+    glm::vec3 minExtents;
+    glm::vec3 maxExtents;
 };
 
+template <typename... Args>
+void Vao::bind(Args... args) {
+    bind();
+    Util::pack_foreach([this](const GLint &attribute){
+        glEnableVertexAttribArray(attribute);
+    }, args...);
+}
+
+template <typename... Args>
+void Vao::unbind(Args... args) {
+    Util::pack_foreach([this](const GLint &attribute){
+        glDisableVertexAttribArray(attribute);
+    }, args...);
+    unbind();
+}
 #endif

@@ -1,29 +1,30 @@
 #ifndef VBO_H_
 #define VBO_H_
 
-#include "Global.h"
+#include <memory>
 
+#include "Global.h"
 
 class Vbo {
 
 public:
+    Vbo(const GLenum &target, const GLuint &id);
 
     ~Vbo();
 
-    static Vbo* create(const GLenum &target);
+    static std::shared_ptr<Vbo> create(const GLenum &target);
 
-    static Vbo* createEmpty(const int &numFloats);
+    static std::shared_ptr<Vbo> createEmpty(const int &numFloats);
 
     void bind();
 
     void unbind();
 
-    template <typename T>
-    void storeData(T* data, const GLsizei &size) {
-        glBufferData(target, size, data, GL_STATIC_DRAW);
-    }
+    void storeData(const GLfloat* data, const GLsizeiptr &size);
 
-    void storeData(const GLsizei &size);
+    void storeData(const GLuint* data, const GLsizeiptr &size);
+
+    void storeEmpty(const GLsizei &size);
 
     void update(float* data, const GLsizei &size);
 
@@ -32,8 +33,6 @@ public:
 private:
     GLenum target;
     GLuint id;
-
-    Vbo(const GLenum &target, const GLuint &id);
 
 };
 

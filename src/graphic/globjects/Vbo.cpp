@@ -5,16 +5,16 @@ Vbo::Vbo(const GLenum &target, const GLuint &id)
 
 Vbo::~Vbo() {}
 
-Vbo* Vbo::create(const GLenum &target) {
+std::shared_ptr<Vbo> Vbo::create(const GLenum &target) {
     GLuint id;
     glGenBuffers(1, &id);
-    return new Vbo(target, id);
+    return std::make_shared<Vbo>(target, id);
 }
 
-Vbo* Vbo::createEmpty(const int &numFloats) {
-    Vbo* vbo = create(GL_ARRAY_BUFFER);
+std::shared_ptr<Vbo> Vbo::createEmpty(const int &numFloats) {
+    auto vbo = create(GL_ARRAY_BUFFER);
     vbo->bind();
-    vbo->storeData(numFloats);
+    vbo->storeEmpty(numFloats);
     vbo->unbind();
     return vbo;
 }
@@ -27,13 +27,21 @@ void Vbo::unbind() {
     glBindBuffer(target, 0);
 }
 
-void Vbo::storeData(const GLsizei &size) {
-    glBufferData(target, size * BYTES_PER_FLOAT, 0, GL_STREAM_DRAW);
+void Vbo::storeData(const GLfloat* data, const GLsizeiptr &size) {
+    glBufferData(target, sizeof(GLfloat) * size, data, GL_STATIC_DRAW);
+}
+
+void Vbo::storeData(const GLuint* data, const GLsizeiptr &size) {
+    glBufferData(target, sizeof(GLint) * size, data, GL_STATIC_DRAW);
+}
+
+void Vbo::storeEmpty(const GLsizei &size) {
+    glBufferData(target, size * sizeof(GLfloat), 0, GL_STREAM_DRAW);
 }
 
 void Vbo::update(float* data, const GLsizei &size) {
     bind();
-    storeData(size);
+    storeEmpty(size);
     glBufferSubData(target, 0, size, data);
     unbind();
 }
