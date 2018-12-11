@@ -6,7 +6,6 @@
 #include "../factory/VaoFactory.h"
 #include "../factory/ModelGenerator.h"
 #include "../util/Serializable.h"
-#include "../component/Material.h"
 
 #define MAX_TEXTURES 4
 

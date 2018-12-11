@@ -1,10 +1,9 @@
-
 [skybox]
 {
   size=400
   rotationSpeed=0.05
-  texture=texture/skybox/sky
-  ext=.png
+  texture=texture/skybox/night
+  ext=.jpg
 }
 
 [directionallight]
@@ -20,42 +19,35 @@
 
 [terrain]
 {
-  size=100
+  size=50
   heightMap=heightmap/hm.png
   blendMap=blendmap/bm.png
   position=-0.5,-0.5
-  maxHeight=0
+  maxHeight=2
 
   [texture]
   {
-    texture=texture/diffuse/mud.png
-    reflectance=0.0
-  }
-  [texture]
-  {
-    texture=texture/diffuse/mud.png
-    reflectance=0.5
-  }
-  [texture]
-  {
-    texture=texture/diffuse/ice.png
-    reflectance=0.5
+    texture=texture/diffuse/mountain.png
+    reflectance=0.2
   }
   [texture]
   {
     texture=texture/diffuse/path.png
-    reflectance=1.0
+    reflectance=0.5
+  }
+  [texture]
+  {
+    texture=texture/diffuse/terrain.png
+    reflectance=0.0
+  }
+  [texture]
+  {
+    texture=texture/diffuse/grassFlowers.png
+    reflectance=0.0
   }
 }
 
-
-[fog]
-{
-  color=0.15,0.14,0.25
-  density=0.4
-  gradient=0.2
-}
-
+//////////////////Camera////////////////
 [entity]
 {
   [camera]
@@ -67,12 +59,21 @@
 
   [position]
   {
-    position=0.0,3.0,0.0
+    position=0.0,3.0,20.0
   }
 
   [action]
 
   [mouse]
+
+  [interact]
+  {
+  }
+
+  [model]
+  {
+    mesh=models/cube.obj
+  }
 
   [motion]
   {
@@ -100,13 +101,317 @@
   }
 }
 
+
+///////////////////////////////////// Pedestals
+
 [entity]
 {
-  [position]
+  [model]
   {
-    position=0.0,3.0,0.0
+    mesh=models/pedestal.obj
+    [texture]
+    {
+      diffuse=texture/diffuse/white.png
+      specular=texture/diffuse/white.png
+    }
   }
 
+  [position]
+  {
+    position=0.0,-1.0,-7.0
+  }
+  [rotation]
+  {
+    rotation=0.0,0.0,0.0
+  }
+  [scale]
+  {
+    scale=0.3,0.1,0.3
+  }
+}
+
+[entity]
+{
+  [model]
+  {
+    mesh=models/pedestal.obj
+    [texture]
+    {
+      diffuse=texture/diffuse/white.png
+      specular=texture/diffuse/white.png
+    }
+  }
+
+  [position]
+  {
+    position=-20.0,-1.5,-10.0
+  }
+  [rotation]
+  {
+    rotation=0.0,0.0,0.0
+  }
+  [scale]
+  {
+    scale=0.1,0.1,0.1
+  }
+}
+
+[entity]
+{
+  [model]
+  {
+    mesh=models/pedestal.obj
+    [texture]
+    {
+      diffuse=texture/diffuse/white.png
+      specular=texture/diffuse/white.png
+    }
+  }
+
+  [position]
+  {
+    position=-20.0,-1.5,0.0
+  }
+  [rotation]
+  {
+    rotation=0.0,0.0,0.0
+  }
+  [scale]
+  {
+    scale=0.1,0.1,0.1
+  }
+}
+
+[entity]
+{
+  [model]
+  {
+    mesh=models/pedestal.obj
+    [texture]
+    {
+      diffuse=texture/diffuse/white.png
+      specular=texture/diffuse/white.png
+    }
+  }
+
+  [position]
+  {
+    position=-20.0,-1.5,10.0
+  }
+  [rotation]
+  {
+    rotation=0.0,0.0,0.0
+  }
+  [scale]
+  {
+    scale=0.1,0.1,0.1
+  }
+}
+
+
+[entity]
+{
+  [model]
+  {
+    mesh=models/pedestal.obj
+    [texture]
+    {
+      diffuse=texture/diffuse/white.png
+      specular=texture/diffuse/white.png
+    }
+  }
+
+  [position]
+  {
+    position=-20.0,-1.5,20.0
+  }
+  [rotation]
+  {
+    rotation=0.0,0.0,0.0
+  }
+  [scale]
+  {
+    scale=0.1,0.1,0.1
+  }
+}
+
+[entity]
+{
+  [model]
+  {
+    mesh=models/pedestal.obj
+    [texture]
+    {
+      diffuse=texture/diffuse/white.png
+      specular=texture/diffuse/white.png
+    }
+  }
+
+  [position]
+  {
+    position=20.0,-1.5,-10.0
+  }
+  [rotation]
+  {
+    rotation=0.0,0.0,0.0
+  }
+  [scale]
+  {
+    scale=0.1,0.1,0.1
+  }
+}
+
+[entity]
+{
+  [model]
+  {
+    mesh=models/pedestal.obj
+    [texture]
+    {
+      diffuse=texture/diffuse/white.png
+      specular=texture/diffuse/white.png
+    }
+  }
+
+  [position]
+  {
+    position=20.0,-1.5,0.0
+  }
+  [rotation]
+  {
+    rotation=0.0,0.0,0.0
+  }
+  [scale]
+  {
+    scale=0.1,0.1,0.1
+  }
+}
+
+[entity]
+{
+  [model]
+  {
+    mesh=models/pedestal.obj
+    [texture]
+    {
+      diffuse=texture/diffuse/white.png
+      specular=texture/diffuse/white.png
+    }
+  }
+
+  [position]
+  {
+    position=20.0,-1.5,10.0
+  }
+  [rotation]
+  {
+    rotation=0.0,0.0,0.0
+  }
+  [scale]
+  {
+    scale=0.1,0.1,0.1
+  }
+}
+
+
+[entity]
+{
+  [model]
+  {
+    mesh=models/pedestal.obj
+    [texture]
+    {
+      diffuse=texture/diffuse/white.png
+      specular=texture/diffuse/white.png
+    }
+  }
+
+  [position]
+  {
+    position=20.0,-1.5,20.0
+  }
+  [rotation]
+  {
+    rotation=0.0,0.0,0.0
+  }
+  [scale]
+  {
+    scale=0.1,0.1,0.1
+  }
+}
+
+////////////////////////////////////////////////
+
+[entity]
+{
+  [model]
+  {
+    mesh=models/menu.obj
+    [texture]
+    {
+      diffuse=texture/diffuse/stone_wall.png
+      specular=texture/specular/stone_wall.png
+    }
+  }
+
+  [position]
+  {
+    position=-10.0,-0.5,-7.0
+  }
+  [rotation]
+  {
+    rotation=0.0,90.0,0.0
+  }
+  [scale]
+  {
+    scale=0.05,0.05,0.05
+  }
+  [spotlight]
+  {
+    [pointlight]
+    {
+      [baselight]
+      {
+        color=1.0,0.0,0.0
+        intensity=32.0
+      }
+      attenuation=0.0,0.0,1.0
+      range=30.0
+      offset=1.0,3.0,0.0
+    }
+    cutoff=0.9
+  }
+
+  [lookat]
+  {
+    direction=1.0,2.0,0.0
+  }
+}
+
+[entity]
+{
+  [model]
+  {
+    mesh=models/menu.obj
+    [texture]
+    {
+      diffuse=texture/diffuse/stone_wall.png
+      specular=texture/specular/stone_wall.png
+    }
+  }
+
+  [position]
+  {
+    position=10.0,-0.5,-7.0
+  }
+  [rotation]
+  {
+    rotation=0.0,270.0,0.0
+  }
+  [scale]
+  {
+    scale=0.05,0.05,0.05
+  }
   [spotlight]
   {
     [pointlight]
@@ -114,195 +419,89 @@
       [baselight]
       {
         color=0.0,1.0,0.0
-        intensity=9.8
+        intensity=32.0
       }
       attenuation=0.0,0.0,1.0
       range=30.0
+      offset=1.0,3.0,0.0
     }
     cutoff=0.9
   }
+
   [lookat]
   {
-    direction=0.0,-1.0,1.0
+    direction=-1.0,2.0,0.0
   }
-}
-
-[entity]
-{
-  [pointlight]
-  {
-    [baselight]
-    {
-      color=1.0,0.0,0.0
-      intensity=3.8
-    }
-    attenuation=0.0,0.0,0.4
-    range=20.0
-  }
-  [position]
-  {
-    position=10.0,2.0,10.0
-  }
-
-}
-
-[entity]
-{
-  [pointlight]
-  {
-    [baselight]
-    {
-      color=1.0,1.0,0.0
-      intensity=3.8
-    }
-    attenuation=0.0,0.0,0.4
-    range=10.0
-  }
-  [position]
-  {
-    position=-10.0,2.0,-10.0
-  }
-
-}
-
-[entity]
-{
-  [pointlight]
-  {
-    [baselight]
-    {
-      color=1.0,1.0,0.0
-      intensity=3.8
-    }
-    attenuation=0.0,0.0,0.4
-    range=10.0
-  }
-  [position]
-  {
-    position=-10.0,2.0,10.0
-  }
-
-}
-
-[entity]
-{
-  [pointlight]
-  {
-    [baselight]
-    {
-      color=1.0,1.0,0.0
-      intensity=3.8
-    }
-    attenuation=0.0,0.0,0.4
-    range=10.0
-  }
-  [position]
-  {
-    position=0.0,2.0,10.0
-  }
-
-}
-
-[entity]
-{
-  [pointlight]
-  {
-    [baselight]
-    {
-      color=1.0,1.0,0.0
-      intensity=3.8
-    }
-    attenuation=0.0,0.0,0.4
-    range=10.0
-  }
-  [position]
-  {
-    position=-40.0,2.0,40.0
-  }
-
-}
-
-[entity]
-{
-  [pointlight]
-  {
-    [baselight]
-    {
-      color=1.0,1.0,0.0
-      intensity=3.8
-    }
-    attenuation=0.0,0.0,0.4
-    range=10.0
-  }
-  [position]
-  {
-    position=20.0,2.0,10.0
-  }
-
-}
-
-[entity]
-{
-  [pointlight]
-  {
-    [baselight]
-    {
-      color=1.0,1.0,1.0
-      intensity=3.8
-    }
-    attenuation=0.0,0.0,1.4
-    range=10.0
-  }
-  [position]
-  {
-    position=20.0,2.0,20.0
-  }
-
-}
-
-[entity]
-{
-  [pointlight]
-  {
-    [baselight]
-    {
-      color=0.0,1.0,0.0
-      intensity=3.8
-    }
-    attenuation=1.0,0.0,0.4
-    range=10.0
-  }
-  [position]
-  {
-    position=-40.0,2.0,10.0
-  }
-
 }
 
 [entity]
 {
   [model]
   {
-    mesh=models/sphere.obj
+    mesh=models/plane.obj
     [texture]
     {
-      diffuse=texture/diffuse/stone_wall.png
-      specular=texture/specular/stone_wall.png
+      diffuse=texture/diffuse/warning.png
+      specular=texture/specular/no_spec.png
     }
   }
-  [pointlight]
-  {
-    [baselight]
-    {
-      color=1.0,0.0,0.0
-      intensity=3.8
-    }
-    attenuation=0.0,0.0,0.4
-    range=10.0
-  }
+
   [position]
   {
-    position=10.0,2.0,30.0
+    position=0.0,1.5,-2.0
+  }
+  [rotation]
+  {
+    rotation=245.0,270.0,0.0
+  }
+  [scale]
+  {
+    scale=2.0,1.0,3.0
+  }
+}
+
+
+[entity]
+{
+  [model]
+  {
+    mesh=models/bunny.obj
+    [texture]
+    {
+      diffuse=texture/diffuse/white.png
+      specular=texture/specular/no_spec.png
+    }
+  }
+
+  [position]
+  {
+    position=-20.0,4.0,-10.0
+  }
+  [rotation]
+  {
+    rotation=0.0,90.0,0.0
+  }
+  [scale]
+  {
+    scale=0.5,0.5,0.5
+  }
+}
+
+[entity]
+{
+  [model]
+  {
+    mesh=models/bunny.obj
+    [texture]
+    {
+      diffuse=texture/diffuse/white.png
+      specular=texture/specular/no_spec.png
+    }
+  }
+
+  [position]
+  {
+    position=20.0,4.0,-10.0
   }
   [rotation]
   {
@@ -312,41 +511,31 @@
   {
     scale=0.5,0.5,0.5
   }
-  [explode]
-  {
-    speed=0.5
-    active=1
-    maxDistance=20.0
-  }
-
 }
-
-
-
 
 [entity]
 {
   [model]
   {
-    mesh=models/test.obj
+    mesh=models/cat.obj
     [texture]
     {
-      diffuse=texture/diffuse/stone_wall.png
-      specular=texture/specular/stone_wall.png
+      diffuse=texture/diffuse/gold.png
+      specular=texture/specular/all.png
     }
   }
 
   [position]
   {
-    position=-10.0,0.0,0.0
+    position=19.5,5.0,0.0
   }
   [rotation]
   {
-    rotation=0.0,0.0,45.0
+    rotation=0.0,90.0,0.0
   }
   [scale]
   {
-    scale=1.0,1.0,1.0
+    scale=0.040,0.04,0.04
   }
 }
 
@@ -354,26 +543,121 @@
 {
   [model]
   {
-    mesh=models/barrel.obj
+    mesh=models/cat.obj
     [texture]
     {
-      diffuse=texture/diffuse/ice.png
-      specular=texture/specular/stone_wall.png
+      diffuse=texture/diffuse/gold.png
+      specular=texture/specular/all.png
     }
   }
+
   [position]
   {
-    position=0.0,0.0,0.0
+    position=-19.5,5.0,0.0
   }
   [rotation]
   {
-    rotation=0.0,0.0,45.0
+    rotation=0.0,270.0,0.0
+  }
+  [scale]
+  {
+    scale=0.040,0.04,0.04
+  }
+}
+
+[entity]
+{
+  [model]
+  {
+    mesh=models/sphere.obj
+    [texture]
+    {
+      diffuse=texture/diffuse/white.png
+      specular=texture/specular/all.png
+    }
+  }
+
+  [position]
+  {
+    position=20.0,5.0,10.0
+  }
+  [rotation]
+  {
+    rotation=0.0,0.0,0.0
   }
   [scale]
   {
     scale=1.0,1.0,1.0
   }
+  [spotlight]
+  {
+    [pointlight]
+    {
+      [baselight]
+      {
+        color=0.0,0.0,1.0
+        intensity=20.0
+      }
+      attenuation=0.0,0.0,1.0
+      range=30.0
+      offset=2.0,3.0,0.0
+    }
+    cutoff=0.9
+  }
+
+  [lookat]
+  {
+    direction=-1.0,-1.0,0.0
+  }
 }
+
+[entity]
+{
+  [model]
+  {
+    mesh=models/sphere.obj
+    [texture]
+    {
+      diffuse=texture/diffuse/white.png
+      specular=texture/specular/all.png
+    }
+  }
+
+  [position]
+  {
+    position=-20.0,5.0,10.0
+  }
+  [rotation]
+  {
+    rotation=0.0,0.0,0.0
+  }
+  [scale]
+  {
+    scale=1.0,1.0,1.0
+  }
+
+  [spotlight]
+  {
+    [pointlight]
+    {
+      [baselight]
+      {
+        color=0.0,0.0,1.0
+        intensity=20.0
+      }
+      attenuation=0.0,0.0,1.0
+      range=30.0
+      offset=-2.0,3.0,0.0
+    }
+    cutoff=0.9
+  }
+
+  [lookat]
+  {
+    direction=1.0,-1.0,0.0
+  }
+}
+
 
 
 [entity]
@@ -383,23 +667,21 @@
     mesh=models/dragon.obj
     [texture]
     {
-      diffuse=texture/diffuse/dragon.png
-      specular=texture/specular/stone_wall.png
+      diffuse=texture/diffuse/gold.png
+      specular=texture/specular/mild_spec.png
     }
   }
-  [explode]
+  [interact]
   {
-    speed=0.5
-    active=1
-    maxDistance=20.0
   }
+
   [position]
   {
-    position=10.0,0.10,0.0
+    position=0.0,5.0,-7.0
   }
   [rotation]
   {
-    rotation=0.0,0.0,0.0
+    rotation=0.0,45.0,0.0
   }
   [scale]
   {

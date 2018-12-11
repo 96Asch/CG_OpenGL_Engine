@@ -17,6 +17,15 @@ public:
 
     virtual void cleanup() override;
 
+
+private:
+
+    bool firstUpdate;
+    float secondsCounter;
+
+    void checkIntersections(std::shared_ptr<Scene> scene);
+
+    void explodeAll(const float &tps, std::shared_ptr<Scene> scene);
 };
 
 #endif

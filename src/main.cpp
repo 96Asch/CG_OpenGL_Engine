@@ -61,16 +61,18 @@ int main(int argc, char** argv) {
 
     engine.add<InputSystem>();
     engine.add<EnvironmentSystem>();
+    engine.add<LogicSystem>();
     engine.add<PhysicsSystem>();
     engine.add<GraphicSystem>();
 
     if(argc == 2)
         engine.loadSetup(std::string(argv[1]));
-    else
-        std::cout << "No setup file specified" << std::endl;
-
+    else {
+        std::cout << "No setup file specified..." << std::endl;
+        std::cout << "USAGE: exe -file" << std::endl;
+        return -1;
+    }
     engine.init();
     engine.run();
-    // engine.cleanup();
     return 0;
 }

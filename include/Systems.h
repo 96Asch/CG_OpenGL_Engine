@@ -5,5 +5,6 @@
 #include "../src/system/InputSystem.h"
 #include "../src/system/PhysicsSystem.h"
 #include "../src/system/EnvironmentSystem.h"
+#include "../src/system/LogicSystem.h"
 
 #endif

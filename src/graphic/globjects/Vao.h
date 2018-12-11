@@ -6,7 +6,9 @@
 #include "Global.h"
 #include "Vbo.h"
 
-class VaoFactory;
+namespace Factory {
+    class VaoFactory;
+};
 
 class Vao {
 
@@ -49,14 +51,20 @@ public:
 
     void unbind();
 
+    glm::vec3 getMinExtents();
+
+    glm::vec3 getMaxExtents();
+
 private:
-    friend class VaoFactory;
+    friend class Factory::VaoFactory;
 
     GLuint id;
     std::vector<std::shared_ptr<Vbo>> vbos;
 	std::shared_ptr<Vbo> indexVbo;
 	size_t indexCount;
     size_t vertexCount;
+    glm::vec3 minExtents;
+    glm::vec3 maxExtents;
 };
 
 template <typename... Args>

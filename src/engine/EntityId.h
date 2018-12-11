@@ -14,5 +14,9 @@ inline std::ostream& operator<<(std::ostream &stream, const EntityId &id) {
     return stream;
 }
 
+inline bool operator==(const EntityId &id1, const EntityId &id2) {
+    return id1.index == id2.index && id1.version == id2.version;
+}
+
 
 #endif

@@ -57,5 +57,14 @@ inline std::ostream& operator<<(std::ostream &stream, const Entity &e) {
     return stream;
 }
 
+inline bool operator==(const Entity &e1, const Entity &e2) {
+    return e1.id == e2.id;
+}
+
+inline bool operator!=(const Entity &e1, const Entity &e2) {
+    return !(e1.id == e2.id);
+}
+
+
 
 #endif

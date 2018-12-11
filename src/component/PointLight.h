@@ -9,13 +9,15 @@
 struct PointLight : public IComponent<PointLight>{
 
     PointLight()
-               : position(glm::vec3(0.0f)),
+               : offset(glm::vec3(0.0f)),
+                 position(glm::vec3(0.0f)),
                  lastPosition(position),
                  attenuation(glm::vec3(0.0f))
                  {};
 
     PointLight(std::ifstream &stream)
-               : position(glm::vec3(0.0f)),
+               : offset(glm::vec3(0.0f)),
+                 position(glm::vec3(0.0f)),
                  lastPosition(position),
                  attenuation(glm::vec3(0.0f))
     {
@@ -45,6 +47,13 @@ struct PointLight : public IComponent<PointLight>{
                             this->lastPosition = this->position;
                         }
                     }
+                    else if (var == "offset") {
+                        if(std::getline(ss, value, '=')) {
+                            float v1, v2, v3;
+                            sscanf(value.c_str(), "%f,%f,%f", &v1, &v2, &v3);
+                            this->offset = glm::vec3(v1, v2, v3);
+                        }
+                    }
                     else if (var == "[baselight]") {
                         ret &= light.deserialize(stream);
                     }
@@ -71,6 +80,7 @@ struct PointLight : public IComponent<PointLight>{
 
 
     BaseLight light;
+    glm::vec3 offset;
     glm::vec3 position, lastPosition;
     glm::vec3 attenuation;
     float range;

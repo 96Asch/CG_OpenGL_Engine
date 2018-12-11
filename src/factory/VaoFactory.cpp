@@ -65,7 +65,9 @@ namespace Factory {
                                const std::vector<GLuint> &indices,
                                const std::vector<GLfloat> &position,
                                const std::vector<GLfloat> &texture,
-                               const std::vector<GLfloat> &normals)
+                               const std::vector<GLfloat> &normals,
+                               const glm::vec3 &minExtents,
+                               const glm::vec3 &maxExtents)
     {
         if(!isLoaded(source)) {
             auto vao = Vao::create();
@@ -75,6 +77,8 @@ namespace Factory {
             vao->createAttribute(1, SIZE_2D, &texture[0], texture.size());
             vao->createAttribute(2, SIZE_3D, &normals[0], normals.size());
             vao->unbind();
+            vao->minExtents = minExtents;
+            vao->maxExtents = maxExtents;
             vaos[source] = std::move(vao);
         }
     }

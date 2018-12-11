@@ -45,8 +45,8 @@ bool EntityFactory::deserialize(std::ifstream &stream) {
                 addComponent(newEnt.id, Action(stream));
             else if (comp == "[camera]")
                 addComponent(newEnt.id, Camera(stream));
-            else if (comp == "[material]")
-                addComponent(newEnt.id, Material(stream));
+            else if (comp == "[interact]")
+                addComponent(newEnt.id, Interact(stream));
             else if (comp == "[mouse]")
                 addComponent(newEnt.id, Mouse(stream));
             else if (comp == "[position]")

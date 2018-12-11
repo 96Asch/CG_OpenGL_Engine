@@ -7,7 +7,8 @@
 #include "Components.h"
 
 Scene::Scene() : upDirection(glm::vec3(0.0f, 1.0f, 0.0f)),
-                 ambientLight(glm::vec3(0.3f, 0.3f, 0.3f))
+                 ambientLight(glm::vec3(0.3f, 0.3f, 0.3f)),
+                 exposure(1.5)
 {
 
  }
@@ -36,6 +37,19 @@ bool Scene::deserialize(std::ifstream &stream) {
             success &= terrain.deserialize(stream);
         stream >> std::ws;
     }
+    for(auto e : ef.withComponents<Interact>()) {
+        Interact* i = e.getComponent<Interact>();
+
+        if(e.hasComponent<Model>()) {
+            Model* m = e.getComponent<Model>();
+            auto vao = m->getVao();
+            i->minExtents = vao->getMinExtents();
+            i->maxExtents = vao->getMaxExtents();
+        }
+
+        i->initCorners(i->minExtents, i->maxExtents);
+        i->halfExtents = (i->maxExtents - i->minExtents) * 0.5f;
+    }
     return success;
 }
 
@@ -45,10 +59,6 @@ EntityFactory& Scene::getEntities() {
 
 DirectionalLight& Scene::getDirectional() {
     return light;
-}
-
-Fog& Scene::getFog() {
-    return fog;
 }
 
 Terrain& Scene::getTerrain() {
@@ -65,4 +75,8 @@ glm::vec3 Scene::getUpDirection() {
 
 glm::vec3 Scene::getAmbient() {
     return ambientLight;
+}
+
+float Scene::getExposure() {
+    return exposure;
 }

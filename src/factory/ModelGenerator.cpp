@@ -58,18 +58,29 @@ namespace Factory {
                                           &w, &h, &components, STBI_rgb_alpha);
             numVertex = h;
         }
-        unsigned count = numVertex * numVertex;
         std::vector<unsigned> indices;
         std::vector<float> vertices;
         std::vector<float> normals;
         std::vector<float> uvs;
+        glm::vec3 minEx, maxEx;
 
         for(unsigned i = 0; i < numVertex; i++){
             for(unsigned j = 0; j < numVertex; j++){
+                float vx = (float) j / ((float) numVertex - 1) * size;
+                float vy = fromHeightMap(image, w, h, terrainHeight, j, i);
+                float vz = (float) i / ((float) numVertex - 1) * size;
 
-                vertices.push_back((float) j / ((float) numVertex - 1) * size);
-                vertices.push_back(fromHeightMap(image, w, h, terrainHeight, j, i));
-                vertices.push_back((float) i / ((float) numVertex - 1) * size);
+                minEx.x = (vx < minEx.x) ? vx : minEx.x;
+                minEx.y = (vy < minEx.y) ? vy : minEx.y;
+                minEx.z = (vz < minEx.z) ? vz : minEx.z;
+
+                maxEx.x = (vx > maxEx.x) ? vx : maxEx.x;
+                maxEx.y = (vy > maxEx.y) ? vy : maxEx.y;
+                maxEx.z = (vz > maxEx.z) ? vz : maxEx.z;
+
+                vertices.push_back(vx);
+                vertices.push_back(vy);
+                vertices.push_back(vz);
 
                 glm::vec3 normal = getNormal(image, w, h, terrainHeight, j, i);
                 normals.push_back(normal.x);
@@ -95,7 +106,7 @@ namespace Factory {
             }
         }
         stbi_image_free(image);
-        VAO->createVao(file, indices, vertices, uvs, normals);
+        VAO->createVao(file, indices, vertices, uvs, normals, minEx, maxEx);
     }
 
     void generateCube(const std::string &id, const float &size)

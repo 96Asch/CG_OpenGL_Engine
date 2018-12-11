@@ -43,7 +43,7 @@ struct Model : public IComponent<Model> {
                 else if(std::getline(ss, var, '=')) {
                     if (var == "mesh") {
                         if(std::getline(ss, value)) {
-                            this->mesh = value;;
+                            this->mesh = value;
                             Factory::loadOBJ(mesh);
                         }
                     }

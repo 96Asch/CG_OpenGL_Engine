@@ -22,8 +22,6 @@ public:
 
     DirectionalLight& getDirectional();
 
-    Fog& getFog();
-
     Terrain& getTerrain();
 
     Skybox& getSky();
@@ -31,6 +29,8 @@ public:
     glm::vec3 getUpDirection();
 
     glm::vec3 getAmbient();
+
+    float getExposure();
 
     virtual void serialize(std::ofstream &out) override;
 
@@ -42,6 +42,7 @@ private:
 
     glm::vec3 upDirection;
     glm::vec3 ambientLight;
+    float exposure;
 
     DirectionalLight light;
     Fog fog;

@@ -37,7 +37,9 @@ namespace Factory {
                        const std::vector<GLuint> &indices,
                        const std::vector<GLfloat> &position,
                        const std::vector<GLfloat> &texture,
-                       const std::vector<GLfloat> &normals);
+                       const std::vector<GLfloat> &normals,
+                       const glm::vec3 &minExtents,
+                       const glm::vec3 &maxExtents);
 
         void removeVao();
 

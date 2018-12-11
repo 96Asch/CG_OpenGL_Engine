@@ -17,8 +17,7 @@ namespace Factory {
         GLfloat furthest;
     };
 
-
-    void loadOBJ(const std::string &file, const float &scale = 1);
+    void loadOBJ(const std::string &file);
 
     void generateTerrain(const unsigned &numVertex,
                          std::vector<std::vector<float>> &heights);

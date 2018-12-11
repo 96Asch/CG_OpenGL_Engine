@@ -61,6 +61,7 @@ private:
     void interpolateLookAt(const float &interpolation, std::shared_ptr<Scene> scene);
 
     void interpolateCamera(const float &interpolation, std::shared_ptr<Scene> scene);
+
 };
 
 #endif

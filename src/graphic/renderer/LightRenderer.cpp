@@ -13,7 +13,7 @@ LightRenderer::LightRenderer() {}
 LightRenderer::~LightRenderer() {}
 
 void LightRenderer::init() {
-    shader.init("shader/light.vs", "shader/light.fs",
+    shader.init("shader/quad.vs", "shader/light.fs",
                 {"position", "uv"});
     shader.addUniform(new UniformVec3("ambientLight"));
     shader.addUniform(new UniformVec3("camPosition"));
@@ -33,7 +33,7 @@ void LightRenderer::init() {
     Factory::generateQuad("screenQuad", 1.0f);
 }
 
-void LightRenderer::render(TransMat &matrices,
+void LightRenderer::render(TransMat &,
                                  const std::shared_ptr<Scene> &scene)
 {
     shader.start();
@@ -66,7 +66,9 @@ void LightRenderer::loadPointLights(std::shared_ptr<Scene> scene) {
     for(auto light : scene->getEntities().withComponents<PointLight, Position>()) {
         PointLight* pl = light.getComponent<PointLight>();
         Position* p = light.getComponent<Position>();
-        shader.getUniform<UniformPLights>("pointLight")->load(*pl, p->interpolated, counter);
+        shader.getUniform<UniformPLights>("pointLight")->load(*pl,
+                                                              pl->offset + p->interpolated,
+                                                              counter);
         ++counter;
     }
     while(counter < Global::MAX_POINT_LIGHTS) {
@@ -78,11 +80,11 @@ void LightRenderer::loadPointLights(std::shared_ptr<Scene> scene) {
 void LightRenderer::loadSpotLights(std::shared_ptr<Scene> scene) {
     unsigned counter = 0;
     for(auto light : scene->getEntities().withComponents<SpotLight, Position, LookAt>()) {
-        SpotLight* pl = light.getComponent<SpotLight>();
+        SpotLight* sl = light.getComponent<SpotLight>();
         Position* p = light.getComponent<Position>();
         LookAt* look = light.getComponent<LookAt>();
-        shader.getUniform<UniformSLights>("spotLight")->load(*pl,
-                                                             p->interpolated,
+        shader.getUniform<UniformSLights>("spotLight")->load(*sl,
+                                                             sl->point.offset + p->interpolated,
                                                              look->interpolated,
                                                              counter);
         ++counter;

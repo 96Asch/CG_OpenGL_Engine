@@ -26,11 +26,11 @@ void HdrRenderer::init() {
     Factory::generateQuad("screenQuad", 1.0f);
 }
 
-void HdrRenderer::render(TransMat &matrices,
+void HdrRenderer::render(TransMat &,
                          const std::shared_ptr<Scene> &scene)
 {
     shader.start();
-    shader.getUniform<UniformFloat>("exposure")->load(1.5f);
+    shader.getUniform<UniformFloat>("exposure")->load(scene->getExposure());
     auto vao = Factory::VAO->getVao("screenQuad");
     vao->bind();
     glDrawArrays(GL_TRIANGLE_STRIP, 0, vao->getVertexCount());

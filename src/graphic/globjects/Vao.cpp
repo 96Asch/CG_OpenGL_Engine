@@ -35,7 +35,7 @@ void Vao::createAttribute(const int &attribute,
                           const GLfloat* data, const GLsizeiptr & dataSize) {
     if(dimension == 3)
         vertexCount = dataSize;
-    glEnableVertexAttribArray(attribute);   
+    glEnableVertexAttribArray(attribute);
     auto vbo = Vbo::create(GL_ARRAY_BUFFER);
     vbo->bind();
     vbo->storeData(data, dataSize);
@@ -89,4 +89,12 @@ void Vao::bind() {
 
 void Vao::unbind() {
     glBindVertexArray(0);
+}
+
+glm::vec3 Vao::getMinExtents() {
+    return minExtents;
+}
+
+glm::vec3 Vao::getMaxExtents() {
+    return maxExtents;
 }
