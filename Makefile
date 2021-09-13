@@ -1,5 +1,5 @@
 CXX = g++
-CFLAGS =	-std=c++14 -Wall -g -Wextra
+CFLAGS = -std=c++14 -Wall -g -Wextra
 OBJDIR = build
 FILES = $(wildcard $(SRC)/*/) $(wildcard $(SRC)/*/*/) dep/
 OBJDIRS = $(sort $(dir $(addprefix $(OBJDIR)/, $(FILES:$(SRC)/%=%))))
@@ -10,7 +10,7 @@ INC = -Iinclude/ -I$(SRC)/global/ -Idep/glfw/include
 DEP = $(wildcard dep/*.c)
 DEPOBJS = $(addprefix $(OBJDIR)/, $(DEP:.c=.o))
 LIBS = -Ldep
-LDFLAGS = -lGL -ldl dep/libglfw3.a
+LDFLAGS = -lGL -ldl
 PRECOMPILE = include/Global.h include/Uniforms.h include/Components.h \
   					 include/Systems.h
 PRECOMPILED = $(PRECOMPILE:.h=.h.gch)
@@ -27,7 +27,8 @@ test:
 
 $(OBJDIR):
 	@echo Making bin directory
-	@mkdir $(OBJDIRS)
+	mkdir $(OBJDIR)
+	mkdir $(OBJDIRS)
 
 $(PRECOMPILED):
 	@echo Precompiling $(PRECOMPILE)
@@ -44,7 +45,7 @@ $(OBJDIR)/%.o:	$(SRC)/%.cpp
 
 $(TARGET):	$(DEPOBJS) $(OBJS)
 	@echo Building executable $@
-	@$(CXX) `pkg-config --cflags glfw3` -o $@ $^ `pkg-config --static --libs glfw3` $(LDFLAGS)
+	$(CXX) `pkg-config --cflags glfw3` -o $@ $^ `pkg-config --static --libs glfw3` $(LDFLAGS)
 
 run:
 	@./$(TARGET)
