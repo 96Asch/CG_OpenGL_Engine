@@ -27,7 +27,6 @@ test:
 
 $(OBJDIR):
 	@echo Making bin directory
-	mkdir $(OBJDIR)
 	mkdir $(OBJDIRS)
 
 $(PRECOMPILED):
